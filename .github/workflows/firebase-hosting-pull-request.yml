@@ -12,8 +12,24 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v4
-      - run: npm ci && npm run build
+
+      # Install Flutter SDK
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable # Defaults to the latest stable version
+      - run: flutter --version
+
+      # Flutter dependencies setup
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      # Build the Flutter web project
+      - name: Build Flutter Web
+        run: flutter build web --release
+        
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
