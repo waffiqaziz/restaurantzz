@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:readmore/readmore.dart';
 import 'package:restaurantzz/core/common/constants.dart';
+import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
+import 'package:restaurantzz/core/utils/helper.dart';
+import 'package:restaurantzz/feature/detail/screen/menu_widget.dart';
 
 class BodyDetailScreen extends StatelessWidget {
   const BodyDetailScreen({
@@ -14,11 +18,12 @@ class BodyDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: Center(
         child: SizedBox(
           width: 900,
           child: Container(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             child: Column(
               children: [
                 // image
@@ -66,41 +71,100 @@ class BodyDetailScreen extends StatelessWidget {
                                       Theme.of(context).textTheme.headlineLarge,
                                 ),
 
+                                // restaurant rating
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: Text(
+                                        Helper.formatRating(
+                                            "${restaurantDetailItem.rating}"),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ),
+                                    const SizedBox.square(dimension: 4),
+                                    Flexible(
+                                      flex: 1,
+                                      child: RatingBarIndicator(
+                                        rating: restaurantDetailItem.rating,
+                                        itemCount: 5,
+                                        itemSize: 20.0,
+                                        physics: const BouncingScrollPhysics(),
+                                        itemBuilder: (context, _) => const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox.square(dimension: 4),
+                                    Flexible(
+                                      flex: 1,
+                                      child: Text(
+                                        "(${restaurantDetailItem.customerReviews.length})",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
                                 // restaurant address
+                                const SizedBox.square(dimension: 4),
                                 Text(
-                                  "${restaurantDetailItem.city}, ${restaurantDetailItem.address}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.w400),
-                                )
+                                  "${restaurantDetailItem.address}, ${restaurantDetailItem.city}",
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+
+                                // restaurant categorie
+                                const SizedBox.square(dimension: 8),
+                                Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 4.0,
+                                  children: restaurantDetailItem.categories
+                                      .map((category) {
+                                    return Chip(
+                                      label: Text(category.name),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                      ),
+                                      elevation: 4.0,
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox.square(dimension: 4),
                               ],
                             ),
                           ),
-
-                          // restaurant rating
-                          RatingBarIndicator(
-                            rating: restaurantDetailItem.rating,
-                            itemCount: 5,
-                            itemSize: 30.0,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                          ),
-                          const SizedBox.square(dimension: 4),
-                          Text(
-                            "(${restaurantDetailItem.rating}/5.0)",
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
                         ],
                       ),
+
+                      // restaurant description
                       const SizedBox.square(dimension: 16),
-                      Text(
+                      ReadMoreText(
+                        trimMode: TrimMode.Line,
+                        trimLines: 4,
+                        trimCollapsedText: Strings.readMore,
+                        trimExpandedText: Strings.showLess,
                         restaurantDetailItem.description,
                         style: Theme.of(context).textTheme.bodyLarge,
-                      )
+                      ),
+
+                      const SizedBox.square(dimension: 16),
+                      MenuCategoryListView(
+                        title: 'Foods',
+                        categories: restaurantDetailItem.menus.foods,
+                      ),
+
+                      const SizedBox.square(dimension: 8),
+                      MenuCategoryListView(
+                        title: 'Drinks',
+                        categories: restaurantDetailItem.menus.drinks,
+                      ),
                     ],
                   ),
                 ),

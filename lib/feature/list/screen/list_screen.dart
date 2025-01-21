@@ -28,6 +28,7 @@ class _ListScreenState extends State<ListScreen> {
       appBar: AppBar(
         title: const Text("Restaurant List"),
       ),
+      backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: Consumer<ListProvider>(
        builder: (context, value, child) {
          return switch (value.resultState) {

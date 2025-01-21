@@ -65,19 +65,27 @@ class RestaurantCard extends StatelessWidget {
                     // rating bar
                     Row(
                       children: [
-                        RatingBarIndicator(
-                          rating: restaurant.rating,
-                          itemCount: 5,
-                          itemSize: 15.0,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
+                        Flexible(
+                          flex: 1,
+                          child: RatingBarIndicator(
+                            rating: restaurant.rating,
+                            itemCount: 5,
+                            itemSize: 15.0,
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
                           ),
                         ),
-                        Text(
-                          "(${restaurant.rating}/5.0)",
-                          style: Theme.of(context).textTheme.labelSmall,
+                        const SizedBox(width: 8),
+                        Flexible(
+                          flex: 2,
+                          child: Text(
+                            "(${restaurant.rating}/5.0)",
+                            style: Theme.of(context).textTheme.labelSmall,
+                            textAlign: TextAlign.end,
+                          ),
                         ),
                       ],
                     ),

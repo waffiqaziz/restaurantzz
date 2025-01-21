@@ -4,4 +4,7 @@ class Strings {
   static String bookmarks = "Bookmarks";
 
   static String restaurantzz = "Restaurantzz";
+
+  static String readMore = "Read more";
+  static String showLess = "Show less";
 }
