@@ -17,20 +17,19 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late final DetailProvider _detailProvider;
-
   @override
   void initState() {
     super.initState();
 
-    _detailProvider = context.read<DetailProvider>();
-    _detailProvider.fetchRestaurantDetail(widget.restaurantId);
+    Future.microtask(() {
+      context.read<DetailProvider>().fetchRestaurantDetail(widget.restaurantId);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: Consumer<DetailProvider>(
         builder: (context, value, child) {
           return switch (value.resultState) {
