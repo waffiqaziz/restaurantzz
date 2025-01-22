@@ -38,7 +38,7 @@ class _DetailScreenState extends State<DetailScreen> {
             RestaurantDetailLoadedState(data: var restaurant) =>
               BodyDetailScreen(restaurantDetailItem: restaurant),
             RestaurantDetailErrorState(error: var message) =>
-              Center(child: Text(message)),
+              SnackBar(content: Text(message)),
             _ => const SizedBox(),
           };
         },

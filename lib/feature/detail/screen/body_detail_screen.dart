@@ -6,6 +6,7 @@ import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/utils/helper.dart';
 import 'package:restaurantzz/feature/detail/screen/menu_widget.dart';
+import 'package:restaurantzz/feature/detail/screen/review_form_widget.dart';
 import 'package:restaurantzz/feature/detail/screen/reviews_widget.dart';
 
 class BodyDetailScreen extends StatelessWidget {
@@ -156,22 +157,29 @@ class BodyDetailScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
 
+                      // foods menu
                       const SizedBox.square(dimension: 16),
                       MenuCategoryListView(
                         title: Strings.foods,
                         categories: restaurantDetailItem.menus.foods,
                       ),
 
+                      // drinks menu
                       const SizedBox.square(dimension: 8),
                       MenuCategoryListView(
                         title: Strings.drinks,
                         categories: restaurantDetailItem.menus.drinks,
                       ),
 
+                      // list reviews
                       const SizedBox.square(dimension: 16),
                       ReviewsWidget(
                         customerReviews: restaurantDetailItem.customerReviews,
                       ),
+
+                      // review form
+                      const SizedBox.square(dimension: 16),
+                      ReviewForm(restaurantId: restaurantDetailItem.id),
                     ],
                   ),
                 ),

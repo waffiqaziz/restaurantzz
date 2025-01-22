@@ -18,15 +18,25 @@ class ListProvider extends ChangeNotifier {
 
       final result = await _apiServices.getRestaurantList();
 
-      if (result.error) {
-        _resultState = RestaurantListErrorState(result.message);
-        notifyListeners();
+      if (result.data != null) {
+        if (result.data!.error) {
+          _resultState = RestaurantListErrorState(
+            result.message ?? "Unknown error occurred",
+          );
+        } else {
+          _resultState = RestaurantListLoadedState(result.data!.restaurants);
+        }
       } else {
-        _resultState = RestaurantListLoadedState(result.restaurants);
-        notifyListeners();
+        _resultState = RestaurantListErrorState(
+          result.message ?? "Unknown error occurred",
+        );
       }
-    } on Exception catch (e) {
-      _resultState = RestaurantListErrorState(e.toString());
+
+      notifyListeners();
+    } catch (e) {
+      _resultState = RestaurantListErrorState(
+        "An unexpected error occurred: ${e.toString()}",
+      );
       notifyListeners();
     }
   }

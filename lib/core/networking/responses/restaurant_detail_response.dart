@@ -85,6 +85,32 @@ class RestaurantDetailItem {
         "customerReviews":
             List<dynamic>.from(customerReviews.map((x) => x.toJson())),
       };
+
+  RestaurantDetailItem copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? city,
+    String? address,
+    String? pictureId,
+    List<Category>? categories,
+    Menus? menus,
+    double? rating,
+    List<CustomerReview>? customerReviews,
+  }) {
+    return RestaurantDetailItem(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      city: city ?? this.city,
+      address: address ?? this.address,
+      pictureId: pictureId ?? this.pictureId,
+      categories: categories ?? this.categories,
+      menus: menus ?? this.menus,
+      rating: rating ?? this.rating,
+      customerReviews: customerReviews ?? this.customerReviews,
+    );
+  }
 }
 
 class Category {

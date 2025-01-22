@@ -17,30 +17,73 @@ class DetailProvider extends ChangeNotifier {
   RestaurantDetailResultState get resultState => _resultState;
 
   Future<void> fetchRestaurantDetail(String id) async {
-    // check data is cached/not
-    if (_cache.containsKey(id)) {
-      _resultState = RestaurantDetailLoadedState(_cache[id]!);
-      notifyListeners();
-      return;
-    }
-
     try {
+      // check data is cached/not
+      if (_cache.containsKey(id)) {
+        _resultState = RestaurantDetailLoadedState(_cache[id]!);
+        notifyListeners();
+        return;
+      }
+
       _resultState = RestaurantDetailLoadingState();
       notifyListeners();
 
       final result = await _apiServices.getRestaurantDetail(id);
 
-      if (result.error) {
-        _resultState = RestaurantDetailErrorState(result.message);
-        notifyListeners();
-      } else {
-        _cache[id] = result.restaurant;
+      if (result.data != null) {
+        if (result.data!.error) {
+          _resultState = RestaurantDetailErrorState(
+            result.message ?? "Unknown error occurred",
+          );
+        } else {
+          _cache[id] = result.data!.restaurant;
 
-        _resultState = RestaurantDetailLoadedState(result.restaurant);
-        notifyListeners();
+          _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
+        }
+      } else {
+        _resultState = RestaurantDetailErrorState(
+          result.message ?? "Unknown error occurred",
+        );
       }
-    } on Exception catch (e) {
-      _resultState = RestaurantDetailErrorState(e.toString());
+
+      notifyListeners();
+    } catch (e) {
+      _resultState = RestaurantDetailErrorState(
+        "An unexpected error occurred: ${e.toString()}",
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> addReview(
+    String id,
+    String name,
+    String review,
+  ) async {
+    try {
+      _resultState = RestaurantDetailLoadingState();
+      notifyListeners();
+
+      final result = await _apiServices.postReview(id, name, review);
+
+      if (result.data != null) {
+        if (!result.data!.error) {
+          // update cached if exist
+          if (_cache.containsKey(id)) {
+            _cache[id] = _cache[id]!.copyWith(
+              customerReviews: result.data!.customerReviews,
+            );
+            _resultState = RestaurantDetailLoadedState(_cache[id]!);
+          }
+        } else {
+          throw Exception(result.message);
+        }
+      }
+      notifyListeners();
+    } catch (e) {
+      _resultState = RestaurantDetailErrorState(
+        "An unexpected error occurred: ${e.toString()}",
+      );
       notifyListeners();
     }
   }

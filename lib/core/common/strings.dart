@@ -17,4 +17,10 @@ class Strings {
 
   static String reviews = "Reviews";
   static String seeReviews = "See Reviews";
+  static String addAReview = "Add a Review";
+  static String yourName = "Your Name";
+  static String yourReview = "Your Review";
+  static String nameIsRequired = "Name is required";
+  static String reviewIsRequired = "Review is required";
+  static String submitReview = "Submit Review";
 }
