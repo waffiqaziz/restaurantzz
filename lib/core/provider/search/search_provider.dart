@@ -36,7 +36,6 @@ class SearchProvider extends ChangeNotifier {
       _resultState = RestaurantSearchErrorState(e.toString());
       notifyListeners();
     }
-    print("State: ${_resultState.runtimeType}");
   }
 
   void clearSearchResults() {

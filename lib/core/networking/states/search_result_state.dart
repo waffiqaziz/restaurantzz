@@ -4,7 +4,7 @@ sealed class RestaurantSearchResultState {}
 
 class RestaurantSearchNoneState extends RestaurantSearchResultState {}
 
-class RestaurantSearchNotFoundState extends RestaurantSearchResultState{}
+class RestaurantSearchNotFoundState extends RestaurantSearchResultState {}
 
 class RestaurantSearchLoadingState extends RestaurantSearchResultState {}
 

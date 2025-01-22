@@ -33,13 +33,17 @@ class _SearchScreenState extends State<SearchScreen> {
       setState(() {
         _isSearching = false;
       });
-      context.read<SearchProvider>().clearSearchResults(); // Reset search results
+      context
+          .read<SearchProvider>()
+          .clearSearchResults(); // Reset search results
     } else if (query != _lastQuery) {
       setState(() {
         _isSearching = true;
         _lastQuery = query;
       });
-      context.read<SearchProvider>().fetchRestaurantList(query); // Start searching
+      context
+          .read<SearchProvider>()
+          .fetchRestaurantList(query); // Start searching
     }
   }
 
