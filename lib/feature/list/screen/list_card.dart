@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:restaurantzz/core/networking/responses/restaurant_list_response.dart';
-import 'package:restaurantzz/core/common/constants.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:restaurantzz/core/common/constants.dart';
+import 'package:restaurantzz/core/data/model/restaurant.dart';
 
 class RestaurantCard extends StatelessWidget {
   const RestaurantCard({
@@ -10,7 +10,7 @@ class RestaurantCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final RestaurantListItem restaurant;
+  final Restaurant restaurant;
   final Function() onTap;
 
   @override

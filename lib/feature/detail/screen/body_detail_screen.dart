@@ -18,7 +18,6 @@ class BodyDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
       child: Center(
         child: SizedBox(
           width: 900,
@@ -49,7 +48,7 @@ class BodyDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox.square(dimension: 16),
+                const SizedBox.square(dimension: 8),
 
                 // restaurant information
                 Padding(
@@ -156,15 +155,18 @@ class BodyDetailScreen extends StatelessWidget {
 
                       const SizedBox.square(dimension: 16),
                       MenuCategoryListView(
-                        title: 'Foods',
+                        title: Strings.foods,
                         categories: restaurantDetailItem.menus.foods,
                       ),
 
                       const SizedBox.square(dimension: 8),
                       MenuCategoryListView(
-                        title: 'Drinks',
+                        title: Strings.drinks,
                         categories: restaurantDetailItem.menus.drinks,
                       ),
+
+                      const SizedBox.square(dimension: 8),
+                      // TODO: implement customer reviews and post reviews
                     ],
                   ),
                 ),

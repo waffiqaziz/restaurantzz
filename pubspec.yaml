@@ -15,6 +15,7 @@ dependencies:
 
   # Networking
   http: ^1.2.2
+  url_launcher: ^6.3.0
 
   # UI
   flutter_rating_bar: ^4.0.1
