@@ -6,6 +6,7 @@ import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/utils/helper.dart';
 import 'package:restaurantzz/feature/detail/screen/menu_widget.dart';
+import 'package:restaurantzz/feature/detail/screen/reviews_widget.dart';
 
 class BodyDetailScreen extends StatelessWidget {
   const BodyDetailScreen({
@@ -165,8 +166,10 @@ class BodyDetailScreen extends StatelessWidget {
                         categories: restaurantDetailItem.menus.drinks,
                       ),
 
-                      const SizedBox.square(dimension: 8),
-                      // TODO: implement customer reviews and post reviews
+                      const SizedBox.square(dimension: 16),
+                      ReviewsWidget(
+                        customerReviews: restaurantDetailItem.customerReviews,
+                      ),
                     ],
                   ),
                 ),

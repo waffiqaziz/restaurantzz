@@ -1,14 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
-
-class CustomScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
-}
+import 'package:restaurantzz/core/utils/custom_behavior.dart';
 
 class MenuCategoryListView extends StatelessWidget {
   final String title;
@@ -29,7 +21,7 @@ class MenuCategoryListView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme.of(context).textTheme.labelLarge,
         ),
         SizedBox(
           height: 150,
@@ -44,17 +36,24 @@ class MenuCategoryListView extends StatelessWidget {
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   final category = categories[index];
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         // picture menu
-                        Image.asset(
-                          'images/food.jpg',
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            'images/food.jpg',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
                         ),
 
                         // menu name
@@ -62,15 +61,13 @@ class MenuCategoryListView extends StatelessWidget {
                           width: 100,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                              vertical: 4.0,
+                              horizontal: 8,
+                              vertical: 7,
                             ),
-                            child: Center(
-                              child: Text(
-                                maxLines: 1,
-                                category.name,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
+                            child: Text(
+                              maxLines: 1,
+                              category.name,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
                         ),
