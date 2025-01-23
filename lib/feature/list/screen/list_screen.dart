@@ -45,7 +45,13 @@ class _ListScreenState extends State<ListScreen> {
               elevation: 5.0,
               pinned: false,
               centerTitle: true,
-              title: Text(Strings.ourRecommendation),
+              title: Text(
+                Strings.ourRecommendation,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
               leading: IconButton(
                 icon: Padding(
                   padding: const EdgeInsets.all(7.0),
@@ -71,25 +77,47 @@ class _ListScreenState extends State<ListScreen> {
                   child: CircularProgressIndicator(),
                 ),
               RestaurantListLoadedState(data: var restaurantList) =>
-                ListView.builder(
-                  itemCount: restaurantList.length,
-                  itemBuilder: (context, index) {
-                    final restaurant = restaurantList[index];
-
-                    return RestaurantCard(
-                      restaurant: restaurant,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          NavigationRoute.detailRoute.name,
-                          arguments: restaurant.id,
-                        );
-                      },
-                    );
+                RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<ListProvider>().fetchRestaurantList();
                   },
+                  child: ListView.builder(
+                    itemCount: restaurantList.length,
+                    itemBuilder: (context, index) {
+                      final restaurant = restaurantList[index];
+
+                      return RestaurantCard(
+                        restaurant: restaurant,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            NavigationRoute.detailRoute.name,
+                            arguments: restaurant.id,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              RestaurantListErrorState(error: var message) => Center(
-                  child: Text(message),
+              RestaurantListErrorState(error: var message) => RefreshIndicator(
+                  onRefresh: () async {
+                    await context.read<ListProvider>().fetchRestaurantList();
+                  },
+                  child: ListView(
+                    children: [
+                      const SizedBox(height: 200),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            message,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               _ => const SizedBox(),
             };

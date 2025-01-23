@@ -50,8 +50,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // get platform theme mode
     final brightness = View.of(context).platformDispatcher.platformBrightness;
-    TextTheme textTheme =
-        createTextTheme(context, "Nunito Sans", "Nunito Sans");
+    TextTheme textTheme = createTextTheme(context);
 
     RestaurantzzTheme theme = RestaurantzzTheme(textTheme);
     return MaterialApp(

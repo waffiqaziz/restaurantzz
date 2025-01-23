@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/states/search_result_state.dart';
 import 'package:restaurantzz/core/provider/search/search_provider.dart';
 import 'package:restaurantzz/feature/list/screen/list_card.dart';
@@ -18,28 +19,22 @@ class _SearchScreenState extends State<SearchScreen> {
   String _lastQuery = "";
   bool _isSearching = false;
 
-  @override
-  void initState() {
-    super.initState();
-
-    // set focus
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
-    });
-  }
-
   void _onSubmit(String query) {
     if (query.isEmpty) {
       setState(() {
         _isSearching = false;
       });
-      context.read<SearchProvider>().clearSearchResults(); // Reset search results
+
+      // reset search results
+      context.read<SearchProvider>().clearSearchResults();
     } else if (query != _lastQuery) {
       setState(() {
         _isSearching = true;
         _lastQuery = query;
       });
-      context.read<SearchProvider>().fetchRestaurantList(query); // Start searching
+
+      // trigger searching
+      context.read<SearchProvider>().fetchRestaurantList(query);
     }
   }
 
@@ -61,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   controller: _searchController,
                   focusNode: _focusNode, // Attach FocusNode
                   decoration: InputDecoration(
-                    hintText: 'Search for a restaurant...',
+                    hintText: Strings.searchAnyRestaurant,
                     filled: false, // Make the background filled
                     suffixIcon: _isSearching
                         ? IconButton(
@@ -83,7 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
           builder: (context, value, child) {
             return switch (value.resultState) {
               RestaurantSearchNotFoundState() =>
-                const Center(child: Text('No results found')),
+                Center(child: Text(Strings.noResult)),
               RestaurantSearchLoadingState() => const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -106,7 +101,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   },
                 ),
               RestaurantSearchErrorState(error: var message) => Center(
-                  child: Text(message),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               _ => const SizedBox(),
             };

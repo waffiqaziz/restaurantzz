@@ -6,6 +6,8 @@ import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/utils/helper.dart';
 import 'package:restaurantzz/feature/detail/screen/menu_widget.dart';
+import 'package:restaurantzz/feature/detail/screen/review_form_widget.dart';
+import 'package:restaurantzz/feature/detail/screen/reviews_widget.dart';
 
 class BodyDetailScreen extends StatelessWidget {
   const BodyDetailScreen({
@@ -27,7 +29,7 @@ class BodyDetailScreen extends StatelessWidget {
               children: [
                 // image
                 Hero(
-                  tag: restaurantDetailItem.id,
+                  tag: restaurantDetailItem.pictureId,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -40,9 +42,18 @@ class BodyDetailScreen extends StatelessWidget {
                             restaurantDetailItem.pictureId,
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
+                          if (loadingProgress == null) {
+                            return child;
+                          }
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'images/error_placeholder.webp',
+                            fit: BoxFit.cover,
+                          );
                         },
                       ),
                     ),
@@ -66,8 +77,10 @@ class BodyDetailScreen extends StatelessWidget {
                                 // restaurant name
                                 Text(
                                   restaurantDetailItem.name,
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
 
                                 // restaurant rating
@@ -153,20 +166,29 @@ class BodyDetailScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
 
+                      // foods menu
                       const SizedBox.square(dimension: 16),
                       MenuCategoryListView(
                         title: Strings.foods,
                         categories: restaurantDetailItem.menus.foods,
                       ),
 
+                      // drinks menu
                       const SizedBox.square(dimension: 8),
                       MenuCategoryListView(
                         title: Strings.drinks,
                         categories: restaurantDetailItem.menus.drinks,
                       ),
 
-                      const SizedBox.square(dimension: 8),
-                      // TODO: implement customer reviews and post reviews
+                      // list reviews
+                      const SizedBox.square(dimension: 16),
+                      ReviewsWidget(
+                        customerReviews: restaurantDetailItem.customerReviews,
+                      ),
+
+                      // review form
+                      const SizedBox.square(dimension: 16),
+                      ReviewForm(restaurantId: restaurantDetailItem.id),
                     ],
                   ),
                 ),
