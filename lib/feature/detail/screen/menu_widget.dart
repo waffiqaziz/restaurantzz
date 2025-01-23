@@ -21,7 +21,10 @@ class MenuCategoryListView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.labelLarge,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 150,

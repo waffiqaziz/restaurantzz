@@ -33,7 +33,10 @@ class _ReviewFormState extends State<ReviewForm> {
             children: [
               Text(
                 Strings.addAReview,
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8.0),
 

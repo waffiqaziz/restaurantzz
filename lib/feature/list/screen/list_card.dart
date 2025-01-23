@@ -30,7 +30,7 @@ class RestaurantCard extends StatelessWidget {
             children: [
               // image
               Hero(
-                tag: restaurant.id,
+                tag: restaurant.pictureId,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
                     maxHeight: 80,
@@ -43,6 +43,21 @@ class RestaurantCard extends StatelessWidget {
                     child: Image.network(
                       Constants.imageURLSmallResolution + restaurant.pictureId,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Image.asset(
+                          'images/placeholder.webp',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'images/images_error.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -59,7 +74,10 @@ class RestaurantCard extends StatelessWidget {
                     // restaurant name
                     Text(
                       restaurant.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
 
                     // rating bar

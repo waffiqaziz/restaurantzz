@@ -23,7 +23,7 @@ class ReviewsWidget extends StatelessWidget {
               Strings.reviews,
               style: Theme.of(context)
                   .textTheme
-                  .labelLarge
+                  .titleMedium
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox.square(dimension: 8),
