@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 
@@ -69,7 +70,11 @@ class ReviewsWidget extends StatelessWidget {
                                 const SizedBox(height: 12),
 
                                 // review message
-                                Text(
+                                ReadMoreText(
+                                  trimMode: TrimMode.Line,
+                                  trimLines: 4,
+                                  trimCollapsedText: Strings.readMore,
+                                  trimExpandedText: Strings.showLess,
                                   review.review,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
