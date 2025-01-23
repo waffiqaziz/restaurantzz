@@ -13,10 +13,13 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       body: Consumer<IndexNavProvider>(
         builder: (context, value, child) {
-          return switch (value.indexBottomNavBar) {
-            0 => const ListScreen(),
-            _ => const SearchScreen(),
-          };
+          return IndexedStack(
+            index: value.indexBottomNavBar,
+            children: const [
+              ListScreen(),
+              SearchScreen(),
+            ],
+          );
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
