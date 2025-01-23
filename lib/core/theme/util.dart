@@ -9,7 +9,8 @@ TextTheme createTextTheme(BuildContext context) {
     displayMedium: baseTextTheme.displayMedium?.copyWith(fontFamily: 'Nunito'),
     displaySmall: baseTextTheme.displaySmall?.copyWith(fontFamily: 'Nunito'),
     headlineLarge: baseTextTheme.headlineLarge?.copyWith(fontFamily: 'Nunito'),
-    headlineMedium: baseTextTheme.headlineMedium?.copyWith(fontFamily: 'Nunito'),
+    headlineMedium:
+        baseTextTheme.headlineMedium?.copyWith(fontFamily: 'Nunito'),
     headlineSmall: baseTextTheme.headlineSmall?.copyWith(fontFamily: 'Nunito'),
     titleLarge: baseTextTheme.titleLarge?.copyWith(fontFamily: 'Nunito'),
     titleMedium: baseTextTheme.titleMedium?.copyWith(fontFamily: 'Nunito'),

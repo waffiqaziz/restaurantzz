@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantzz/core/common/strings.dart';
+import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/networking/states/detail_result_state.dart';
 import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
 import 'package:restaurantzz/feature/detail/screen/body_detail_screen.dart';
@@ -19,7 +19,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  var _cachedRestaurantDetail;
+  RestaurantDetailItem? _cachedRestaurantDetail;
 
   @override
   void initState() {
@@ -80,6 +80,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
           return Stack(
             children: [
+              // refresh handle
               RefreshIndicator(
                 onRefresh: () async {
                   provider.refresDate();
@@ -87,6 +88,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 },
                 child: _buildContent(resultState),
               ),
+
+              // show indicator loading when submit a review
               if (provider.isReviewSubmission &&
                   provider.resultState is RestaurantDetailLoadingState) ...[
                 Container(
@@ -108,7 +111,7 @@ class _DetailScreenState extends State<DetailScreen> {
         _cachedRestaurantDetail != null) {
       return ListView(
         children: [
-          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail),
+          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail!),
         ],
       );
     } else if (resultState is RestaurantDetailLoadedState) {
@@ -121,7 +124,7 @@ class _DetailScreenState extends State<DetailScreen> {
         _cachedRestaurantDetail != null) {
       return ListView(
         children: [
-          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail),
+          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail!),
         ],
       );
     } else if (resultState is RestaurantDetailErrorState) {

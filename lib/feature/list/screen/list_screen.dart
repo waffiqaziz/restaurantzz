@@ -85,7 +85,7 @@ class _ListScreenState extends State<ListScreen> {
                     itemCount: restaurantList.length,
                     itemBuilder: (context, index) {
                       final restaurant = restaurantList[index];
-                  
+
                       return RestaurantCard(
                         restaurant: restaurant,
                         onTap: () {

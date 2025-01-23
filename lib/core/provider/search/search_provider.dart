@@ -31,7 +31,7 @@ class SearchProvider extends ChangeNotifier {
         } else {
           _resultState = RestaurantSearchLoadedState(result.data!.restaurants);
         }
-      }else {
+      } else {
         _resultState = RestaurantSearchErrorState(
           result.message ?? "Unknown error occurred",
         );
