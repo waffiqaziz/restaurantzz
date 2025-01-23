@@ -18,10 +18,15 @@ class DetailProvider extends ChangeNotifier {
   bool _isReviewSubmission = false;
   bool get isReviewSubmission => _isReviewSubmission;
 
+  bool _refreshData = false;
+  void refresDate() {
+    _refreshData = true;
+  }
+
   Future<void> fetchRestaurantDetail(String id) async {
     try {
       // check data is cached/not
-      if (_cache.containsKey(id)) {
+      if (_cache.containsKey(id) && _refreshData == false) {
         _resultState = RestaurantDetailLoadedState(_cache[id]!);
         notifyListeners();
         return;
@@ -35,8 +40,7 @@ class DetailProvider extends ChangeNotifier {
       if (result.data != null) {
         if (result.data!.error) {
           _resultState = RestaurantDetailErrorState(
-            result.message ?? "Unknown error occurred",
-          );
+              result.message ?? "Unknown error occurred", id);
         } else {
           _cache[id] = result.data!.restaurant;
 
@@ -44,16 +48,19 @@ class DetailProvider extends ChangeNotifier {
         }
       } else {
         _resultState = RestaurantDetailErrorState(
-          result.message ?? "Unknown error occurred",
-        );
+            result.message ?? "Unknown error occurred", id);
       }
 
       notifyListeners();
     } catch (e) {
       _resultState = RestaurantDetailErrorState(
-        "An unexpected error occurred: ${e.toString()}",
-      );
+          "An unexpected error occurred: ${e.toString()}", id);
       notifyListeners();
+    }
+
+    // reset flag
+    if (_refreshData) {
+      _refreshData = false;
     }
   }
 
@@ -83,6 +90,7 @@ class DetailProvider extends ChangeNotifier {
         } else {
           _resultState = RestaurantDetailErrorState(
             result.message ?? "Unknown error occurred",
+            id,
           );
         }
       }
@@ -95,6 +103,7 @@ class DetailProvider extends ChangeNotifier {
     } catch (e) {
       _resultState = RestaurantDetailErrorState(
         "An unexpected error occurred: ${e.toString()}",
+        id,
       );
       notifyListeners();
     }

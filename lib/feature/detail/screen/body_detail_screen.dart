@@ -29,7 +29,7 @@ class BodyDetailScreen extends StatelessWidget {
               children: [
                 // image
                 Hero(
-                  tag: restaurantDetailItem.id,
+                  tag: restaurantDetailItem.pictureId,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -46,7 +46,14 @@ class BodyDetailScreen extends StatelessWidget {
                             return child;
                           }
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'images/error_placeholder.webp',
+                            fit: BoxFit.cover,
+                          );
                         },
                       ),
                     ),
@@ -70,8 +77,10 @@ class BodyDetailScreen extends StatelessWidget {
                                 // restaurant name
                                 Text(
                                   restaurantDetailItem.name,
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
 
                                 // restaurant rating
