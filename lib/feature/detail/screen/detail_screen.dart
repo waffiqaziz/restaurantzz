@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/states/detail_result_state.dart';
 import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
 import 'package:restaurantzz/feature/detail/screen/body_detail_screen.dart';
-import 'package:restaurantzz/static/navigation_route.dart';
 
 class DetailScreen extends StatefulWidget {
   final String restaurantId;
@@ -19,6 +19,8 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  var _cachedRestaurantDetail;
+
   @override
   void initState() {
     super.initState();
@@ -28,81 +30,118 @@ class _DetailScreenState extends State<DetailScreen> {
     });
   }
 
+  void _showSnackBar(BuildContext context, String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+        ),
+      );
+    });
+  }
+
+  void _showSnackBarError(BuildContext context, String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 1),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: Consumer<DetailProvider>(
-        builder: (context, value, child) {
-          final resultState = value.resultState;
+        builder: (context, provider, child) {
+          final resultState = provider.resultState;
 
-          // handle state submit action
-          if (resultState is RestaurantDetailErrorState &&
-              value.isReviewSubmission) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(resultState.error)),
-              );
-            });
-          } else if (resultState is RestaurantDetailLoadedState &&
-              value.isReviewSubmission) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(Strings.submitReviewSuccess),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            });
+          // handle review submission feedback
+          if (provider.isReviewSubmission) {
+            if (resultState is RestaurantDetailErrorState) {
+              _showSnackBarError(context, resultState.error);
+            } else if (resultState is RestaurantDetailLoadedState) {
+              _showSnackBar(context, Strings.submitReviewSuccess);
+            }
+          } else if (resultState is RestaurantDetailErrorState) {
+            _showSnackBarError(context, resultState.error);
           }
 
-          // show all UI
-          return switch (resultState) {
-            RestaurantDetailLoadingState() =>
-              const Center(child: CircularProgressIndicator()),
-            RestaurantDetailLoadedState(data: var restaurant) =>
+          // cache data if successfully loaded
+          if (resultState is RestaurantDetailLoadedState) {
+            _cachedRestaurantDetail = resultState.data;
+          }
+
+          return Stack(
+            children: [
               RefreshIndicator(
                 onRefresh: () async {
-                  // reset flag
-                  context.read<DetailProvider>().refresDate();
-                  await context
-                      .read<DetailProvider>()
-                      .fetchRestaurantDetail(restaurant.id);
+                  provider.refresDate();
+                  await provider.fetchRestaurantDetail(widget.restaurantId);
                 },
-                child: ListView(
-                  children: [
-                    BodyDetailScreen(restaurantDetailItem: restaurant),
-                  ],
-                ),
+                child: _buildContent(resultState),
               ),
-            RestaurantDetailErrorState(
-              error: var message,
-              restaurantId: var id,
-            ) =>
-              RefreshIndicator(
-                onRefresh: () async {
-                  await context
-                      .read<DetailProvider>()
-                      .fetchRestaurantDetail(id);
-                },
-                child: ListView(children: [
-                  const SizedBox(height: 200),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        message,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+              if (provider.isReviewSubmission &&
+                  provider.resultState is RestaurantDetailLoadingState) ...[
+                Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
                   ),
-                ]),
-              ),
-            _ => const SizedBox(),
-          };
+                ),
+              ],
+            ],
+          );
         },
       ),
     );
+  }
+
+  Widget _buildContent(dynamic resultState) {
+    if (resultState is RestaurantDetailLoadingState &&
+        _cachedRestaurantDetail != null) {
+      return ListView(
+        children: [
+          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail),
+        ],
+      );
+    } else if (resultState is RestaurantDetailLoadedState) {
+      return ListView(
+        children: [
+          BodyDetailScreen(restaurantDetailItem: resultState.data),
+        ],
+      );
+    } else if (resultState is RestaurantDetailErrorState &&
+        _cachedRestaurantDetail != null) {
+      return ListView(
+        children: [
+          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail),
+        ],
+      );
+    } else if (resultState is RestaurantDetailErrorState) {
+      return ListView(
+        children: [
+          const SizedBox(height: 200),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                resultState.error,
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 }

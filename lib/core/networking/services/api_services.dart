@@ -57,23 +57,17 @@ class ApiServices {
     String review,
   ) async {
     return await safeApiCall(() async {
-      try {
-        final response = await http.post(
-          Uri.parse("$_baseUrl/review"),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({"id": id, "name": name, "review": review}),
-        );
+      final response = await http.post(
+        Uri.parse("$_baseUrl/review"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"id": id, "name": name, "review": review}),
+      );
 
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          return PostReviewResponse.fromJson(jsonDecode(response.body));
-        } else {
-          throw Exception(
-            'Failed submit review. Status code: ${response.statusCode}',
-          );
-        }
-      } catch (e) {
-        throw Exception('Failed to post review: $e');
-      }
+      return (response.statusCode == 200 || response.statusCode == 201)
+          ? PostReviewResponse.fromJson(jsonDecode(response.body))
+          : throw Exception(
+              'Review submit failed. Status code: ${response.statusCode}',
+            );
     });
   }
 }

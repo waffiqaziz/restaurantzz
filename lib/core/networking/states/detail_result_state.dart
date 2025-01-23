@@ -8,8 +8,8 @@ class RestaurantDetailLoadingState extends RestaurantDetailResultState {}
 
 class RestaurantDetailErrorState extends RestaurantDetailResultState {
   final String error;
-  final String restaurantId; 
-  
+  final String restaurantId;
+
   RestaurantDetailErrorState(this.error, this.restaurantId);
 }
 

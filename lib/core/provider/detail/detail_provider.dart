@@ -59,9 +59,9 @@ class DetailProvider extends ChangeNotifier {
     }
 
     // reset flag
-    if (_refreshData) {
+    Future.delayed(const Duration(milliseconds: 200), () {
       _refreshData = false;
-    }
+    });
   }
 
   Future<void> addReview(
@@ -71,30 +71,26 @@ class DetailProvider extends ChangeNotifier {
   ) async {
     try {
       _isReviewSubmission = true;
-      notifyListeners();
-
       _resultState = RestaurantDetailLoadingState();
       notifyListeners();
 
       final result = await _apiServices.postReview(id, name, review);
 
-      if (result.data != null) {
-        if (!result.data!.error) {
-          // update cached if exist
-          if (_cache.containsKey(id)) {
-            _cache[id] = _cache[id]!.copyWith(
-              customerReviews: result.data!.customerReviews,
-            );
-            _resultState = RestaurantDetailLoadedState(_cache[id]!);
-          }
-        } else {
-          _resultState = RestaurantDetailErrorState(
-            result.message ?? "Unknown error occurred",
-            id,
+      if (result.data != null && !result.data!.error) {
+        if (_cache.containsKey(id)) {
+          _cache[id] = _cache[id]!.copyWith(
+            customerReviews: result.data!.customerReviews,
           );
+          _resultState = RestaurantDetailLoadedState(_cache[id]!);
+          notifyListeners();
         }
+      } else {
+        _resultState = RestaurantDetailErrorState(
+          "Failed to submit the review. Please try again.",
+          id,
+        );
+        notifyListeners();
       }
-      notifyListeners();
 
       // reset the flag
       Future.delayed(const Duration(milliseconds: 200), () {
@@ -102,7 +98,7 @@ class DetailProvider extends ChangeNotifier {
       });
     } catch (e) {
       _resultState = RestaurantDetailErrorState(
-        "An unexpected error occurred: ${e.toString()}",
+        "Failed to submit the review. Please try again.",
         id,
       );
       notifyListeners();
