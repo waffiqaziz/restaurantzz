@@ -23,4 +23,5 @@ class Strings {
   static String nameIsRequired = "Name is required";
   static String reviewIsRequired = "Review is required";
   static String submitReview = "Submit Review";
+  static String submitReviewSuccess = "Review submitted successfully!";
 }

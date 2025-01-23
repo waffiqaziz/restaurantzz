@@ -13,8 +13,10 @@ class DetailProvider extends ChangeNotifier {
   DetailProvider(this._apiServices);
 
   RestaurantDetailResultState _resultState = RestaurantDetailNoneState();
-
   RestaurantDetailResultState get resultState => _resultState;
+
+  bool _isReviewSubmission = false;
+  bool get isReviewSubmission => _isReviewSubmission;
 
   Future<void> fetchRestaurantDetail(String id) async {
     try {
@@ -61,6 +63,9 @@ class DetailProvider extends ChangeNotifier {
     String review,
   ) async {
     try {
+      _isReviewSubmission = true;
+      notifyListeners();
+
       _resultState = RestaurantDetailLoadingState();
       notifyListeners();
 
@@ -76,10 +81,17 @@ class DetailProvider extends ChangeNotifier {
             _resultState = RestaurantDetailLoadedState(_cache[id]!);
           }
         } else {
-          throw Exception(result.message);
+          _resultState = RestaurantDetailErrorState(
+            result.message ?? "Unknown error occurred",
+          );
         }
       }
       notifyListeners();
+
+      // reset the flag
+      Future.delayed(const Duration(milliseconds: 200), () {
+        _isReviewSubmission = false;
+      });
     } catch (e) {
       _resultState = RestaurantDetailErrorState(
         "An unexpected error occurred: ${e.toString()}",
