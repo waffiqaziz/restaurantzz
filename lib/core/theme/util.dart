@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-TextTheme createTextTheme(
-    BuildContext context, String bodyFontString, String displayFontString) {
+TextTheme createTextTheme(BuildContext context) {
+  // Define your custom text theme with the Nunito font
   TextTheme baseTextTheme = Theme.of(context).textTheme;
-  TextTheme bodyTextTheme =
-      GoogleFonts.getTextTheme(bodyFontString, baseTextTheme);
-  TextTheme displayTextTheme =
-      GoogleFonts.getTextTheme(displayFontString, baseTextTheme);
-  TextTheme textTheme = displayTextTheme.copyWith(
-    displayLarge: bodyTextTheme.displayLarge,
-    displayMedium: bodyTextTheme.displayMedium,
-    displaySmall: bodyTextTheme.displaySmall,
-    headlineLarge: bodyTextTheme.headlineLarge,
-    headlineMedium: bodyTextTheme.headlineMedium,
-    headlineSmall: bodyTextTheme.headlineSmall,
-    titleLarge: bodyTextTheme.titleLarge,
-    titleMedium: bodyTextTheme.titleMedium,
-    titleSmall: bodyTextTheme.titleSmall,
-    bodyLarge: bodyTextTheme.bodyLarge,
-    bodyMedium: bodyTextTheme.bodyMedium,
-    bodySmall: bodyTextTheme.bodySmall,
-    labelLarge: bodyTextTheme.labelLarge,
-    labelMedium: bodyTextTheme.labelMedium,
-    labelSmall: bodyTextTheme.labelSmall,
+
+  return baseTextTheme.copyWith(
+    displayLarge: baseTextTheme.displayLarge?.copyWith(fontFamily: 'Nunito'),
+    displayMedium: baseTextTheme.displayMedium?.copyWith(fontFamily: 'Nunito'),
+    displaySmall: baseTextTheme.displaySmall?.copyWith(fontFamily: 'Nunito'),
+    headlineLarge: baseTextTheme.headlineLarge?.copyWith(fontFamily: 'Nunito'),
+    headlineMedium: baseTextTheme.headlineMedium?.copyWith(fontFamily: 'Nunito'),
+    headlineSmall: baseTextTheme.headlineSmall?.copyWith(fontFamily: 'Nunito'),
+    titleLarge: baseTextTheme.titleLarge?.copyWith(fontFamily: 'Nunito'),
+    titleMedium: baseTextTheme.titleMedium?.copyWith(fontFamily: 'Nunito'),
+    titleSmall: baseTextTheme.titleSmall?.copyWith(fontFamily: 'Nunito'),
+    bodyLarge: baseTextTheme.bodyLarge?.copyWith(fontFamily: 'Nunito'),
+    bodyMedium: baseTextTheme.bodyMedium?.copyWith(fontFamily: 'Nunito'),
+    bodySmall: baseTextTheme.bodySmall?.copyWith(fontFamily: 'Nunito'),
+    labelLarge: baseTextTheme.labelLarge?.copyWith(fontFamily: 'Nunito'),
+    labelMedium: baseTextTheme.labelMedium?.copyWith(fontFamily: 'Nunito'),
+    labelSmall: baseTextTheme.labelSmall?.copyWith(fontFamily: 'Nunito'),
   );
-  return textTheme;
 }
