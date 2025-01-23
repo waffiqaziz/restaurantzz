@@ -27,10 +27,14 @@ class SearchProvider extends ChangeNotifier {
         if (result.data!.founded == 0) {
           _resultState = RestaurantSearchNotFoundState();
         } else if (result.data!.error) {
-          _resultState = RestaurantSearchErrorState("Error");
+          _resultState = RestaurantSearchErrorState("Please try again later");
         } else {
           _resultState = RestaurantSearchLoadedState(result.data!.restaurants);
         }
+      }else {
+        _resultState = RestaurantSearchErrorState(
+          result.message ?? "Unknown error occurred",
+        );
       }
       notifyListeners();
     } catch (e) {
