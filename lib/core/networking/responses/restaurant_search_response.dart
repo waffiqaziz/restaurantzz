@@ -2,12 +2,6 @@ import 'dart:convert';
 
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 
-RestaurantSearchResponse searchRestaurantFromJson(String str) =>
-    RestaurantSearchResponse.fromJson(json.decode(str));
-
-String searchRestaurantToJson(RestaurantSearchResponse data) =>
-    json.encode(data.toJson());
-
 class RestaurantSearchResponse {
   bool error;
   int founded;
