@@ -17,9 +17,17 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(() {
+      context.read<SearchProvider>().updateClearButton(_searchController.text);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final searchProvider = context.watch<SearchProvider>();
-    final isSearching = searchProvider.isSearching;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
@@ -38,10 +46,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   decoration: InputDecoration(
                     hintText: Strings.searchAnyRestaurant,
                     filled: false, // Make the background filled
-                    suffixIcon: isSearching
+                    suffixIcon: searchProvider.isClearVisible
                         ? IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () {
+                              _searchController.clear();
                               searchProvider.clearSearchResults();
                             },
                           )

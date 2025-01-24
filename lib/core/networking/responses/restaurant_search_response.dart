@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 
 class RestaurantSearchResponse {
