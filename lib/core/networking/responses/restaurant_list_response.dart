@@ -1,12 +1,4 @@
-import 'dart:convert';
-
 import 'package:restaurantzz/core/data/model/restaurant.dart';
-
-RestaurantListResponse restaurantResultFromJson(String str) =>
-    RestaurantListResponse.fromJson(json.decode(str));
-
-String restaurantResultToJson(RestaurantListResponse data) =>
-    json.encode(data.toJson());
 
 class RestaurantListResponse {
   bool error;

@@ -15,31 +15,12 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  String _lastQuery = "";
-  bool _isSearching = false;
-
-  void _onSubmit(String query) {
-    if (query.isEmpty) {
-      setState(() {
-        _isSearching = false;
-      });
-
-      // reset search results
-      context.read<SearchProvider>().clearSearchResults();
-    } else if (query != _lastQuery) {
-      setState(() {
-        _isSearching = true;
-        _lastQuery = query;
-      });
-
-      // trigger searching
-      context.read<SearchProvider>().fetchRestaurantList(query);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final searchProvider = context.watch<SearchProvider>();
+    final isSearching = searchProvider.isSearching;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: NestedScrollView(
@@ -54,21 +35,21 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.all(0),
                 child: TextField(
                   controller: _searchController,
-                  focusNode: _focusNode, // Attach FocusNode
                   decoration: InputDecoration(
                     hintText: Strings.searchAnyRestaurant,
                     filled: false, // Make the background filled
-                    suffixIcon: _isSearching
+                    suffixIcon: isSearching
                         ? IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: () {
-                              _searchController.clear();
-                              _onSubmit('');
+                              searchProvider.clearSearchResults();
                             },
                           )
                         : null,
                   ),
-                  onSubmitted: _onSubmit, // Trigger search on submit
+                  onSubmitted: (query) {
+                    searchProvider.fetchRestaurantList(query);
+                  }, // Trigger search on submit
                 ),
               ),
             ),

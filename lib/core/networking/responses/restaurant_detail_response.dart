@@ -1,11 +1,3 @@
-import 'dart:convert';
-
-RestaurantDetailResponse detailRestaurantFromJson(String str) =>
-    RestaurantDetailResponse.fromJson(json.decode(str));
-
-String detailRestaurantToJson(RestaurantDetailResponse data) =>
-    json.encode(data.toJson());
-
 class RestaurantDetailResponse {
   bool error;
   String message;
