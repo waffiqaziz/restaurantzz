@@ -48,14 +48,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // get platform theme mode
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
     TextTheme textTheme = createTextTheme(context);
 
     RestaurantzzTheme theme = RestaurantzzTheme(textTheme);
     return MaterialApp(
       title: Strings.restaurantzz,
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      theme: theme.light(),
+      darkTheme: theme.dark(),
       initialRoute: NavigationRoute.mainRoute.name,
       routes: {
         NavigationRoute.mainRoute.name: (context) => const MainScreen(),
