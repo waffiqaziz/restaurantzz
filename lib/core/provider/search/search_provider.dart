@@ -11,19 +11,22 @@ class SearchProvider extends ChangeNotifier {
 
   RestaurantSearchResultState get resultState => _resultState;
 
-  bool _isSearching = false;
-  bool get isSearching => _isSearching;
+  bool _isClearVisible = false; // Tracks the visibility of the clear button
+  bool get isClearVisible => _isClearVisible;
+
+  void updateClearButton(String query) {
+    _isClearVisible = query.isNotEmpty;
+    notifyListeners();
+  }
 
   String _lastQuery = "";
 
   Future<void> fetchRestaurantList(String query) async {
     if (query.isEmpty) {
-      clearSearchResults();
       return;
     }
 
     if (query != _lastQuery) {
-      _isSearching = true;
       _lastQuery = query;
       notifyListeners();
 
@@ -58,15 +61,11 @@ class SearchProvider extends ChangeNotifier {
           "An unexpected error occurred: ${e.toString()}",
         );
         notifyListeners();
-      } finally {
-        _isSearching = false;
-        notifyListeners();
       }
-    } // else do nothing
+    }
   }
 
   void clearSearchResults() {
-    _isSearching = false;
     _lastQuery = "";
     _resultState = RestaurantSearchNoneState();
     notifyListeners();
