@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantzz/core/common/strings.dart';
-import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/networking/states/detail_result_state.dart';
 import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
 import 'package:restaurantzz/feature/detail/screen/body_detail_screen.dart';
@@ -19,8 +18,6 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  RestaurantDetailItem? _cachedRestaurantDetail;
-
   @override
   void initState() {
     super.initState();
@@ -30,25 +27,16 @@ class _DetailScreenState extends State<DetailScreen> {
     });
   }
 
-  void _showSnackBar(BuildContext context, String message) {
+  void _showSnackBar(BuildContext context, String message,
+      {bool isError = false}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
           duration: const Duration(seconds: 1),
-          backgroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-        ),
-      );
-    });
-  }
-
-  void _showSnackBarError(BuildContext context, String message) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          duration: const Duration(seconds: 1),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          backgroundColor: isError
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).colorScheme.onSecondaryContainer,
         ),
       );
     });
@@ -60,22 +48,23 @@ class _DetailScreenState extends State<DetailScreen> {
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: Consumer<DetailProvider>(
         builder: (context, provider, child) {
-          final resultState = provider.resultState;
-
           // handle review submission feedback
-          if (provider.isReviewSubmission) {
-            if (resultState is RestaurantDetailErrorState) {
-              _showSnackBarError(context, resultState.error);
-            } else if (resultState is RestaurantDetailLoadedState) {
-              _showSnackBar(context, Strings.submitReviewSuccess);
+          if (provider.isReviewSubmissionComplete) {
+            if (provider.reviewSubmissionError != null) {
+              _showSnackBar(
+                context,
+                provider.reviewSubmissionError!,
+                isError: true,
+              );
+            } else {
+              _showSnackBar(
+                context,
+                Strings.submitReviewSuccess,
+              );
             }
-          } else if (resultState is RestaurantDetailErrorState) {
-            _showSnackBarError(context, resultState.error);
-          }
 
-          // cache data if successfully loaded
-          if (resultState is RestaurantDetailLoadedState) {
-            _cachedRestaurantDetail = resultState.data;
+            // reset the submission state after showing feedback
+            provider.resetReviewSubmissionState();
           }
 
           return Stack(
@@ -83,22 +72,22 @@ class _DetailScreenState extends State<DetailScreen> {
               // refresh handle
               RefreshIndicator(
                 onRefresh: () async {
-                  provider.refresDate();
-                  await provider.fetchRestaurantDetail(widget.restaurantId);
+                  await provider.fetchRestaurantDetail(
+                    widget.restaurantId,
+                    refresh: true,
+                  );
                 },
-                child: _buildContent(resultState),
+                child: _buildContent(provider),
               ),
 
-              // show indicator loading when submit a review
-              if (provider.isReviewSubmission &&
-                  provider.resultState is RestaurantDetailLoadingState) ...[
+              // show loading and alpha background when submitting a review
+              if (provider.isReviewSubmission)
                 Container(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   child: const Center(
                     child: CircularProgressIndicator(),
                   ),
                 ),
-              ],
             ],
           );
         },
@@ -106,25 +95,20 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _buildContent(dynamic resultState) {
-    if (resultState is RestaurantDetailLoadingState &&
-        _cachedRestaurantDetail != null) {
+  Widget _buildContent(DetailProvider provider) {
+    final resultState = provider.resultState;
+
+    if (resultState is RestaurantDetailLoadedState &&
+        provider.cachedData != null) {
       return ListView(
         children: [
-          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail!),
+          BodyDetailScreen(restaurantDetailItem: provider.cachedData!),
         ],
       );
     } else if (resultState is RestaurantDetailLoadedState) {
       return ListView(
         children: [
           BodyDetailScreen(restaurantDetailItem: resultState.data),
-        ],
-      );
-    } else if (resultState is RestaurantDetailErrorState &&
-        _cachedRestaurantDetail != null) {
-      return ListView(
-        children: [
-          BodyDetailScreen(restaurantDetailItem: _cachedRestaurantDetail!),
         ],
       );
     } else if (resultState is RestaurantDetailErrorState) {
@@ -144,6 +128,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ],
       );
     } else {
+      // Default loading indicator
       return const Center(child: CircularProgressIndicator());
     }
   }

@@ -18,22 +18,37 @@ class DetailProvider extends ChangeNotifier {
   bool _isReviewSubmission = false;
   bool get isReviewSubmission => _isReviewSubmission;
 
-  bool _refreshData = false;
-  void refresDate() {
-    _refreshData = true;
+  bool _isReviewSubmissionComplete = false;
+  bool get isReviewSubmissionComplete => _isReviewSubmissionComplete;
+
+  String? _reviewSubmissionError;
+  String? get reviewSubmissionError => _reviewSubmissionError;
+
+  bool _isRefreshing = false;
+  bool get isRefreshing => _isRefreshing;
+
+  RestaurantDetailItem? get cachedData {
+    if (_resultState is RestaurantDetailLoadedState) {
+      return (_resultState as RestaurantDetailLoadedState).data;
+    } else {
+      return null;
+    }
   }
 
-  Future<void> fetchRestaurantDetail(String id) async {
+  Future<void> fetchRestaurantDetail(String id, {bool refresh = false}) async {
     try {
-      // check data is cached/not
-      if (_cache.containsKey(id) && _refreshData == false) {
-        _resultState = RestaurantDetailLoadedState(_cache[id]!);
+      if (refresh) {
+        notifyListeners(); // notify for refresh without clearing content
+      } else {
+        if (_cache.containsKey(id) && refresh == false) {
+          _resultState = RestaurantDetailLoadedState(_cache[id]!);
+          notifyListeners();
+          return;
+        }
+        // show circular loading state only for non-refresh operations
+        _resultState = RestaurantDetailLoadingState();
         notifyListeners();
-        return;
       }
-
-      _resultState = RestaurantDetailLoadingState();
-      notifyListeners();
 
       final result = await _apiServices.getRestaurantDetail(id);
 
@@ -43,7 +58,6 @@ class DetailProvider extends ChangeNotifier {
               result.message ?? "Unknown error occurred", id);
         } else {
           _cache[id] = result.data!.restaurant;
-
           _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
         }
       } else {
@@ -56,22 +70,16 @@ class DetailProvider extends ChangeNotifier {
       _resultState = RestaurantDetailErrorState(
           "An unexpected error occurred: ${e.toString()}", id);
       notifyListeners();
+    } finally {
+      _isRefreshing = false;
+      notifyListeners();
     }
-
-    // reset flag
-    Future.delayed(const Duration(milliseconds: 200), () {
-      _refreshData = false;
-    });
   }
 
-  Future<void> addReview(
-    String id,
-    String name,
-    String review,
-  ) async {
+  Future<void> addReview(String id, String name, String review) async {
     try {
       _isReviewSubmission = true;
-      _resultState = RestaurantDetailLoadingState();
+      _reviewSubmissionError = null;
       notifyListeners();
 
       final result = await _apiServices.postReview(id, name, review);
@@ -82,26 +90,23 @@ class DetailProvider extends ChangeNotifier {
             customerReviews: result.data!.customerReviews,
           );
           _resultState = RestaurantDetailLoadedState(_cache[id]!);
-          notifyListeners();
         }
       } else {
-        _resultState = RestaurantDetailErrorState(
-          "Failed to submit the review. Please try again.",
-          id,
-        );
-        notifyListeners();
+        _reviewSubmissionError =
+            "Failed to submit the review. Please try again.";
       }
-
-      // reset the flag
-      Future.delayed(const Duration(milliseconds: 200), () {
-        _isReviewSubmission = false;
-      });
     } catch (e) {
-      _resultState = RestaurantDetailErrorState(
-        "Failed to submit the review. Please try again.",
-        id,
-      );
+      _reviewSubmissionError = "Failed to submit the review. Please try again.";
+    } finally {
+      _isReviewSubmission = false;
+      _isReviewSubmissionComplete = true;
       notifyListeners();
     }
+  }
+
+  void resetReviewSubmissionState() {
+    _isReviewSubmissionComplete = false;
+    _reviewSubmissionError = null;
+    notifyListeners();
   }
 }

@@ -16,8 +16,9 @@ class RestaurantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      hoverColor: Colors.grey.withOpacity(0.1),
-      splashColor: const Color.fromARGB(255, 46, 106, 71).withOpacity(0.3),
+      hoverColor: Colors.grey.withValues(alpha: 0.1),
+      splashColor:
+          const Color.fromARGB(255, 46, 106, 71).withValues(alpha: 0.3),
       borderRadius: BorderRadius.circular(8.0),
       onTap: onTap,
       onHover: (isHovering) {},
