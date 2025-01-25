@@ -1,6 +1,6 @@
 name: restaurantzz
 description: "Your go-to app for finding epic eats, hidden gems, and must-try spots. Discover, vibe, and savor effortlessly."
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -19,7 +19,6 @@ dependencies:
 
   # UI
   flutter_rating_bar: ^4.0.1
-  google_fonts: ^6.2.1
   readmore: ^3.0.0
 
 dev_dependencies:
