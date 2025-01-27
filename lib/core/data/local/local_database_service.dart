@@ -14,15 +14,13 @@ class LocalDatabaseService {
       return _db!;
     }
 
-    // Set the factory based on the platform
+    // use factory based on the platform
     if (kIsWeb) {
       databaseFactory = databaseFactoryFfiWeb;
     }
 
-    // Open the database (path is ignored on the web)
-    _db = await openDatabase(_databaseName);
+    _db = await openDatabase(_databaseName, version: _version);
 
-    // Ensure the table exists
     await _ensureTableExists(_db!);
 
     return _db!;
