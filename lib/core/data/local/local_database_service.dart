@@ -1,33 +1,46 @@
+import 'package:flutter/foundation.dart';
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class LocalDatabaseService {
   static const String _databaseName = 'restaurantzz.db';
   static const String _tableName = 'restaurant';
   static const int _version = 1;
-
-  Future<void> createTables(Database database) async {
-    await database.execute(
-      """CREATE TABLE $_tableName(
-       id TEXT PRIMARY KEY,
-       name TEXT,
-       description TEXT,
-       pictureId TEXT,
-       city TEXT,
-       rating REAL
-     )
-     """,
-    );
-  }
+  static Database? _db;
 
   Future<Database> _initializeDb() async {
-    return openDatabase(
-      _databaseName,
-      version: _version,
-      onCreate: (Database database, int version) async {
-        await createTables(database);
-      },
-    );
+    if (_db != null) {
+      return _db!;
+    }
+
+    // Set the factory based on the platform
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+    }
+
+    // Open the database (path is ignored on the web)
+    _db = await openDatabase(_databaseName);
+
+    // Ensure the table exists
+    await _ensureTableExists(_db!);
+
+    return _db!;
+  }
+
+  Future<void> _ensureTableExists(Database db) async {
+    // Use CREATE TABLE IF NOT EXISTS to ensure table creation
+    const query = """
+      CREATE TABLE IF NOT EXISTS $_tableName(
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        description TEXT,
+        pictureId TEXT,
+        city TEXT,
+        rating REAL
+      )
+    """;
+    await db.execute(query);
   }
 
   Future<int> insertItem(Restaurant restaurant) async {
