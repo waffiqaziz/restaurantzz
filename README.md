@@ -12,10 +12,11 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Features
 
-- **Restaurant Recommendations:** View a list of recommended restaurants.
+- **Restaurant Recommendations:** View and search list of recommended restaurants.
 - **Restaurant Details:** See detailed information about each restaurant.
 - **Responsive UI:** Material 3 UI with adaptive design.
 - **Dark and Light Themes:** The app automatically switches between dark and light themes based on the system settings.
+- **Favorite List:** Save your favorite restaurant.
 
 ## Contributing
 

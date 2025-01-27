@@ -88,11 +88,15 @@ class _ListScreenState extends State<ListScreen> {
 
                       return RestaurantCard(
                         restaurant: restaurant,
+                        heroTag: "list",
                         onTap: () {
                           Navigator.pushNamed(
                             context,
                             NavigationRoute.detailRoute.name,
-                            arguments: restaurant.id,
+                            arguments: {
+                              'restaurantId': restaurant.id,
+                              'heroTag': 'list',
+                            },
                           );
                         },
                       );

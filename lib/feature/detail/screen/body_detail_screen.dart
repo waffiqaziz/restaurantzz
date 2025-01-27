@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:restaurantzz/core/common/constants.dart';
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
+import 'package:restaurantzz/core/provider/detail/favorite_icon_provider.dart';
 import 'package:restaurantzz/core/utils/helper.dart';
+import 'package:restaurantzz/feature/detail/screen/favorite_icon_widget.dart';
 import 'package:restaurantzz/feature/detail/screen/menu_widget.dart';
 import 'package:restaurantzz/feature/detail/screen/review_form_widget.dart';
 import 'package:restaurantzz/feature/detail/screen/reviews_widget.dart';
@@ -13,9 +16,11 @@ class BodyDetailScreen extends StatelessWidget {
   const BodyDetailScreen({
     super.key,
     required this.restaurantDetailItem,
+    required this.heroTag,
   });
 
   final RestaurantDetailItem restaurantDetailItem;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class BodyDetailScreen extends StatelessWidget {
               children: [
                 // image
                 Hero(
-                  tag: restaurantDetailItem.pictureId,
+                  tag: "${restaurantDetailItem.pictureId}_$heroTag",
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(16.0),
@@ -75,12 +80,38 @@ class BodyDetailScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // restaurant name
-                                Text(
-                                  restaurantDetailItem.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      flex: 5,
+                                      fit: FlexFit.tight,
+                                      child: Text(
+                                        restaurantDetailItem.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineLarge
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 1,
+                                      child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: ChangeNotifierProvider(
+                                          create: (context) =>
+                                              FavoriteIconProvider(),
+                                          child: FavoriteIconWidget(
+                                            restaurant: restaurantDetailItem
+                                                .toRestaurant(),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
 
                                 // restaurant rating

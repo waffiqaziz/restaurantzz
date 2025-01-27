@@ -8,10 +8,12 @@ class RestaurantCard extends StatelessWidget {
     super.key,
     required this.restaurant,
     required this.onTap,
+    required this.heroTag,
   });
 
   final Restaurant restaurant;
   final Function() onTap;
+  final String heroTag;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class RestaurantCard extends StatelessWidget {
             children: [
               // image
               Hero(
-                tag: restaurant.pictureId,
+                tag: "${restaurant.pictureId}_$heroTag",
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
                     maxHeight: 80,

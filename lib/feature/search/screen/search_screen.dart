@@ -86,11 +86,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
                     return RestaurantCard(
                       restaurant: restaurant,
+                      heroTag: "search",
                       onTap: () {
                         Navigator.pushNamed(
                           context,
                           NavigationRoute.detailRoute.name,
-                          arguments: restaurant.id,
+                          arguments: {
+                            'restaurantId': restaurant.id,
+                            'heroTag': 'search',
+                          },
                         );
                       },
                     );

@@ -7,10 +7,12 @@ import 'package:restaurantzz/feature/detail/screen/body_detail_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   final String restaurantId;
+  final String heroTag;
 
   const DetailScreen({
     super.key,
     required this.restaurantId,
+    required this.heroTag,
   });
 
   @override
@@ -102,13 +104,19 @@ class _DetailScreenState extends State<DetailScreen> {
         provider.cachedData != null) {
       return ListView(
         children: [
-          BodyDetailScreen(restaurantDetailItem: provider.cachedData!),
+          BodyDetailScreen(
+            restaurantDetailItem: provider.cachedData!,
+            heroTag: widget.heroTag,
+          ),
         ],
       );
     } else if (resultState is RestaurantDetailLoadedState) {
       return ListView(
         children: [
-          BodyDetailScreen(restaurantDetailItem: resultState.data),
+          BodyDetailScreen(
+            restaurantDetailItem: resultState.data,
+            heroTag: widget.heroTag,
+          ),
         ],
       );
     } else if (resultState is RestaurantDetailErrorState) {
