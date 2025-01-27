@@ -1,6 +1,7 @@
 class Strings {
   static String list = "List";
   static String search = "Search";
+  static String favorite = "Favorite";
 
   static String restaurantzz = "Restaurantzz";
 
@@ -10,7 +11,7 @@ class Strings {
   static String foods = "Foods";
   static String drinks = "Drinks";
 
-  static String ourRecommendation = "Our recommendation";
+  static String ourRecommendation = "Our Recommendation";
   static String githubUrl = 'https://github.com/waffiqaziz/restaurantzz';
 
   static String searchAnyRestaurant = "Search any restaurant...";
@@ -25,4 +26,6 @@ class Strings {
   static String reviewIsRequired = "Review is required";
   static String submitReview = "Submit Review";
   static String submitReviewSuccess = "Review submitted successfully!";
+
+  static String yourFavorite = "Your Favorite";
 }
