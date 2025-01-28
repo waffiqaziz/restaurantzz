@@ -5,6 +5,7 @@ import 'package:restaurantzz/core/provider/main/index_nav_provider.dart';
 import 'package:restaurantzz/feature/favorite/screen/favorite_screen.dart';
 import 'package:restaurantzz/feature/list/screen/list_screen.dart';
 import 'package:restaurantzz/feature/search/screen/search_screen.dart';
+import 'package:restaurantzz/feature/settings/screen/settings_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -20,6 +21,7 @@ class MainScreen extends StatelessWidget {
               ListScreen(),
               SearchScreen(),
               FavoriteScreen(),
+              SettingsScreen(),
             ],
           );
         },
@@ -44,6 +46,11 @@ class MainScreen extends StatelessWidget {
             icon: const Icon(Icons.favorite_outline_rounded),
             label: Strings.favorite,
             tooltip: Strings.favorite,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings),
+            label: Strings.settings,
+            tooltip: Strings.settings,
           ),
         ],
       ),
