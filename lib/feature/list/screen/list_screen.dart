@@ -35,7 +35,6 @@ class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -50,7 +49,7 @@ class _ListScreenState extends State<ListScreen> {
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
               leading: IconButton(
                 icon: Padding(
@@ -107,20 +106,27 @@ class _ListScreenState extends State<ListScreen> {
                   onRefresh: () async {
                     await context.read<ListProvider>().fetchRestaurantList();
                   },
-                  child: ListView(
-                    children: [
-                      const SizedBox(height: 200),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            message,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.center,
-                          ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "images/general_error.png",
+                              width: 200,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              message,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               _ => const SizedBox(),

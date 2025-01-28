@@ -30,9 +30,9 @@ class Strings {
 
   static String yourFavorite = "Your Favorite";
   static String noFavorite =
-      "We cannot find restaurant you are looking for,\nmaybe add favorite first";
+      "We cannot find restaurant you are looking for, maybe add favorite first";
 
-  static String sorry = "SORRY";
+  static String sorry = "Sorry";
   static String settings = "Settings";
   static String enableNotification = "Enable Notification";
   static String darkMode = "Dark Mode";
