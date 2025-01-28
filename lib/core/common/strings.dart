@@ -15,7 +15,8 @@ class Strings {
   static String githubUrl = 'https://github.com/waffiqaziz/restaurantzz';
 
   static String searchAnyRestaurant = "Search any restaurant...";
-  static String noResult = "No results founds";
+  static String noResult =
+      "We can't found any restaurant.\nMaybe a little mistake?";
 
   static String reviews = "Reviews";
   static String seeReviews = "See Reviews";
@@ -28,4 +29,11 @@ class Strings {
   static String submitReviewSuccess = "Review submitted successfully!";
 
   static String yourFavorite = "Your Favorite";
+  static String noFavorite =
+      "We cannot find restaurant you are looking for,\nmaybe add favorite first";
+
+  static String sorry = "SORRY";
+  static String settings = "Settings";
+  static String enableNotification = "Enable Notification";
+  static String darkMode = "Dark Mode";
 }
