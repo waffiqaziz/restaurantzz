@@ -66,7 +66,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        "images/not-found.png",
+                        "images/empty.png",
                         width: 200,
                       ),
                       const SizedBox(height: 8),
