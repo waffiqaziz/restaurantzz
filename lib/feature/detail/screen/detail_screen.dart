@@ -121,16 +121,23 @@ class _DetailScreenState extends State<DetailScreen> {
       );
     } else if (resultState is RestaurantDetailErrorState) {
       return ListView(
+        padding: const EdgeInsets.all(16.0),
         children: [
-          const SizedBox(height: 200),
+          const SizedBox(height: 200), // Spacer if needed
           Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                resultState.error,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
+            child: Column(
+              children: [
+                Image.asset(
+                  "images/general_error.png",
+                  width: 200,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  resultState.error,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ],

@@ -34,9 +34,9 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final searchProvider = context.watch<SearchProvider>();
+    String query = "";
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onSecondary,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -63,6 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         : null,
                   ),
                   onSubmitted: (query) {
+                    query = query;
                     searchProvider.fetchRestaurantList(query);
                   }, // Trigger search on submit
                 ),
@@ -73,8 +74,28 @@ class _SearchScreenState extends State<SearchScreen> {
         body: Consumer<SearchProvider>(
           builder: (context, value, child) {
             return switch (value.resultState) {
-              RestaurantSearchNotFoundState() =>
-                Center(child: Text(Strings.noResult)),
+              RestaurantSearchNotFoundState() => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "images/not-found.png",
+                      width: 200,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      Strings.sorry,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      Strings.noResult,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
               RestaurantSearchLoadingState() => const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -100,13 +121,32 @@ class _SearchScreenState extends State<SearchScreen> {
                     );
                   },
                 ),
-              RestaurantSearchErrorState(error: var message) => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      message,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
+              RestaurantSearchErrorState(error: var message) =>
+                RefreshIndicator(
+                  onRefresh: () async {
+                    await context
+                        .read<SearchProvider>()
+                        .fetchRestaurantList(query);
+                  },
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "images/general_error.png",
+                              width: 200,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              message,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

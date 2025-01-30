@@ -15,7 +15,7 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   void initState() {
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<LocalDatabaseProvider>().loadAllRestaurant();
     });
     super.initState();
@@ -25,7 +25,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Strings.yourFavorite),
+        title: Text(
+          Strings.yourFavorite,
+          style: Theme.of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w600),
+        ),
       ),
       body: Consumer<LocalDatabaseProvider>(
         builder: (context, value, child) {
@@ -53,12 +59,31 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   );
                 },
               ),
-            _ => const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("No Item"),
-                  ],
+            _ => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "images/empty.png",
+                        width: 200,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        Strings.sorry,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        Strings.noFavorite,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
                 ),
               ),
           };
