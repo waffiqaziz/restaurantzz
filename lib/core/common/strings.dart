@@ -34,6 +34,6 @@ class Strings {
 
   static String sorry = "Sorry";
   static String settings = "Settings";
-  static String enableNotification = "Enable Notification";
+  static String enableNotification = "Enable Schedule Notification";
   static String darkMode = "Dark Mode";
 }

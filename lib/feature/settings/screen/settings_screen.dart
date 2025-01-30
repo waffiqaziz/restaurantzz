@@ -2,10 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/data/model/setting.dart';
+import 'package:restaurantzz/core/data/services/local_notification_service.dart';
+import 'package:restaurantzz/core/data/services/workmanager_service.dart';
+import 'package:restaurantzz/core/provider/notification/local_notification_provider.dart';
 import 'package:restaurantzz/core/provider/setting/shared_preferences_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void dispose() {
+    selectNotificationStream.close();
+    didReceiveLocalNotificationStream.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +57,30 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 Switch(
                   value: provider.setting?.notificationEnable ?? true,
-                  onChanged: (bool value) {
-                    final updatedSetting = Setting(
-                      notificationEnable: value,
-                      isDark: provider.setting?.isDark ?? false,
-                    );
-                    provider.saveSettingValue(updatedSetting);
+                  onChanged: (bool value) async {
+                    try {
+                      final updatedSetting = Setting(
+                        notificationEnable: value,
+                        isDark: provider.setting?.isDark ?? false,
+                      );
+                      provider.saveSettingValue(updatedSetting);
+
+                      if (value) {
+                        // Schedule daily notification and background task
+                        await _scheduleDailyElevenAMNotificationWithWorkManager();
+                      } else {
+                        // Cancel all scheduled tasks and notifications
+                        _cancelAllTaskInBackground();
+                        await context
+                            .read<LocalNotificationProvider>()
+                            .cancelNotification(0);
+                        print("Cancel");
+                      }
+                    } catch (e) {
+                      print("Error during notification update: $e");
+                    }
                   },
-                ),
+                )
               ],
             ),
             const SizedBox(height: 4),
@@ -83,9 +114,34 @@ class SettingsScreen extends StatelessWidget {
               provider.message,
               style: const TextStyle(color: Colors.grey),
             ),
+            ElevatedButton(
+              onPressed: () async {
+                await _requestPermission();
+              },
+              child: Consumer<LocalNotificationProvider>(
+                builder: (context, value, child) {
+                  return Text(
+                    "Request permission! (${value.permission})",
+                    textAlign: TextAlign.center,
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _requestPermission() async {
+    context.read<LocalNotificationProvider>().requestPermissions();
+  }
+
+  void _cancelAllTaskInBackground() async {
+    context.read<WorkmanagerService>().cancelAllTask();
+  }
+
+  Future<void> _scheduleDailyElevenAMNotificationWithWorkManager() async {
+    context.read<WorkmanagerService>().runPeriodicTask();
   }
 }
