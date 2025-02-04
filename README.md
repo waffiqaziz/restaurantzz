@@ -17,6 +17,7 @@ samples, guidance on mobile development, and a full API reference.
 - **Responsive UI:** Material 3 UI with adaptive design.
 - **Dark and Light Themes:** The app automatically switches between dark and light themes based on the system settings.
 - **Favorite List:** Save your favorite restaurant.
+- **Schedule Notification**: Daily notification at 11 a.m. about random restaurant. (only for mobile)
 
 ## Contributing
 
