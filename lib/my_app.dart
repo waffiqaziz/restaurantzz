@@ -35,13 +35,13 @@ class _MyAppState extends State<MyApp> {
   void handlePayload(String payload) {
     List<String> parts = payload.split(":");
     if (parts.length == 2) {
-      // Ensure MainScreen is the root of the navigation stack
+      // ensure MainScreen is the root of the navigation stack
       _navigatorKey.currentState?.pushNamedAndRemoveUntil(
         '/',
-        (Route<dynamic> route) => false, // Remove all existing routes
+        (Route<dynamic> route) => false, // remove all existing routes
       );
 
-      // Navigate to the DetailScreen
+      // navigate to the [DetailScreen]
       _navigatorKey.currentState?.pushNamed(
         '/detail',
         arguments: {

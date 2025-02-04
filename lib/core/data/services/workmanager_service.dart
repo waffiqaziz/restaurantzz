@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
 import 'package:restaurantzz/core/networking/services/api_services.dart';
@@ -10,37 +13,51 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     final apiService = ApiServices();
     final notificationService = LocalNotificationService();
+    bool isError = false;
 
-    String notificationBody = "Check the app for the latest update.";
+    late String notificationBody;
     late Restaurant restaurantData;
 
     try {
       if (task == MyWorkmanager.periodic.taskName) {
         final result = await apiService.getRestaurantList();
 
-        if (result.data != null ) {
+        if (result.data != null) {
           final restaurants = result.data!.restaurants;
-          restaurantData  = result.data!.restaurants[2];
+          int randomNumber = Random().nextInt(result.data!.restaurants.length);
+          restaurantData = result.data!.restaurants[randomNumber];
+
           notificationBody = restaurants.isNotEmpty
-              ? "Found ${restaurants.length} restaurants! Check them out."
+              ? restaurantData.description
               : "No restaurants available.";
         } else {
-          notificationBody = "API error: ${result.message}";
+          isError = true;
+          notificationBody = "${result.message}";
         }
       }
     } catch (error) {
-      print("Error fetching API data: $error");
+      isError = true;
       notificationBody = "Unexpected error fetching restaurant data.";
     }
 
-    await notificationService.init(); // Ensure notification service is initialized
+    await notificationService.init();
 
-    await notificationService.showNotification(
-      id: 1,
-      title: restaurantData.name,
-      body: notificationBody,
-      payload: "${restaurantData.id}:list",
-    );
+    // show notification based on network result
+    if (!isError) {
+      await notificationService.showNotification(
+        id: 1,
+        title: restaurantData.name,
+        body: notificationBody,
+        payload: "${restaurantData.id}:list",
+      );
+    } else {
+      await notificationService.showNotification(
+        id: 1,
+        title: Strings.dailyNotification,
+        body: notificationBody,
+        payload: Strings.error,
+      );
+    }
 
     return Future.value(true);
   });
@@ -53,21 +70,7 @@ class WorkmanagerService {
       : _workmanager = workmanager ??= Workmanager();
 
   Future<void> init() async {
-    await _workmanager.initialize(callbackDispatcher, isInDebugMode: true);
-  }
-
-  Future<void> runOneOffTask() async {
-    await _workmanager.registerOneOffTask(
-      MyWorkmanager.oneOff.uniqueName,
-      MyWorkmanager.oneOff.taskName,
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-      ),
-      initialDelay: const Duration(seconds: 5),
-      inputData: {
-        "data": "This is a valid payload from oneoff task workmanager",
-      },
-    );
+    await _workmanager.initialize(callbackDispatcher, isInDebugMode: false);
   }
 
   Future<void> runPeriodicTask() async {
@@ -82,6 +85,9 @@ class WorkmanagerService {
     await _workmanager.registerPeriodicTask(
       MyWorkmanager.periodic.uniqueName,
       MyWorkmanager.periodic.taskName,
+      constraints: Constraints(
+        networkType: NetworkType.not_required,
+      ),
       frequency: const Duration(hours: 24),
       initialDelay: initialDelay,
       inputData: {

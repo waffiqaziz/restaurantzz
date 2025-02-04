@@ -13,7 +13,8 @@ void main() async {
   runApp(
     AppRoot(
       prefs: prefs,
-      initialPayload: notificationAppLaunchDetails?.notificationResponse?.payload,
+      initialPayload:
+          notificationAppLaunchDetails?.notificationResponse?.payload,
     ),
   );
 }

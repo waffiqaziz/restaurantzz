@@ -36,4 +36,11 @@ class Strings {
   static String settings = "Settings";
   static String enableNotification = "Enable Schedule Notification";
   static String darkMode = "Dark Mode";
+
+  static String error = "Error";
+  static String errorOccured = "Error Occured";
+  static String errorNotification = "Error during notification update";
+  static String ok = "Ok";
+
+  static String dailyNotification = "Daily Notification";
 }
