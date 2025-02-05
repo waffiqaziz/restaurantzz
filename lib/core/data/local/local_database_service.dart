@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:meta/meta.dart';
 
 class LocalDatabaseService {
   static const String _databaseName = 'restaurantzz.db';
@@ -65,6 +66,9 @@ class LocalDatabaseService {
     final results =
         await db.query(_tableName, where: "id = ?", whereArgs: [id], limit: 1);
 
+    if (results.isEmpty) {
+      throw Exception("No restaurant found with id: $id");
+    }
     return results.map((result) => Restaurant.fromJson(result)).first;
   }
 
@@ -75,4 +79,13 @@ class LocalDatabaseService {
         await db.delete(_tableName, where: "id = ?", whereArgs: [id]);
     return result;
   }
+
+  @visibleForTesting
+  Future<void> clearDatabase() async {
+    final db = await _initializeDb();
+    await db.delete(_tableName);
+  }
+
+  @visibleForTesting
+  Future<Database> get database async => _initializeDb();
 }
