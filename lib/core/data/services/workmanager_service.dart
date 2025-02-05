@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:http/http.dart' as http;
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
@@ -11,7 +12,7 @@ import 'package:workmanager/workmanager.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    final apiService = ApiServices();
+    final apiService = ApiServices(httpClient: http.Client());
     final notificationService = LocalNotificationService();
     bool isError = false;
 

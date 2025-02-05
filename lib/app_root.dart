@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:restaurantzz/core/data/local/local_database_service.dart';
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
@@ -30,7 +31,7 @@ class AppRoot extends StatelessWidget {
           create: (context) => IndexNavProvider(),
         ),
         Provider(
-          create: (context) => ApiServices(),
+          create: (context) => ApiServices(httpClient: http.Client()),
         ),
         ChangeNotifierProvider(
           create: (context) => ListProvider(
