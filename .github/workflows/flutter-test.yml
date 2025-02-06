@@ -26,3 +26,21 @@ jobs:
 
       - name: Run test
         run: flutter test
+
+  instrumented_test:
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: futureware-tech/simulator-action@v4
+        with:
+          model: "iPhone 13"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - run: flutter pub get
+
+      - run: flutter test integration_test\feature\main\screen\main_screen_test.dart
