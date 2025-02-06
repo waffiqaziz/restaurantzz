@@ -4,7 +4,7 @@ import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:restaurantzz/feature/list/screen/list_card.dart';
 
 void main() {
-  group('RestaurantCard widget', () {
+  group('RestaurantCard', () {
     final restaurant = Restaurant(
       id: 'Restaurand ID',
       name: 'Test Restaurant',
@@ -30,36 +30,36 @@ void main() {
       );
     });
 
-    testWidgets("text restaurant name is displayed",
+    testWidgets("textRestaurantName_shouldDisplayed",
         (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.text('Test Restaurant'), findsOneWidget);
     });
 
-    testWidgets("text rating is displayed", (WidgetTester tester) async {
+    testWidgets("textRating_shouldDisplayed", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.text('(4.5/5.0)'), findsOneWidget);
     });
 
-    testWidgets("text city is displayed", (WidgetTester tester) async {
+    testWidgets("textCity_shouldDisplayed", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.text('Test City'), findsOneWidget);
     });
 
-    testWidgets("image placeholder is shown initially",
+    testWidgets("imagePlaceholder_shouldShownWhenOnInitial",
         (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets("simulate a tap and verify the onTap function is triggered",
+    testWidgets("tap_shouldTriggerOnTapFunction",
         (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       await tester.tap(find.byType(InkWell));
       expect(tapped, isTrue);
     });
 
-    testWidgets("hero widget exists with the correct tag",
+    testWidgets("heroTag_shouldExistsWithCorrectTag",
         (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(

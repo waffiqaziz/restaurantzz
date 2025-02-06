@@ -17,7 +17,7 @@ void main() {
   });
 
   group('SharedPreferencesService', () {
-    test('saveSettingValue should save the settings', () async {
+    test('saveSettingValue_shouldSaveSettings', () async {
       final setting = Setting(notificationEnable: true, isDark: false);
 
       // mock SharedPreferences' setBool methods to return true
@@ -33,7 +33,7 @@ void main() {
           SharedPreferencesService.keyIsDark, false)).called(1);
     });
 
-    test('setTheme should save the dark mode setting', () async {
+    test('setTheme_shouldSaveDarkMode', () async {
       when(() => mockSharedPreferences.setBool(any(), any()))
           .thenAnswer((_) async => true);
 
@@ -43,7 +43,7 @@ void main() {
           SharedPreferencesService.keyIsDark, false)).called(1);
     });
 
-    test('getSettingValue should return correct settings', () {
+    test('getSettingValue_shouldReturnCorrectSettings', () {
       when(() => mockSharedPreferences
           .getBool(SharedPreferencesService.keyNotification)).thenReturn(true);
       when(() =>
@@ -56,7 +56,7 @@ void main() {
       expect(setting.isDark, false);
     });
 
-    test('isDarkModeSet should return true if key exists', () {
+    test('isDarkModeSet_shouldReturnTrueIfKeyExists', () {
       when(() => mockSharedPreferences
           .containsKey(SharedPreferencesService.keyIsDark)).thenReturn(true);
 
@@ -65,7 +65,7 @@ void main() {
       expect(result, true);
     });
 
-    test('isDarkModeSet should return false if key does not exist', () {
+    test('isDarkModeSet_shouldReturnFalseIfKeyNotExist', () {
       when(() => mockSharedPreferences
           .containsKey(SharedPreferencesService.keyIsDark)).thenReturn(false);
 
@@ -74,7 +74,7 @@ void main() {
       expect(result, false);
     });
 
-    test('saveSettingValue should throw exception when save fails', () async {
+    test('saveSettingValue_shouldThrowExceptionWhenFails', () async {
       final setting = Setting(notificationEnable: true, isDark: false);
 
       when(() => mockSharedPreferences.setBool(any(), any())).thenThrow(

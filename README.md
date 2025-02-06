@@ -22,27 +22,41 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Testing
 
-This project includes both unit tests and widget tests to ensure the correctness of the application. We use GitHub Actions to automatically run the tests on each pull request, and you can view the results [here](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml).
+This project includes both unit tests, widget tests, and instrumented test to ensure the correctness of the application. We use GitHub Actions to automatically run the tests on each pull request, and you can view the results [here](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml).
 
 ### Running Tests Locally
 
 To run the tests on your local machine, follow these steps:
 
-- Install dependencies
+1. Install dependencies
   
-  Make sure all dependencies are up to date:
+   Make sure all dependencies are up to date:
 
    ```bash
    flutter pub get
    ```
 
-- Run the Tests
+2. Run the Tests
   
-  To run tests (both unit test and widget test):
+   - To run unit and widget tests :
 
-   ```bash
-   flutter test
-   ```
+     ```bash
+     flutter test
+     ```
+
+   - To run instrumented test:
+
+     - On windows
+
+        ```bash
+        flutter test integration_test\feature\main\screen\main_screen_test.dart
+        ```
+
+     - On macOS 
+
+        ```bash
+        flutter test integration_test
+        ```
 
 ## Contributing
 
