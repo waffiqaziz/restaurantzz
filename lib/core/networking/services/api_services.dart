@@ -43,7 +43,8 @@ class ApiServices {
     String query,
   ) async {
     return await safeApiCall(() async {
-      final response = await httpClient.get(Uri.parse("$_baseUrl/search?q=$query"));
+      final response =
+          await httpClient.get(Uri.parse("$_baseUrl/search?q=$query"));
 
       return response.statusCode == 200
           ? RestaurantSearchResponse.fromJson(jsonDecode(response.body))
