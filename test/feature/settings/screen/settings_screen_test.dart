@@ -28,7 +28,6 @@ void main() {
         .thenReturn("Settings initialized successfully");
   });
 
-
   testWidgets('SettingsScreen displays theme switch button',
       (WidgetTester tester) async {
     await tester.pumpWidget(
