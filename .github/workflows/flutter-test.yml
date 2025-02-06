@@ -45,8 +45,4 @@ jobs:
       - run: flutter pub get
 
       - name: Run Integration Tests on iOS Simulator
-        run: |
-          flutter drive \
-          --driver=test_driver/integration_test.dart \
-          --target=integration_test/feature/main/screen/main_screen_test.dart \
-          -d "iPhone 15"
+        run: flutter test integration_test
