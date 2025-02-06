@@ -88,7 +88,7 @@ void main() {
       );
     }
 
-    testWidgets('Shows loading indicator', (WidgetTester tester) async {
+    testWidgets('loadingIndicator_shouldShowsWhenInitialScreen', (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async {
         await Future.delayed(const Duration(seconds: 2));
         return mockResponse;
@@ -106,7 +106,7 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('Scrolling until last item', (WidgetTester tester) async {
+    testWidgets('scrollingUntilLastItem_shouldShowsTheLastItem', (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList())
           .thenAnswer((_) async => mockResponseMany);
 
@@ -127,7 +127,7 @@ void main() {
       expect(find.text('Test Restaurant 99'), findsOneWidget);
     });
 
-    testWidgets('Displays restaurant list when data is successfully fetched',
+    testWidgets('dataSuccessfullyVetched_shouldDisplaysRestaurantList',
         (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList())
           .thenAnswer((_) async => mockResponse);
@@ -140,7 +140,7 @@ void main() {
       expect(find.text('(4.5/5.0)'), findsOneWidget);
     });
 
-    testWidgets('Displays error message when fetching restaurant list fails',
+    testWidgets('fetchingDataFails_shuoldDisplaysErrorMessage',
         (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList())
           .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
@@ -153,7 +153,7 @@ void main() {
       expect(find.text('Failed to fetch data'), findsOneWidget);
     });
 
-    testWidgets('Pull-to-refresh triggers fetchRestaurantList()',
+    testWidgets('pullToRefresh_shouldTriggersFetchRestaurantList()',
         (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList())
           .thenAnswer((_) async => mockResponse);
@@ -179,7 +179,7 @@ void main() {
       };
     }
 
-    testWidgets('Tapping on an item navigate to detail screen',
+    testWidgets('tappingOnItem_shouldNavigateToDetailScreen',
         (WidgetTester tester) async {
       ignoreNetworkImageErrors(); // disable unrelated error because this test case to test navigation
       when(() => mockApiServices.getRestaurantList())
