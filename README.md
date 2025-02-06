@@ -28,13 +28,17 @@ This project includes both unit tests and widget tests to ensure the correctness
 
 To run the tests on your local machine, follow these steps:
 
-- Install dependencies: Make sure all dependencies are up to date:
+- Install dependencies
+  
+  Make sure all dependencies are up to date:
 
    ```bash
    flutter pub get
    ```
 
-- Run the Tests: To run tests (both unit test and widget test):
+- Run the Tests
+  
+  To run tests (both unit test and widget test):
 
    ```bash
    flutter test
