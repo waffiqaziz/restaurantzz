@@ -11,7 +11,7 @@ on:
       - "**/*.md"
 
 jobs:
-  test:
+  unit_and_widget_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
