@@ -7,7 +7,7 @@ import 'package:restaurantzz/core/networking/services/api_services.dart';
 import 'package:restaurantzz/core/networking/states/list_result_state.dart';
 import 'package:restaurantzz/core/provider/list/list_provider.dart';
 
-class MockHttpClient extends Mock implements http.Client {}
+import '../../../testutils/mock_client.dart';
 
 void main() {
   group('ListProvider', () {
@@ -99,6 +99,27 @@ void main() {
       expect(state.data[1].name, "Kafe Kita");
       expect(state.data[2].name, "Bring Your Phone Cafe");
       expect(state.data[3].name, "Kafein");
+    });
+
+    test('fetchRestaurantList_shouldReturnErrorWhenErrorTrue', () async {
+      final mockResponseData = {
+        "error": true,
+        "message": "Server Error",
+        "count": 0,
+        "restaurants": []
+      };
+
+      when(() => mockHttpClient
+              .get(Uri.parse("https://restaurant-api.dicoding.dev/list")))
+          .thenAnswer((_) async {
+        await Future.delayed(const Duration(seconds: 2));
+        return http.Response(jsonEncode(mockResponseData), 200);
+      });
+      await listProvider.fetchRestaurantList();
+
+      expect(listProvider.resultState, isA<RestaurantListErrorState>());
+      final state = listProvider.resultState as RestaurantListErrorState;
+      expect(state.error, contains('Server Error'));
     });
 
     test('fetchRestaurantList_shouldReturnErrorOnFailure', () async {

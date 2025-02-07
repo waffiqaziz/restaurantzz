@@ -52,8 +52,7 @@ void main() {
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets("tap_shouldTriggerOnTapFunction",
-        (WidgetTester tester) async {
+    testWidgets("tap_shouldTriggerOnTapFunction", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       await tester.tap(find.byType(InkWell));
       expect(tapped, isTrue);

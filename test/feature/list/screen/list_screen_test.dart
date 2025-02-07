@@ -88,7 +88,8 @@ void main() {
       );
     }
 
-    testWidgets('loadingIndicator_shouldShowsWhenInitialScreen', (WidgetTester tester) async {
+    testWidgets('loadingIndicator_shouldShowsWhenInitialScreen',
+        (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async {
         await Future.delayed(const Duration(seconds: 2));
         return mockResponse;
@@ -106,7 +107,8 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('scrollingUntilLastItem_shouldShowsTheLastItem', (WidgetTester tester) async {
+    testWidgets('scrollingUntilLastItem_shouldShowsTheLastItem',
+        (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList())
           .thenAnswer((_) async => mockResponseMany);
 
