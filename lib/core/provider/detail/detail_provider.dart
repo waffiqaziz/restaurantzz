@@ -55,7 +55,10 @@ class DetailProvider extends ChangeNotifier {
       if (result.data != null) {
         if (result.data!.error) {
           _resultState = RestaurantDetailErrorState(
-              result.message ?? "Unknown error occurred", id);
+              result.message ??
+                  result.data?.message ??
+                  "Unknown error occurred",
+              id);
         } else {
           _cache[id] = result.data!.restaurant;
           _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
@@ -95,6 +98,7 @@ class DetailProvider extends ChangeNotifier {
         _reviewSubmissionError =
             "Failed to submit the review. Please try again.";
       }
+      notifyListeners();
     } catch (e) {
       _reviewSubmissionError = "Failed to submit the review. Please try again.";
     } finally {
