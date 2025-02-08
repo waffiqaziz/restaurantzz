@@ -7,7 +7,7 @@ import 'package:restaurantzz/core/networking/services/api_services.dart';
 import 'package:restaurantzz/core/networking/states/list_result_state.dart';
 import 'package:restaurantzz/core/provider/list/list_provider.dart';
 
-import '../../../testutils/mock_client.dart';
+import '../../../testutils/mock.dart';
 
 void main() {
   group('ListProvider', () {
