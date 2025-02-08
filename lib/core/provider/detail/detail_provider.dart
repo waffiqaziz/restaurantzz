@@ -24,9 +24,6 @@ class DetailProvider extends ChangeNotifier {
   String? _reviewSubmissionError;
   String? get reviewSubmissionError => _reviewSubmissionError;
 
-  bool _isRefreshing = false;
-  bool get isRefreshing => _isRefreshing;
-
   RestaurantDetailItem? get cachedData {
     if (_resultState is RestaurantDetailLoadedState) {
       return (_resultState as RestaurantDetailLoadedState).data;
@@ -55,7 +52,10 @@ class DetailProvider extends ChangeNotifier {
       if (result.data != null) {
         if (result.data!.error) {
           _resultState = RestaurantDetailErrorState(
-              result.message ?? "Unknown error occurred", id);
+              result.message ??
+                  result.data?.message ??
+                  "Unknown error occurred",
+              id);
         } else {
           _cache[id] = result.data!.restaurant;
           _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
@@ -70,10 +70,7 @@ class DetailProvider extends ChangeNotifier {
       _resultState = RestaurantDetailErrorState(
           "An unexpected error occurred: ${e.toString()}", id);
       notifyListeners();
-    } finally {
-      _isRefreshing = false;
-      notifyListeners();
-    }
+    } 
   }
 
   Future<void> addReview(String id, String name, String review) async {
@@ -95,6 +92,7 @@ class DetailProvider extends ChangeNotifier {
         _reviewSubmissionError =
             "Failed to submit the review. Please try again.";
       }
+      notifyListeners();
     } catch (e) {
       _reviewSubmissionError = "Failed to submit the review. Please try again.";
     } finally {

@@ -21,7 +21,7 @@ class ListProvider extends ChangeNotifier {
       if (result.data != null) {
         if (result.data!.error) {
           _resultState = RestaurantListErrorState(
-            result.message ?? "Unknown error occurred",
+            result.message ?? result.data?.message ?? "Unknown error occurred",
           );
         } else {
           _resultState = RestaurantListLoadedState(result.data!.restaurants);
