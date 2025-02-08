@@ -58,6 +58,12 @@ To run the tests on your local machine, follow these steps:
         flutter test integration_test
         ```
 
+   - Test Coverage
+
+      ```bash
+      flutter test --coverage && perl %GENHTML% coverage\lcov.info -o coverage\html 
+      ```
+
 ## Contributing
 
 Feel free to contribute to this project by adding new features, improving the code, or enhancing the overall design.
