@@ -102,5 +102,63 @@ void main() {
         throwsA(isA<TypeError>()),
       );
     });
+
+    test('toJson_ReturnsValidJsonRepresentation', () {
+      final response = RestaurantDetailResponse(
+        error: false,
+        message: "success",
+        restaurant: RestaurantDetailItem(
+          id: "testId",
+          name: "Test Restaurant",
+          description: "Sample",
+          city: "Test City",
+          address: "Test Address",
+          pictureId: "1",
+          categories: [],
+          menus: Menu(foods: [], drinks: []),
+          rating: 4.0,
+          customerReviews: [],
+        ),
+      );
+
+      final json = response.toJson();
+      expect(json, {
+        "error": false,
+        "message": "success",
+        "restaurant": {
+          "id": "testId",
+          "name": "Test Restaurant",
+          "description": "Sample",
+          "city": "Test City",
+          "address": "Test Address",
+          "pictureId": "1",
+          "categories": [],
+          "menus": {"foods": [], "drinks": []},
+          "rating": 4.0,
+          "customerReviews": []
+        }
+      });
+    });
+
+    test('copyWith_WithNullCustomerReviews_ReturnsSameCustomerReviews', () {
+      final initialResponse = RestaurantDetailItem(
+        id: "testId",
+        name: "Test Restaurant",
+        description: "Sample",
+        city: "Test City",
+        address: "Test Address",
+        pictureId: "1",
+        categories: [],
+        menus: Menu(foods: [], drinks: []),
+        rating: 4.0,
+        customerReviews: [
+          CustomerReview(name: "John", review: "Great!", date: "2025-02-10")
+        ],
+      );
+
+      final updatedResponse = initialResponse.copyWith(customerReviews: null);
+
+      expect(updatedResponse.customerReviews, initialResponse.customerReviews);
+    });
   });
 }

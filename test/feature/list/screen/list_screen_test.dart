@@ -13,7 +13,8 @@ import 'package:restaurantzz/feature/detail/screen/detail_screen.dart';
 import 'package:restaurantzz/feature/list/screen/list_screen.dart';
 import 'package:restaurantzz/static/navigation_route.dart';
 
-class MockApiServices extends Mock implements ApiServices {}
+import '../../../testutils/mock.dart';
+import '../../../testutils/test_helper.dart';
 
 void main() {
   group('ListScreen', () {
@@ -170,16 +171,6 @@ void main() {
       // verivy API call triggered twice: one for initially, and one for pull-to-refresh
       verify(() => mockApiServices.getRestaurantList()).called(2);
     });
-
-    void ignoreNetworkImageErrors() {
-      FlutterError.onError = (FlutterErrorDetails details) {
-        if (details.exceptionAsString().contains('HTTP request failed')) {
-          // skip network image errors during tests
-          return;
-        }
-        FlutterError.presentError(details);
-      };
-    }
 
     testWidgets('tappingOnItem_shouldNavigateToDetailScreen',
         (WidgetTester tester) async {

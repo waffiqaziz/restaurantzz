@@ -43,6 +43,19 @@ void main() {
           SharedPreferencesService.keyIsDark, false)).called(1);
     });
 
+  test('setTheme_shouldThrowException_whenSetBoolFails', () async {
+    when(() => mockSharedPreferences.setBool(any(), any()))
+        .thenThrow(Exception("Failed setting theme."));
+
+    expect(
+      () => sharedPreferencesService.setTheme(false),
+      throwsException,
+    );
+
+    verify(() => mockSharedPreferences.setBool(
+        SharedPreferencesService.keyIsDark, false)).called(1);
+  });
+
     test('getSettingValue_shouldReturnCorrectSettings', () {
       when(() => mockSharedPreferences
           .getBool(SharedPreferencesService.keyNotification)).thenReturn(true);

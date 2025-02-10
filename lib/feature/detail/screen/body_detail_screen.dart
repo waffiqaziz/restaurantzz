@@ -25,6 +25,7 @@ class BodyDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      key: const Key('bodyDetailScroll'),
       child: Center(
         child: SizedBox(
           width: 900,
@@ -56,7 +57,7 @@ class BodyDetailScreen extends StatelessWidget {
                         },
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            'images/error_placeholder.webp',
+                            'images/images_error.png',
                             fit: BoxFit.cover,
                           );
                         },

@@ -10,7 +10,13 @@ import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
 
 import '../../../testutils/mock.dart';
 
+class UriFake extends Fake implements Uri {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(UriFake());
+  });
+  
   group('DetailProvider', () {
     late DetailProvider detailProvider;
     late MockHttpClient mockHttpClient;
@@ -96,14 +102,75 @@ void main() {
         }
       ]
     };
+
     setUp(() {
       mockHttpClient = MockHttpClient();
       apiServices = ApiServices(httpClient: mockHttpClient);
       detailProvider = DetailProvider(apiServices);
     });
 
+    tearDown(() {
+      detailProvider.dispose();
+      reset(mockHttpClient);
+    });
+
     test('initialState_shouldBeNoneState', () {
       expect(detailProvider.resultState, isA<RestaurantDetailNoneState>());
+    });
+
+    test(
+        'fetchRestaurantDetail_refreshTrue_shouldNotifyListenersWithoutClearingContent',
+        () async {
+      when(() => mockHttpClient.get(Uri.parse(
+              "https://restaurant-api.dicoding.dev/detail/zvf11c0sukfw1e867")))
+          .thenAnswer((_) async {
+        return http.Response(jsonEncode(mockDetailRestaurantResponseData), 200);
+      });
+
+      // initial fetch
+      await detailProvider.fetchRestaurantDetail("zvf11c0sukfw1e867");
+
+      bool listenerNotified = false;
+      detailProvider.addListener(() {
+        listenerNotified = true;
+      });
+
+      await detailProvider.fetchRestaurantDetail("zvf11c0sukfw1e867",
+          refresh: true);
+
+      expect(listenerNotified, isTrue);
+      expect(detailProvider.cachedData?.id, "zvf11c0sukfw1e867");
+      expect(detailProvider.resultState, isA<RestaurantDetailLoadedState>());
+    });
+
+    test(
+        'fetchRestaurantDetail_refreshFalseWithCachedData_shouldReturnCachedDataAndNotifyListeners',
+        () async {
+      when(() => mockHttpClient.get(Uri.parse(
+              "https://restaurant-api.dicoding.dev/detail/zvf11c0sukfw1e867")))
+          .thenAnswer((_) async {
+        return http.Response(jsonEncode(mockDetailRestaurantResponseData), 200);
+      });
+
+      // fetch to save it on the cache
+      await detailProvider.fetchRestaurantDetail("zvf11c0sukfw1e867");
+
+      bool listenerNotified = false;
+      detailProvider.addListener(() {
+        listenerNotified = true;
+      });
+
+      // reset to verify no API call
+      clearInteractions(mockHttpClient);
+
+      await detailProvider.fetchRestaurantDetail("zvf11c0sukfw1e867",
+          refresh: false);
+
+      expect(listenerNotified, isTrue);
+      expect(detailProvider.resultState, isA<RestaurantDetailLoadedState>());
+      expect(detailProvider.cachedData?.id, "zvf11c0sukfw1e867");
+
+      verifyNever(() => mockHttpClient.get(any()));
     });
 
     test('fetchRestaurantDetail_shouldNotifyLoadingThenReturnListOnSuccess',
