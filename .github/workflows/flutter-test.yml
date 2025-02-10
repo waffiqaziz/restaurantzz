@@ -55,7 +55,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        
 
       - name: Enable KVM
         run: |
@@ -92,6 +91,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
+          arch: x86_64
+          profile: pixel_3
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
