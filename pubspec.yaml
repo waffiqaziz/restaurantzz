@@ -38,6 +38,8 @@ dependencies:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
       ref: b783000
 
+  junitreporter_flutter_3x: ^2.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
