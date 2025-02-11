@@ -39,7 +39,7 @@ class LocalNotificationProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> checkPendingNotificationRequests(BuildContext context) async {
+  Future<void> checkPendingNotificationRequests() async {
     pendingNotificationRequests =
         await flutterNotificationService.pendingNotificationRequests();
     notifyListeners();
