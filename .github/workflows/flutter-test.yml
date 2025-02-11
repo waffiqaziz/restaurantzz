@@ -13,6 +13,8 @@ on:
 jobs:
   unit_widget_test_code_coverage:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
