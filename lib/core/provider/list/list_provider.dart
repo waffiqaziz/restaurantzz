@@ -33,10 +33,16 @@ class ListProvider extends ChangeNotifier {
       }
 
       notifyListeners();
-    } catch (e) {
-      _resultState = RestaurantListErrorState(
-        "An unexpected error occurred: ${e.toString()}",
-      );
+    } catch (e, _) {
+      if (e is TypeError) {
+        _resultState = RestaurantListErrorState(
+          "Unexpected response type from the server. Please contact support.",
+        );
+      } else {
+        _resultState = RestaurantListErrorState(
+          "An unexpected error occurred: ${e.toString()}",
+        );
+      }
       notifyListeners();
     }
   }

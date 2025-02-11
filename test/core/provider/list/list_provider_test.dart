@@ -134,5 +134,40 @@ void main() {
       final state = listProvider.resultState as RestaurantListErrorState;
       expect(state.error, contains('Failed to load restaurant list'));
     });
+
+    group('ListProvider Catch', () {
+      late ListProvider listProvider;
+      late MockApiServices mockApiServices;
+
+      setUp(() {
+        mockApiServices = MockApiServices();
+        listProvider = ListProvider(mockApiServices);
+      });
+
+      test('fetchRestaurantList_shouldHandleTypeErrorAndSetErrorState',
+          () async {
+        when(() => mockApiServices.getRestaurantList()).thenThrow(TypeError());
+
+        await listProvider.fetchRestaurantList();
+
+        expect(listProvider.resultState, isA<RestaurantListErrorState>());
+        final state = listProvider.resultState as RestaurantListErrorState;
+        expect(state.error,
+            "Unexpected response type from the server. Please contact support.");
+      });
+
+      test('fetchRestaurantList_shouldHandleGenericExceptionAndSetErrorState',
+          () async {
+        when(() => mockApiServices.getRestaurantList())
+            .thenThrow(Exception("Network error"));
+
+        await listProvider.fetchRestaurantList();
+
+        expect(listProvider.resultState, isA<RestaurantListErrorState>());
+        final state = listProvider.resultState as RestaurantListErrorState;
+        expect(state.error,
+            "An unexpected error occurred: Exception: Network error");
+      });
+    });
   });
 }
