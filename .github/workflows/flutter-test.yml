@@ -65,7 +65,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Generate test report .xml
-        run: flutter test --coverage --reporter json | tojunit > TEST-report.xml
+        run: |
+          dart pub global activate junitreport
+          flutter test --coverage --reporter json | tojunit > TEST-report.xml
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
