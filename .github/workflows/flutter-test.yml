@@ -14,7 +14,8 @@ jobs:
   unit_widget_test_code_coverage:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
       actions: write
     steps:
       - uses: actions/checkout@v4
