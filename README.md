@@ -1,7 +1,8 @@
 # Restaurantzz
 
 ![Header](/docs/images/header.png)
-![Unit Testing](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml/badge.svg)
+[![Flutter Testing](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml/badge.svg)](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml)
+[![codecov](https://codecov.io/gh/waffiqaziz/restaurantzz/graph/badge.svg?token=W2M08GY7CJ)](https://codecov.io/gh/waffiqaziz/restaurantzz)
 
 **Restaurantzz** is a Flutter-based restaurant recommendation app. The app allows users to discover and explore recommended restaurants with an elegant and responsive UI. It supports both dark and light themes based on system preferences, and utilizes modern features such as Material 3 UI and Hero animations.
 
@@ -22,7 +23,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Testing
 
-This project includes unit tests, widget tests, and instrumented test to ensure the correctness of the application. We use GitHub Actions to automatically run the tests on each pull request, and you can view the results [here](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml). To run testing on your local machine please read [here](/docs/TESTING.md)
+This project includes unit tests, widget tests, and instrumented test to ensure the correctness of the application. We use GitHub Actions to automatically run the tests on each pull request, and you can view the results [here](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml). To run testing on your local machine please read [here](/docs/TESTING.md).
 
 ## Contributing
 
