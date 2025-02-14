@@ -124,7 +124,7 @@ jobs:
       - run: flutter pub get
 
       - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: AVD cache
         uses: actions/cache@v4
@@ -143,8 +143,8 @@ jobs:
           arch: x86_64
           profile: pixel_3
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none 
+          disable-animations: true
           script: echo "Generated AVD snapshot for caching."
 
       - name: run integration tests on android
@@ -153,7 +153,7 @@ jobs:
           api-level: 35
           arch: x86_64
           profile: pixel_3
-          force-avd-creation: false
+          force-avd-creation: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
