@@ -104,6 +104,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: Clear Flutter and Gradle Cache
+        run: |
+          rm -rf ~/.gradle/caches
+          rm -rf ~/.pub-cache
+
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -153,7 +158,7 @@ jobs:
           api-level: 35
           arch: x86_64
           profile: pixel_3
-          force-avd-creation: true
+          force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
