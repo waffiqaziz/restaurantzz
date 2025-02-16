@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +15,68 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  Widget buildSwitchNotification(
+    BuildContext context,
+    SharedPreferencesProvider provider,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Icon(Icons.notifications_active_rounded),
+            const SizedBox(width: 8),
+            Text(
+              Strings.enableNotification,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+        Switch(
+          value: provider.setting?.notificationEnable ?? true,
+          onChanged: (bool value) async {
+            try {
+              final updatedSetting = Setting(
+                notificationEnable: value,
+                isDark: provider.setting?.isDark ?? false,
+              );
+              provider.saveSettingValue(updatedSetting);
+
+              if (value) {
+                await _scheduleDailyElevenAMNotificationWithWorkManager();
+              } else {
+                _cancelAllTaskInBackground();
+              }
+            } catch (e) {
+              if (!context.mounted) {
+                return; 
+              }
+
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(Strings.errorOccured),
+                    content: Text(Strings.errorNotification),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(Strings.ok),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SharedPreferencesProvider>();
@@ -36,60 +96,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // notification switch for mobile only
-            if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.notifications_active_rounded),
-                      const SizedBox(width: 8),
-                      Text(
-                        Strings.enableNotification,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
-                  Switch(
-                    value: provider.setting?.notificationEnable ?? true,
-                    onChanged: (bool value) async {
-                      try {
-                        final updatedSetting = Setting(
-                          notificationEnable: value,
-                          isDark: provider.setting?.isDark ?? false,
-                        );
-                        provider.saveSettingValue(updatedSetting);
-
-                        if (value) {
-                          // schedule daily notification and background task
-                          await _scheduleDailyElevenAMNotificationWithWorkManager();
-                        } else {
-                          // cancel all scheduled tasks and notifications
-                          _cancelAllTaskInBackground();
-                          await context
-                              .read<LocalNotificationProvider>()
-                              .cancelNotification(0);
-                        }
-                      } catch (e) {
-                        AlertDialog(
-                          title: Text(Strings.errorOccured),
-                          content: Text(Strings.errorNotification),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(Strings.ok),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  )
-                ],
-              ),
-            const SizedBox(height: 4),
+            if (!kIsWeb &&
+                (Theme.of(context).platform == TargetPlatform.iOS ||
+                    Theme.of(context).platform == TargetPlatform.android))
+              buildSwitchNotification(context, provider),
 
             // dark mode switch (shown on all platforms)
             Row(
@@ -121,7 +131,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: const TextStyle(color: Colors.grey),
             ),
 
-            if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+            if (!kIsWeb &&
+                (Theme.of(context).platform == TargetPlatform.iOS ||
+                    Theme.of(context).platform == TargetPlatform.android))
               ElevatedButton(
                 onPressed: () async {
                   await _requestPermission();
