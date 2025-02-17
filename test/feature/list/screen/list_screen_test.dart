@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
@@ -17,6 +20,10 @@ import '../../../testutils/mock.dart';
 import '../../../testutils/test_helper.dart';
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(FakeUri()); // Register a fake Uri
+  });
+
   group('ListScreen', () {
     final mockResponse = ApiResult.success(
       RestaurantListResponse(
@@ -186,6 +193,63 @@ void main() {
 
       // Check if the DetailScreen is displayed
       expect(find.byType(DetailScreen), findsOneWidget);
+    });
+
+    testWidgets('clickingGitHubButton_shouldLaunchUrl',
+        (WidgetTester tester) async {
+      const MethodChannel channel =
+          MethodChannel('plugins.flutter.io/url_launcher');
+
+      // mock the platform channel response for `launchUrl`
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        channel,
+        (MethodCall methodCall) async {
+          if (methodCall.method == 'launch') {
+            return true; // simulate successful URL launch
+          }
+          return null;
+        },
+      );
+
+      await tester.pumpWidget(createTestWidget(const ListScreen()));
+
+      await tester.tap(find.byType(IconButton));
+      await tester.pumpAndSettle();
+
+      // since launchUrl is a global function,
+      // cannot directly verify it was called unless wrap it with dependency.
+    });
+
+    testWidgets('clickingGitHubButton_shouldThrowException_whenLaunchFails',
+        (WidgetTester tester) async {
+      const MethodChannel channel =
+          MethodChannel('plugins.flutter.io/url_launcher');
+
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        channel,
+        (MethodCall methodCall) async {
+          if (methodCall.method == 'launch') {
+            return false;
+          }
+          return null;
+        },
+      );
+
+      await tester.pumpWidget(createTestWidget(const ListScreen()));
+
+      Object? caughtException;
+
+      // asynchronous method need to run on different approach
+      await runZonedGuarded(() async {
+        await tester.tap(find.byType(IconButton));
+        await tester.pumpAndSettle();
+      }, (error, stackTrace) {
+        caughtException = error;
+      });
+
+      expect(caughtException, isA<Exception>());
     });
   });
 }

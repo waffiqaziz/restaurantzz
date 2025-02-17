@@ -58,7 +58,6 @@ void main() {
         ),
       );
     }
-
     testWidgets('renderBodyDetailScreen_displaysHeroImage',
         (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
