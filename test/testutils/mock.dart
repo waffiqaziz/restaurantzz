@@ -49,3 +49,5 @@ class MockWorkmanagerService extends Mock implements WorkmanagerService {}
 class FakeSetting extends Fake implements Setting {}
 
 class MockFavoriteIconProvider extends Mock implements FavoriteIconProvider {}
+
+class FakeUri extends Fake implements Uri {}

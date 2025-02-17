@@ -148,85 +148,130 @@ void main() {
     });
   });
 
+  // TODO: Test not yet fixed (failure)
   // group('WorkmanagerService callback', () {
-  //   late MockApiServices mockApiServices;
-  //   late MockLocalNotificationService mockNotificationService;
+  //   late MockApiServices apiService;
+  //   late MockLocalNotificationService notificationService;
+  //   late MockWorkmanager mockWorkmanager;
+  //   late WorkmanagerService workmanagerService;
+
+  //   final mockRestaurant = Restaurant(m
+  //       id: "1",
+  //       name: "Test Restaurant",
+  //       description: "Great food!",
+  //       pictureId: '',
+  //       city: 'Test City',
+  //       rating: 9);
+  //   final mockRestaurantListResponse = ApiResult.success(
+  //     RestaurantListResponse(
+  //       error: false,
+  //       message: "Success",
+  //       count: 1,
+  //       restaurants: [mockRestaurant],
+  //     ),
+  //   );
 
   //   setUp(() {
-  //     mockApiServices = MockApiServices();
-  //     mockNotificationService = MockLocalNotificationService();
+  //     apiService = MockApiServices();
+  //     notificationService = MockLocalNotificationService();
+  //     mockWorkmanager = MockWorkmanager();
+  //     workmanagerService = WorkmanagerService(mockWorkmanager);
   //   });
 
-  //   test('callbackDispatcher should show notification with restaurant data',
-  //       () async {
-  //     when(() => mockApiServices.getRestaurantList())
-  //         .thenAnswer((_) async => mockResponseSuccess);
-  //     when(() => mockNotificationService.init()).thenAnswer((_) async => true);
-  //     when(() => mockNotificationService.showNotification(
-  //           id: 1,
-  //           title: testRestaurant.name,
-  //           body: testRestaurant.description,
-  //           payload: "${testRestaurant.id}:list",
-  //         )).thenAnswer((_) async => true);
+  //   testWidgets(
+  //       'executeTask_CallsApiServiceAndShowsNotification_SuccessScenario',
+  //       (WidgetTester tester) async {
+  //     when(() => apiService.getRestaurantList())
+  //         .thenAnswer((_) async => mockRestaurantListResponse);
+  //     when(() => workmanagerService.init()).thenAnswer((invocation) async {
+  //       callbackDispatcher();
+  //     });
 
-  //     callbackDispatcher();
+  //     workmanagerService.init();
 
-  //     verify(() => mockApiServices.getRestaurantList()).called(1);
-  //     verify(() => mockNotificationService.init()).called(1);
-  //     verify(() => mockNotificationService.showNotification(
+  //     // Manually invoke task simulation
+  //     mockWorkmanager.executeTask((_, __) async => true);
+
+  //     // Verify interactions
+  //     verify(() => apiService.getRestaurantList()).called(1);
+  //     verify(() => notificationService.showNotification(
   //           id: 1,
-  //           title: testRestaurant.name,
-  //           body: testRestaurant.description,
-  //           payload: "${testRestaurant.id}:list",
+  //           title: "Test Restaurant",
+  //           body: "description",
+  //           payload: "1:list",
   //         )).called(1);
   //   });
 
-  //   test('callbackDispatcher should show error notification on API failure',
-  //       () async {
-  //     when(() => mockApiServices.getRestaurantList())
-  //         .thenAnswer((_) async => ApiResult.error("Error"));
-  //     when(() => mockNotificationService.init()).thenAnswer((_) async => true);
-  //     when(() => mockNotificationService.showNotification(
-  //           id: 1,
-  //           title: Strings.dailyNotification,
-  //           body: 'Error',
-  //           payload: Strings.error,
-  //         )).thenAnswer((_) async => true);
+    // testWidgets('executeTask_ShowsNoRestaurantsNotification_WhenDataIsEmpty',
+    //     (WidgetTester tester) async {
+    //   when(() => apiService.getRestaurantList()).thenAnswer((_) async =>
+    //       ApiResult.success(RestaurantListResponse(
+    //           restaurants: [], error: true, message: 'not found', count: 0)));
 
-  //     callbackDispatcher();
+    //   callbackDispatcher();
 
-  //     verify(() => mockApiServices.getRestaurantList()).called(1);
-  //     verify(() => mockNotificationService.init()).called(1);
-  //     verify(() => mockNotificationService.showNotification(
-  //           id: 1,
-  //           title: Strings.dailyNotification,
-  //           body: 'Error',
-  //           payload: Strings.error,
-  //         )).called(1);
-  //   });
+    //   verify(() => notificationService.showNotification(
+    //         id: 1,
+    //         title: Strings.dailyNotification,
+    //         body: "No restaurants available.",
+    //         payload: Strings.error,
+    //       )).called(1);
+    // });
 
-  //   test('callbackDispatcher should show error notification on exception',
-  //       () async {
-  //     when(() => mockApiServices.getRestaurantList())
-  //         .thenThrow(Exception('Unexpected error'));
-  //     when(() => mockNotificationService.init()).thenAnswer((_) async => true);
-  //     when(() => mockNotificationService.showNotification(
-  //           id: 1,
-  //           title: Strings.dailyNotification,
-  //           body: 'Unexpected error fetching restaurant data.',
-  //           payload: Strings.error,
-  //         )).thenAnswer((_) async => true);
+    // testWidgets('executeTask_ShowsErrorNotification_WhenApiReturnsError',
+    //     (WidgetTester tester) async {
+    //   when(() => apiService.getRestaurantList())
+    //       .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
 
-  //     callbackDispatcher();
+    //   callbackDispatcher();
 
-  //     verify(() => mockApiServices.getRestaurantList()).called(1);
-  //     verify(() => mockNotificationService.init()).called(1);
-  //     verify(() => mockNotificationService.showNotification(
-  //           id: 1,
-  //           title: Strings.dailyNotification,
-  //           body: 'Unexpected error fetching restaurant data.',
-  //           payload: Strings.error,
-  //         )).called(1);
-  //   });
+    //   verify(() => notificationService.showNotification(
+    //         id: 1,
+    //         title: Strings.dailyNotification,
+    //         body: "API Error",
+    //         payload: Strings.error,
+    //       )).called(1);
+    // });
+
+    // testWidgets(
+    //     'executeTask_ShowsUnexpectedErrorNotification_WhenApiThrowsException',
+    //     (WidgetTester tester) async {
+    //   when(() => apiService.getRestaurantList())
+    //       .thenThrow(Exception("Unexpected Error"));
+
+    //   callbackDispatcher();
+
+    //   verify(() => notificationService.showNotification(
+    //         id: 1,
+    //         title: Strings.dailyNotification,
+    //         body: "Unexpected error fetching restaurant data.",
+    //         payload: Strings.error,
+    //       )).called(1);
+    // });
+
+    // testWidgets(
+    //     'executeTask_InitializesNotificationService_BeforeShowingNotification',
+    //     (WidgetTester tester) async {
+    //   callbackDispatcher();
+
+    //   verify(() => notificationService.init()).called(1);
+    // });
+
+    // testWidgets(
+    //     'executeTask_DisplaysRestaurantNameAndDescriptionInNotification_OnSuccess',
+    //     (WidgetTester tester) async {
+    //   when(() => apiService.getRestaurantList())
+    //       .thenAnswer((_) async => mockRestaurantListResponse);
+
+    //   callbackDispatcher();
+
+    //   verify(() => notificationService.showNotification(
+    //         id: 1,
+    //         title: mockRestaurantListResponse.data!.restaurants[0].name,
+    //         body: mockRestaurantListResponse.data!.restaurants[0].description,
+    //         payload:
+    //             "${mockRestaurantListResponse!.data?.restaurants[0].id}:list",
+    //       )).called(1);
+    // });
   // });
 }
