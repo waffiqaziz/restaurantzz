@@ -24,76 +24,77 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  late IndexNavProvider indexNavProvider;
+
+  Widget createWidgetUnderTest(SharedPreferences prefs) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<IndexNavProvider>(
+          create: (_) => indexNavProvider,
+        ),
+        ChangeNotifierProvider<ListProvider>(
+          create: (_) => ListProvider(
+            ApiServices(
+              httpClient: http.Client(),
+            ),
+          ), // Provide your real or mock ListProvider here
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SearchProvider(ApiServices(
+            httpClient: http.Client(),
+          )),
+        ),
+        Provider(
+          create: (context) => LocalDatabaseService(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocalDatabaseProvider(
+            context.read<LocalDatabaseService>(),
+          ),
+        ),
+        Provider(
+          create: (context) => SharedPreferencesService(prefs),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SharedPreferencesProvider(
+            context.read<SharedPreferencesService>(),
+          ),
+        ),
+        Provider(
+          create: (context) => LocalNotificationService()
+            ..init()
+            ..configureLocalTimeZone(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocalNotificationProvider(
+            context.read<LocalNotificationService>(),
+          )..requestPermissions(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PayloadProvider(
+            payload: "initialPayload",
+          ),
+        ),
+        Provider(
+          create: (context) => WorkmanagerService()..init(),
+        ),
+      ],
+      child: const MaterialApp(
+        home: MainScreen(),
+      ),
+    );
+  }
+
+  setUp(() {
+    indexNavProvider = IndexNavProvider();
+  });
 
   group('MainScreen Navigation', () {
-    late IndexNavProvider indexNavProvider;
-
-    setUp(() {
-      indexNavProvider = IndexNavProvider();
-    });
-
-    testWidgets('Navigates and displays correct screens',
+    testWidgets('bottomNavigation_shouldNavigatesAndDisplaysCorrectScreens',
         (WidgetTester tester) async {
       final prefs = await SharedPreferences.getInstance();
 
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<IndexNavProvider>(
-              create: (_) => indexNavProvider,
-            ),
-            ChangeNotifierProvider<ListProvider>(
-              create: (_) => ListProvider(
-                ApiServices(
-                  httpClient: http.Client(),
-                ),
-              ), // Provide your real or mock ListProvider here
-            ),
-            ChangeNotifierProvider(
-              create: (context) => SearchProvider(ApiServices(
-                httpClient: http.Client(),
-              )),
-            ),
-            Provider(
-              create: (context) => LocalDatabaseService(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => LocalDatabaseProvider(
-                context.read<LocalDatabaseService>(),
-              ),
-            ),
-            Provider(
-              create: (context) => SharedPreferencesService(prefs),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => SharedPreferencesProvider(
-                context.read<SharedPreferencesService>(),
-              ),
-            ),
-            Provider(
-              create: (context) => LocalNotificationService()
-                ..init()
-                ..configureLocalTimeZone(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => LocalNotificationProvider(
-                context.read<LocalNotificationService>(),
-              )..requestPermissions(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => PayloadProvider(
-                payload: "initialPayload",
-              ),
-            ),
-            Provider(
-              create: (context) => WorkmanagerService()..init(),
-            ),
-          ],
-          child: const MaterialApp(
-            home: MainScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(createWidgetUnderTest(prefs));
 
       await tester.pumpAndSettle();
 
