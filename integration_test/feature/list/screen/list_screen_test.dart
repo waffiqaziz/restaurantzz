@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:restaurantzz/app_root.dart';
 import 'package:restaurantzz/core/common/strings.dart';
-import 'package:restaurantzz/core/provider/list/list_provider.dart';
 import 'package:restaurantzz/feature/detail/screen/detail_screen.dart';
 import 'package:restaurantzz/feature/list/screen/list_card.dart';
 import 'package:restaurantzz/feature/list/screen/list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class MockListProvider extends Mock implements ListProvider {}
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
