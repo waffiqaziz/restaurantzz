@@ -43,48 +43,48 @@ void main() {
     });
   });
 
-  // group('ListScreen', () {
-  //   testWidgets('allWidget_shouldShow', (WidgetTester tester) async {
-  //     final preference = await SharedPreferences.getInstance();
+  group('ListScreen', () {
+    testWidgets('allWidget_shouldShow', (WidgetTester tester) async {
+      final preference = await SharedPreferences.getInstance();
 
-  //     await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
-  //     await tester.pumpAndSettle();
+      await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
+      await tester.pumpAndSettle();
 
-  //     // initial ListScreen content
-  //     expect(find.byType(IconButton), findsOneWidget);
-  //     expect(find.image(AssetImage('images/github-mark.png')), findsOneWidget);
-  //     expect(find.byType(ListScreen), findsOneWidget);
-  //     expect(find.text(Strings.ourRecommendation), findsOneWidget);
-  //     expect(find.byType(ListView), findsOneWidget);
-  //     expect(find.byType(RestaurantCard), findsWidgets);
-  //   });
+      // initial ListScreen content
+      expect(find.byType(IconButton), findsOneWidget);
+      expect(find.image(AssetImage('images/github-mark.png')), findsOneWidget);
+      expect(find.byType(ListScreen), findsOneWidget);
+      expect(find.text(Strings.ourRecommendation), findsOneWidget);
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byType(RestaurantCard), findsWidgets);
+    });
 
-  //   testWidgets('tapCard_navigateToDetailScreen', (WidgetTester tester) async {
-  //     final preference = await SharedPreferences.getInstance();
+    testWidgets('tapCard_navigateToDetailScreen', (WidgetTester tester) async {
+      final preference = await SharedPreferences.getInstance();
 
-  //     await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
-  //     await tester.pumpAndSettle();
+      await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
+      await tester.pumpAndSettle();
 
-  //     // initial ListScreen content
-  //     expect(find.byType(ListScreen), findsOneWidget);
-  //     expect(find.byType(ListView), findsOneWidget);
-  //     expect(find.byType(RestaurantCard), findsWidgets);
-  //     await tester.tap(find.byType(RestaurantCard).first);
-  //     await tester.pumpAndSettle();
-  //     expect(find.byType(DetailScreen), findsOneWidget);
-  //   });
+      // initial ListScreen content
+      expect(find.byType(ListScreen), findsOneWidget);
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byType(RestaurantCard), findsWidgets);
+      await tester.tap(find.byType(RestaurantCard).first);
+      await tester.pumpAndSettle();
+      expect(find.byType(DetailScreen), findsOneWidget);
+    });
 
-  //   testWidgets('gitHubIconButton_shouldVisibleAndTappable',
-  //       (WidgetTester tester) async {
-  //     final preference = await SharedPreferences.getInstance();
+    testWidgets('gitHubIconButton_shouldVisibleAndTappable',
+        (WidgetTester tester) async {
+      final preference = await SharedPreferences.getInstance();
 
-  //     await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
-  //     await tester.pumpAndSettle();
+      await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
+      await tester.pumpAndSettle();
 
-  //     expect(find.byType(IconButton), findsOneWidget);
-  //     expect(find.image(AssetImage('images/github-mark.png')), findsOneWidget);
-  //     await tester.tap(find.byType(IconButton));
-  //     await tester.pumpAndSettle();
-  //   });
-  // });
+      expect(find.byType(IconButton), findsOneWidget);
+      expect(find.image(AssetImage('images/github-mark.png')), findsOneWidget);
+      await tester.tap(find.byType(IconButton));
+      await tester.pumpAndSettle();
+    });
+  });
 }
