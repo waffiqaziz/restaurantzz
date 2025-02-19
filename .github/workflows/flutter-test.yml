@@ -163,6 +163,8 @@ jobs:
           disable-animations: true
           script: |
             adb wait-for-device
+            flutter build apk --debug
+            adb install build/app/outputs/flutter-apk/app-debug.apk
             adb shell pm grant com.waffiq.restaurantzz android.permission.POST_NOTIFICATIONS
             adb shell pm grant com.waffiq.restaurantzz android.permission.USE_EXACT_ALARM
             flutter test integration_test/feature/main/screen/main_screen_test.dart
