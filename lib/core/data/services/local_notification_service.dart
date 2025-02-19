@@ -77,19 +77,12 @@ class LocalNotificationService {
       );
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final notificationEnabled = await _isAndroidPermissionGranted();
-
-      // request notification permission only if not granted
+      final requestAlarmEnabled = await _requestExactAlarmsPermission();
       if (!notificationEnabled) {
         final requestNotificationsPermission =
             await _requestAndroidNotificationsPermission();
-        if (!requestNotificationsPermission) {
-          return false;
-        }
+        return requestNotificationsPermission && requestAlarmEnabled;
       }
-
-      // request exact alarm permission separately
-      final requestAlarmEnabled = await _requestExactAlarmsPermission();
-
       return notificationEnabled && requestAlarmEnabled;
     } else {
       return false;
