@@ -70,3 +70,11 @@ doc/api/
 .flutter-plugins-dependencies
 
 coverage/
+
+.cxx
+
+# FVM Version Cache
+.fvm/
+.fvmrc
+
+.vscode

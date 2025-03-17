@@ -29,6 +29,9 @@ jobs:
       - name: Install Flutter dependencies
         run: flutter pub get
 
+      - name: generate sqflite_common_ffi_web file
+        run: dart run sqflite_common_ffi_web:setup
+
       # Build the Flutter web project
       - name: Build Flutter Web
         run: flutter build web --release
