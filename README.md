@@ -23,7 +23,8 @@ samples, guidance on mobile development, and a full API reference.
 
 ## 📸 Screenshots
 
-### 🌞 Light Mode
+<details>
+<summary>🌞 Light Mode</summary>
 
 <img src="docs/screenshots/list_light.jpg" width=200 alt="List Screen Light Mode">&nbsp;
 <img src="docs/screenshots/search_light.jpg" width=200 alt="Search Screen Light Model">&nbsp;
@@ -33,7 +34,12 @@ samples, guidance on mobile development, and a full API reference.
 <img src="docs/screenshots/detail_bottom_light.jpg" width=200 alt="Detail Screen Bottom Light Mode">&nbsp;
 <img src="docs/screenshots/notification_light.jpg" width=200 alt="Schedule Push Notification Light Mode">&nbsp;
 
-### 🌙 Dark Mode
+</details>
+
+### 
+
+<details>
+<summary>🌙 Dark Mode</summary>
 
 <img src="docs/screenshots/list_dark.jpg" width=200 alt="List Screen Dark Mode">&nbsp;
 <img src="docs/screenshots/search_dark.jpg" width=200 alt="Search Screen Dark Model">&nbsp;
@@ -42,6 +48,8 @@ samples, guidance on mobile development, and a full API reference.
 <img src="docs/screenshots/detail_top_dark.jpg" width=200 alt="Detail Screen Top Dark Mode">&nbsp;
 <img src="docs/screenshots/detail_bottom_dark.jpg" width=200 alt="Detail Screen Bottom Dark Mode">&nbsp;
 <img src="docs/screenshots/notification_dark.jpg" width=200 alt="Schedule Push Notification Dark Mode">&nbsp;
+
+</details>
 
 ## 🧪 Testing
 
