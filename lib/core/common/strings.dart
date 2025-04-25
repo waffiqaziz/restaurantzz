@@ -43,4 +43,6 @@ class Strings {
   static String ok = "Ok";
 
   static String dailyNotification = "Daily Notification";
+  static String retry = "Retry";
+  static String close = "Close";
 }

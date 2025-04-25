@@ -7,6 +7,7 @@ import 'package:restaurantzz/core/data/services/shared_preferences.dart';
 import 'package:restaurantzz/core/data/services/workmanager_service.dart';
 import 'package:restaurantzz/core/networking/services/api_services.dart';
 import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
+import 'package:restaurantzz/core/provider/detail/favorite_icon_provider.dart';
 import 'package:restaurantzz/core/provider/favorite/local_database_provider.dart';
 import 'package:restaurantzz/core/provider/list/list_provider.dart';
 import 'package:restaurantzz/core/provider/main/index_nav_provider.dart';
@@ -33,6 +34,7 @@ class AppRoot extends StatelessWidget {
         Provider(
           create: (context) => ApiServices(httpClient: http.Client()),
         ),
+        ChangeNotifierProvider(create: (context) => FavoriteIconProvider()),
         ChangeNotifierProvider(
           create: (context) => ListProvider(
             context.read<ApiServices>(),
