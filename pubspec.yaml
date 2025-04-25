@@ -78,10 +78,3 @@ flutter_launcher_icons:
   android: false # set using default .xml
   ios: true
   image_path: "assets/icon/icon-512-maskable.png"
-  windows:
-    generate: true
-    image_path: "assets/icon/icon-512-maskable.png"
-    icon_size: 256
-  macos:
-    generate: true
-    image_path: "assets/icon/icon.png"
