@@ -70,7 +70,7 @@ class DetailProvider extends ChangeNotifier {
       _resultState = RestaurantDetailErrorState(
           "An unexpected error occurred: ${e.toString()}", id);
       notifyListeners();
-    } 
+    }
   }
 
   Future<void> addReview(String id, String name, String review) async {

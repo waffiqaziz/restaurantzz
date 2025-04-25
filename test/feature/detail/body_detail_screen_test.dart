@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:restaurantzz/core/data/local/local_database_service.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/provider/detail/favorite_icon_provider.dart';
@@ -58,6 +57,7 @@ void main() {
         ),
       );
     }
+
     testWidgets('renderBodyDetailScreen_displaysHeroImage',
         (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());

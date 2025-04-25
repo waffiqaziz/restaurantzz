@@ -3,7 +3,6 @@ import 'package:restaurantzz/core/data/local/local_database_service.dart';
 import 'package:restaurantzz/core/data/model/restaurant.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
 void main() {
   late LocalDatabaseService databaseService;
   group('LocalDatabaseService', () {

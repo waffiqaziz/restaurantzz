@@ -50,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
             } catch (e) {
               if (!context.mounted) {
-                return; 
+                return;
               }
 
               showDialog(
