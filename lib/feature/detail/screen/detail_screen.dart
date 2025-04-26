@@ -42,22 +42,14 @@ class _DetailScreenState extends State<DetailScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<DetailProvider>()
-          .fetchRestaurantDetail(widget.restaurantId)
-          .catchError((error) {
-        if (mounted) {
-          _showSnackBar(context, "Failed to load details: $error",
-              isError: true);
-        }
-      });
+      context.read<DetailProvider>().fetchRestaurantDetail(widget.restaurantId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.onSecondary,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         body: Consumer<DetailProvider>(builder: (context, provider, child) {
           // error state
           if (provider.isReviewSubmissionComplete) {
@@ -113,23 +105,6 @@ class _DetailScreenState extends State<DetailScreen> {
             );
           }
 
-          if (provider.cachedData != null) {
-            return Stack(
-              children: [
-                _buildDetailScaffold(context, provider.cachedData!),
-
-                // show loading and alpha background when submitting a review
-                if (provider.isReviewSubmission)
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-              ],
-            );
-          }
-
           // should not reach here
           return Center(
             child: CircularProgressIndicator(),
@@ -171,10 +146,11 @@ class _DetailScreenState extends State<DetailScreen> {
 
     // Calculate height based on aspect ratio
     final dynamicHeight = screenWidth / (16 / 9);
-    final expandedHeight = dynamicHeight > 400 ? 400 : dynamicHeight; // Cap at 400
+    final expandedHeight =
+        dynamicHeight > 400 ? 400 : dynamicHeight; // Cap at 400
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       extendBodyBehindAppBar: true,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -189,14 +165,17 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: CircleAvatar(
                   radius: 20,
                   child: IconButton(
+                    key: Key('back_button'),
                     icon: const Icon(Icons.arrow_back_rounded),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     tooltip: Strings.close,
                   ),
                 ),
               ),
               backgroundColor: innerBoxIsScrolled
-                  ? Theme.of(context).colorScheme.secondaryContainer
+                  ? Theme.of(context).colorScheme.onSecondaryFixedVariant
                   : Colors.transparent,
               expandedHeight: expandedHeight.toDouble(),
               flexibleSpace: FlexibleSpaceBar(
@@ -228,8 +207,10 @@ class _DetailScreenState extends State<DetailScreen> {
                                       restaurantDetailItem.pictureId,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset('images/images_error.png',
-                                        fit: BoxFit.cover);
+                                    return Image.asset(
+                                      'images/images_error.png',
+                                      fit: BoxFit.cover,
+                                    );
                                   },
                                 ),
                               ),
