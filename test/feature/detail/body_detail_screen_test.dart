@@ -58,13 +58,6 @@ void main() {
       );
     }
 
-    testWidgets('renderBodyDetailScreen_displaysHeroImage',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createWidgetUnderTest());
-
-      expect(find.byType(Hero), findsOneWidget);
-    });
-
     testWidgets('displayRestaurantInformation_correctlyShowsNameRatingAddress',
         (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());

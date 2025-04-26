@@ -56,72 +56,111 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<DetailProvider>();
-    final resultState = provider.resultState;
+    return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.onSecondary,
+        body: Consumer<DetailProvider>(builder: (context, provider, child) {
+          // error state
+          if (provider.isReviewSubmissionComplete) {
+            if (provider.reviewSubmissionError != null) {
+              _showSnackBar(
+                context,
+                provider.reviewSubmissionError!,
+                isError: true,
+              );
+            } else {
+              _showSnackBar(
+                context,
+                Strings.submitReviewSuccess,
+              );
+            }
 
-    // loading state
-    if (resultState is RestaurantDetailLoadingState) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+            // reset the submission state after showing feedback
+            provider.resetReviewSubmissionState();
+          }
 
-    // error state
-    if (resultState is RestaurantDetailErrorState) {
-      return Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          // loading state on initial load
+          if (provider.resultState is RestaurantDetailLoadingState) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          // loading state
+          if (provider.resultState is RestaurantDetailErrorState) {
+            return Center(
+              child: _errorDetail(context,
+                  (provider.resultState as RestaurantDetailErrorState).error),
+            );
+          }
+
+          // show body
+          if (provider.resultState is RestaurantDetailLoadedState) {
+            final restaurantDetailItem =
+                (provider.resultState as RestaurantDetailLoadedState).data;
+            return Stack(
               children: [
-                SizedBox(
-                    width: 350, child: Image.asset("images/general_error.png")),
-                const SizedBox(height: 8),
-                Text(
-                  resultState.error,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => context
-                      .read<DetailProvider>()
-                      .fetchRestaurantDetail(widget.restaurantId),
-                  child: Text(Strings.retry),
-                ),
+                _buildDetailScaffold(context, restaurantDetailItem),
+
+                // show loading and alpha background when submitting a review
+                if (provider.isReviewSubmission)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
               ],
+            );
+          }
+
+          if (provider.cachedData != null) {
+            return Stack(
+              children: [
+                _buildDetailScaffold(context, provider.cachedData!),
+
+                // show loading and alpha background when submitting a review
+                if (provider.isReviewSubmission)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+              ],
+            );
+          }
+
+          // should not reach here
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }));
+  }
+
+  Widget _errorDetail(BuildContext context, String errorMessage) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                width: 350, child: Image.asset("images/general_error.png")),
+            const SizedBox(height: 8),
+            Text(
+              errorMessage,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
             ),
-          ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context
+                  .read<DetailProvider>()
+                  .fetchRestaurantDetail(widget.restaurantId),
+              child: Text(Strings.retry),
+            ),
+          ],
         ),
-      );
-    }
-
-    // show body
-    if (resultState is RestaurantDetailLoadedState &&
-        provider.cachedData != null) {
-      return Stack(
-        children: [
-          _buildDetailScaffold(context, provider.cachedData!),
-
-          // show loading and alpha background when submitting a review
-          if (provider.isReviewSubmission)
-            Container(
-              color: Colors.black.withValues(alpha: 0.3),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-        ],
-      );
-    }
-
-    // default fallback (shouldn't reach here)
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
       ),
     );
   }
