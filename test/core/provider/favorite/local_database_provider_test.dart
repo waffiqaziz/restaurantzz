@@ -41,7 +41,8 @@ void main() {
     });
 
     test('saveRestaurant_errorUpdatesMessageAndNotifiesListeners', () async {
-      when(() => mockService.insertItem(testRestaurant)).thenAnswer((_) async => 0);
+      when(() => mockService.insertItem(testRestaurant))
+          .thenAnswer((_) async => 0);
 
       await provider.saveRestaurant(testRestaurant);
 

@@ -19,12 +19,8 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
     final localDatabaseProvider = context.read<LocalDatabaseProvider>();
     final favoriteIconProvider = context.read<FavoriteIconProvider>();
 
-    Future.microtask(() async {
-      await localDatabaseProvider.loadRestaurantById(widget.restaurant.id);
-      final value =
-          localDatabaseProvider.checkItemBookmark(widget.restaurant.id);
-      favoriteIconProvider.isFavorite = value;
-    });
+    favoriteIconProvider.loadFavoriteState(
+        localDatabaseProvider, widget.restaurant.id);
 
     super.initState();
   }

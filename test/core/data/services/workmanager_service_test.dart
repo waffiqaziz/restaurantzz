@@ -202,76 +202,76 @@ void main() {
   //         )).called(1);
   //   });
 
-    // testWidgets('executeTask_ShowsNoRestaurantsNotification_WhenDataIsEmpty',
-    //     (WidgetTester tester) async {
-    //   when(() => apiService.getRestaurantList()).thenAnswer((_) async =>
-    //       ApiResult.success(RestaurantListResponse(
-    //           restaurants: [], error: true, message: 'not found', count: 0)));
+  // testWidgets('executeTask_ShowsNoRestaurantsNotification_WhenDataIsEmpty',
+  //     (WidgetTester tester) async {
+  //   when(() => apiService.getRestaurantList()).thenAnswer((_) async =>
+  //       ApiResult.success(RestaurantListResponse(
+  //           restaurants: [], error: true, message: 'not found', count: 0)));
 
-    //   callbackDispatcher();
+  //   callbackDispatcher();
 
-    //   verify(() => notificationService.showNotification(
-    //         id: 1,
-    //         title: Strings.dailyNotification,
-    //         body: "No restaurants available.",
-    //         payload: Strings.error,
-    //       )).called(1);
-    // });
+  //   verify(() => notificationService.showNotification(
+  //         id: 1,
+  //         title: Strings.dailyNotification,
+  //         body: "No restaurants available.",
+  //         payload: Strings.error,
+  //       )).called(1);
+  // });
 
-    // testWidgets('executeTask_ShowsErrorNotification_WhenApiReturnsError',
-    //     (WidgetTester tester) async {
-    //   when(() => apiService.getRestaurantList())
-    //       .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
+  // testWidgets('executeTask_ShowsErrorNotification_WhenApiReturnsError',
+  //     (WidgetTester tester) async {
+  //   when(() => apiService.getRestaurantList())
+  //       .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
 
-    //   callbackDispatcher();
+  //   callbackDispatcher();
 
-    //   verify(() => notificationService.showNotification(
-    //         id: 1,
-    //         title: Strings.dailyNotification,
-    //         body: "API Error",
-    //         payload: Strings.error,
-    //       )).called(1);
-    // });
+  //   verify(() => notificationService.showNotification(
+  //         id: 1,
+  //         title: Strings.dailyNotification,
+  //         body: "API Error",
+  //         payload: Strings.error,
+  //       )).called(1);
+  // });
 
-    // testWidgets(
-    //     'executeTask_ShowsUnexpectedErrorNotification_WhenApiThrowsException',
-    //     (WidgetTester tester) async {
-    //   when(() => apiService.getRestaurantList())
-    //       .thenThrow(Exception("Unexpected Error"));
+  // testWidgets(
+  //     'executeTask_ShowsUnexpectedErrorNotification_WhenApiThrowsException',
+  //     (WidgetTester tester) async {
+  //   when(() => apiService.getRestaurantList())
+  //       .thenThrow(Exception("Unexpected Error"));
 
-    //   callbackDispatcher();
+  //   callbackDispatcher();
 
-    //   verify(() => notificationService.showNotification(
-    //         id: 1,
-    //         title: Strings.dailyNotification,
-    //         body: "Unexpected error fetching restaurant data.",
-    //         payload: Strings.error,
-    //       )).called(1);
-    // });
+  //   verify(() => notificationService.showNotification(
+  //         id: 1,
+  //         title: Strings.dailyNotification,
+  //         body: "Unexpected error fetching restaurant data.",
+  //         payload: Strings.error,
+  //       )).called(1);
+  // });
 
-    // testWidgets(
-    //     'executeTask_InitializesNotificationService_BeforeShowingNotification',
-    //     (WidgetTester tester) async {
-    //   callbackDispatcher();
+  // testWidgets(
+  //     'executeTask_InitializesNotificationService_BeforeShowingNotification',
+  //     (WidgetTester tester) async {
+  //   callbackDispatcher();
 
-    //   verify(() => notificationService.init()).called(1);
-    // });
+  //   verify(() => notificationService.init()).called(1);
+  // });
 
-    // testWidgets(
-    //     'executeTask_DisplaysRestaurantNameAndDescriptionInNotification_OnSuccess',
-    //     (WidgetTester tester) async {
-    //   when(() => apiService.getRestaurantList())
-    //       .thenAnswer((_) async => mockRestaurantListResponse);
+  // testWidgets(
+  //     'executeTask_DisplaysRestaurantNameAndDescriptionInNotification_OnSuccess',
+  //     (WidgetTester tester) async {
+  //   when(() => apiService.getRestaurantList())
+  //       .thenAnswer((_) async => mockRestaurantListResponse);
 
-    //   callbackDispatcher();
+  //   callbackDispatcher();
 
-    //   verify(() => notificationService.showNotification(
-    //         id: 1,
-    //         title: mockRestaurantListResponse.data!.restaurants[0].name,
-    //         body: mockRestaurantListResponse.data!.restaurants[0].description,
-    //         payload:
-    //             "${mockRestaurantListResponse!.data?.restaurants[0].id}:list",
-    //       )).called(1);
-    // });
+  //   verify(() => notificationService.showNotification(
+  //         id: 1,
+  //         title: mockRestaurantListResponse.data!.restaurants[0].name,
+  //         body: mockRestaurantListResponse.data!.restaurants[0].description,
+  //         payload:
+  //             "${mockRestaurantListResponse!.data?.restaurants[0].id}:list",
+  //       )).called(1);
+  // });
   // });
 }

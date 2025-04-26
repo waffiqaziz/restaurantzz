@@ -21,6 +21,19 @@ void main() {
   late MockLocalDatabaseService mockLocalDatabaseService;
   late MockFavoriteIconProvider mockFavoriteIconProvider;
 
+  final mockData = RestaurantDetailItem(
+    id: '123',
+    name: 'Test Restaurant',
+    description: 'Test Description',
+    city: 'Test City',
+    address: 'Test Address',
+    pictureId: 'test.jpg',
+    categories: [],
+    menus: Menu(drinks: [], foods: []),
+    rating: 4.5,
+    customerReviews: [],
+  );
+
   setUp(() {
     mockApiServices = MockApiServices();
     mockDetailProvider = MockDetailProvider();
@@ -41,6 +54,9 @@ void main() {
       providers: [
         Provider<ApiServices>.value(
           value: mockApiServices,
+        ),
+        ChangeNotifierProvider<LocalDatabaseProvider>.value(
+          value: mockLocalDatabaseProvider,
         ),
         ChangeNotifierProvider<DetailProvider>.value(
           value: mockDetailProvider,
@@ -79,6 +95,27 @@ void main() {
     verify(() => mockDetailProvider.fetchRestaurantDetail('123')).called(1);
   });
 
+  testWidgets('renderBodyDetailScreen_displaysHeroImage',
+      (WidgetTester tester) async {
+    when(() => mockDetailProvider.fetchRestaurantDetail(any()))
+        .thenAnswer((_) async {});
+    when(() => mockLocalDatabaseProvider.loadRestaurantById(any()))
+        .thenAnswer((_) async {});
+    when(() => mockLocalDatabaseProvider.checkItemBookmark(any()))
+        .thenReturn(false);
+    when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
+    when(() => mockFavoriteIconProvider.loadFavoriteState(
+        mockLocalDatabaseProvider, any())).thenAnswer((_) async {});
+
+    when(() => mockDetailProvider.resultState)
+        .thenReturn(RestaurantDetailLoadedState(mockData));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Hero), findsOneWidget);
+  });
+
   testWidgets('loadingIndicator_showWhenStateIsLoading',
       (WidgetTester tester) async {
     when(() => mockDetailProvider.fetchRestaurantDetail(any()))
@@ -110,19 +147,9 @@ void main() {
         .thenAnswer((_) async {});
     when(() => mockLocalDatabaseProvider.checkItemBookmark(any()))
         .thenReturn(false);
-
-    final mockData = RestaurantDetailItem(
-      id: '123',
-      name: 'Test Restaurant',
-      description: 'Test Description',
-      city: 'Test City',
-      address: 'Test Address',
-      pictureId: 'test.jpg',
-      categories: [],
-      menus: Menu(drinks: [], foods: []),
-      rating: 4.5,
-      customerReviews: [],
-    );
+    when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
+    when(() => mockFavoriteIconProvider.loadFavoriteState(
+        mockLocalDatabaseProvider, any())).thenAnswer((_) async {});
 
     when(() => mockDetailProvider.resultState)
         .thenReturn(RestaurantDetailLoadedState(mockData));
@@ -162,37 +189,65 @@ void main() {
     verify(() => mockDetailProvider.resetReviewSubmissionState()).called(1);
   });
 
-  testWidgets('showRestaurantDetails_whenStateIsLoadedWithCache',
+  testWidgets(
+      'showLoadingOverlay_whenReviewSubmissionIsInProgress_alsoWhenStateIsLoaded',
       (WidgetTester tester) async {
+    when(() => mockDetailProvider.isReviewSubmission).thenReturn(true);
     when(() => mockDetailProvider.fetchRestaurantDetail(any()))
         .thenAnswer((_) async {});
-    when(() => mockLocalDatabaseProvider.loadRestaurantById(any()))
-        .thenAnswer((_) async {});
-    when(() => mockLocalDatabaseProvider.checkItemBookmark(any()))
-        .thenReturn(false);
-
-    final mockCachedData = RestaurantDetailItem(
-      id: '123',
-      name: 'Cached Restaurant',
-      description: 'Cached Description',
-      city: 'Cached City',
-      address: 'Cached Address',
-      pictureId: 'cached.jpg',
-      categories: [],
-      menus: Menu(drinks: [], foods: []),
-      rating: 4.5,
-      customerReviews: [],
-    );
-
     when(() => mockDetailProvider.resultState)
-        .thenReturn(RestaurantDetailLoadedState(mockCachedData));
-    when(() => mockDetailProvider.cachedData).thenReturn(mockCachedData);
+        .thenReturn(RestaurantDetailLoadedState(mockData));
+    when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
+    when(() => mockFavoriteIconProvider.loadFavoriteState(
+        mockLocalDatabaseProvider, any())).thenAnswer((_) async {});
 
     await tester.pumpWidget(createWidgetUnderTest());
 
-    expect(find.text('Cached Restaurant'), findsOneWidget);
-    expect(find.text('Cached Description'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(
+        find.byWidgetPredicate((widget) =>
+            widget is Container &&
+            widget.color == Colors.black.withValues(alpha: 0.3)),
+        findsOneWidget);
   });
+
+  testWidgets('retryButton_callsFetchRestaurantDetailOnPressed',
+      (WidgetTester tester) async {
+    when(() => mockDetailProvider.resultState)
+        .thenReturn(RestaurantDetailErrorState('Error loading details', '123'));
+    when(() => mockDetailProvider.fetchRestaurantDetail(any()))
+        .thenAnswer((_) async {});
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    expect(find.byType(ElevatedButton), findsOneWidget);
+    expect(find.text(Strings.retry), findsOneWidget);
+
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    // called two times: once on initial load and once on retry button press
+    verify(() => mockDetailProvider.fetchRestaurantDetail('123')).called(2);
+  });
+
+  // TODO: Not yet tested press to close the detail screen
+  // testWidgets('iconButton_navigatesBackOnPressed', (WidgetTester tester) async {
+  //   when(() => mockDetailProvider.isReviewSubmission).thenReturn(true);
+  //   when(() => mockDetailProvider.fetchRestaurantDetail(any()))
+  //       .thenAnswer((_) async {});
+  //   when(() => mockDetailProvider.resultState)
+  //       .thenReturn(RestaurantDetailLoadedState(mockData));
+  //   when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
+  //   when(() => mockFavoriteIconProvider.loadFavoriteState(
+  //       mockLocalDatabaseProvider, any())).thenAnswer((_) async {});
+  //   await tester.pumpWidget(createWidgetUnderTest());
+  //   await tester.pumpAndSettle();
+
+  //   await tester.tap(find.byType(CircleAvatar).first);
+  //   await tester.pumpAndSettle();
+
+  //   expect(find.byType(DetailScreen), findsNothing);
+  // });
 
   // TODO: Not yet tested pull to refresh detail screen
   // testWidgets('refreshRestaurantDetails_whenPulledToRefresh',

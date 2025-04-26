@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
-import 'package:restaurantzz/core/common/constants.dart';
 import 'package:restaurantzz/core/common/strings.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/provider/detail/favorite_icon_provider.dart';
@@ -30,41 +29,9 @@ class BodyDetailScreen extends StatelessWidget {
         child: SizedBox(
           width: 900,
           child: Container(
-            color: Theme.of(context).colorScheme.secondaryContainer,
+            color: Theme.of(context).colorScheme.primaryContainer,
             child: Column(
               children: [
-                // image
-                Hero(
-                  tag: "${restaurantDetailItem.pictureId}_$heroTag",
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(16.0),
-                      bottomRight: Radius.circular(16.0),
-                    ),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Image.network(
-                        Constants.imageURLMediumResolution +
-                            restaurantDetailItem.pictureId,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'images/images_error.png',
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox.square(dimension: 8),
 
                 // restaurant information
@@ -102,13 +69,14 @@ class BodyDetailScreen extends StatelessWidget {
                                       flex: 1,
                                       child: Align(
                                         alignment: Alignment.topRight,
-                                        child: ChangeNotifierProvider(
-                                          create: (context) =>
-                                              FavoriteIconProvider(),
-                                          child: FavoriteIconWidget(
-                                            restaurant: restaurantDetailItem
-                                                .toRestaurant(),
-                                          ),
+                                        child: Consumer<FavoriteIconProvider>(
+                                          builder: (context,
+                                              favoriteIconProvider, child) {
+                                            return FavoriteIconWidget(
+                                              restaurant: restaurantDetailItem
+                                                  .toRestaurant(),
+                                            );
+                                          },
                                         ),
                                       ),
                                     )

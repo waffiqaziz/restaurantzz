@@ -16,7 +16,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(UriFake());
   });
-  
+
   group('DetailProvider', () {
     late DetailProvider detailProvider;
     late MockHttpClient mockHttpClient;

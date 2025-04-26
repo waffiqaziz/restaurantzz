@@ -9,7 +9,8 @@ void main() {
       final scrollBehavior = CustomScrollBehavior();
 
       // Assert that the dragDevices set contains touch and mouse kinds
-      expect(scrollBehavior.dragDevices, containsAll([PointerDeviceKind.touch, PointerDeviceKind.mouse]));
+      expect(scrollBehavior.dragDevices,
+          containsAll([PointerDeviceKind.touch, PointerDeviceKind.mouse]));
     });
   });
 }

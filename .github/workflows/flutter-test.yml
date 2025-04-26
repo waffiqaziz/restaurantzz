@@ -11,7 +11,24 @@ on:
       - "**/*.md"
 
 jobs:
+  analyze:
+    name: Analyze Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.27.4
+          channel: stable
+          cache: true
+      
+      - name: Analyze Dart code
+        run: flutter analyze --no-fatal-infos
+
   unit_widget_test_code_coverage:
+    needs: analyze
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -45,6 +62,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   upload_test_codecov:
+    needs: analyze
     runs-on: ubuntu-latest
 
     steps:
@@ -79,6 +97,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       
   instrumented_test_iOS:
+    needs: analyze
     runs-on: macOS-latest
 
     steps:
@@ -100,6 +119,7 @@ jobs:
         run: flutter test integration_test
 
   instrumented_test_android:
+    needs: analyze
     runs-on: ubuntu-latest
     timeout-minutes: 30
     continue-on-error: true
