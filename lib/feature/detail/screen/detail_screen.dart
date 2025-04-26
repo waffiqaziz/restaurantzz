@@ -171,6 +171,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
     // Calculate height based on aspect ratio
     final dynamicHeight = screenWidth / (16 / 9);
+    final expandedHeight = dynamicHeight > 400 ? 400 : dynamicHeight; // Cap at 400
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -196,8 +197,8 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
               backgroundColor: innerBoxIsScrolled
                   ? Theme.of(context).colorScheme.secondaryContainer
-                  : Theme.of(context).colorScheme.primaryContainer,
-              expandedHeight: dynamicHeight,
+                  : Colors.transparent,
+              expandedHeight: expandedHeight.toDouble(),
               flexibleSpace: FlexibleSpaceBar(
                 collapseMode: CollapseMode.pin,
                 background: Stack(
@@ -210,24 +211,27 @@ class _DetailScreenState extends State<DetailScreen> {
                         final imageWidth =
                             screenWidth > 900 ? 900 : screenWidth;
 
-                        return SizedBox(
-                          width: imageWidth.toDouble(), // max width for image
-                          child: Hero(
-                            tag:
-                                "${restaurantDetailItem.pictureId}_${widget.heroTag}",
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(16.0),
-                                bottomRight: Radius.circular(16.0),
-                              ),
-                              child: Image.network(
-                                Constants.imageURLMediumResolution +
-                                    restaurantDetailItem.pictureId,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset('images/images_error.png',
-                                      fit: BoxFit.cover);
-                                },
+                        return Container(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          child: SizedBox(
+                            width: imageWidth.toDouble(), // max width for image
+                            child: Hero(
+                              tag:
+                                  "${restaurantDetailItem.pictureId}_${widget.heroTag}",
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(16.0),
+                                  bottomRight: Radius.circular(16.0),
+                                ),
+                                child: Image.network(
+                                  Constants.imageURLMediumResolution +
+                                      restaurantDetailItem.pictureId,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset('images/images_error.png',
+                                        fit: BoxFit.cover);
+                                  },
+                                ),
                               ),
                             ),
                           ),
