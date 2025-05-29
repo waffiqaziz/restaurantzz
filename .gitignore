@@ -14,7 +14,11 @@ migrate_working_dir/
 *.iml
 *.ipr
 *.iws
-.idea/
+# Ignore everything in .idea
+.idea/*
+
+# Except runConfigurations folder
+!.idea/runConfigurations/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
