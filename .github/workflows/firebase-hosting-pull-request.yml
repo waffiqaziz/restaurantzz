@@ -6,6 +6,10 @@ on:
   pull_request:
     paths-ignore:
       - "**/*.md"
+
+env:
+  FLUTTER_VERSION: 3.27.4
+
 permissions:
   checks: write
   contents: read
@@ -22,8 +26,12 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable # Defaults to the latest stable version
-      - run: flutter --version
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Verify Flutter installation
+        run: flutter --version
 
       # Flutter dependencies setup
       - name: Install Flutter dependencies

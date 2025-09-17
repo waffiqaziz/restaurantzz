@@ -10,6 +10,9 @@ on:
     paths-ignore:
       - "**/*.md"
 
+env:
+  FLUTTER_VERSION: 3.27.4
+
 jobs:
   analyze:
     name: Analyze Code
@@ -20,7 +23,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.27.4
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
       
@@ -40,7 +43,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.27.4
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install packages
@@ -71,7 +74,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.27.4
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install packages
@@ -105,12 +108,12 @@ jobs:
 
       - uses: futureware-tech/simulator-action@v4
         with:
-          model: "iPhone 15"
+          model: "iPhone 16"
 
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: 3.27.4
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - run: flutter pub get
@@ -143,7 +146,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: 3.27.4
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - run: flutter pub get
