@@ -70,17 +70,25 @@ class LocalNotificationService {
       final iOSImplementation =
           flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin>();
-      return await iOSImplementation?.requestPermissions(
+      final result = await iOSImplementation?.requestPermissions(
         alert: true,
         badge: true,
         sound: true,
       );
+      debugPrint('iOS notification permissions granted: $result');
+      return result;
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final notificationEnabled = await _isAndroidPermissionGranted();
       final requestAlarmEnabled = await _requestExactAlarmsPermission();
+
+      debugPrint('Android notification enabled: $notificationEnabled');
+      debugPrint('Android exact alarm enabled: $requestAlarmEnabled');
+
       if (!notificationEnabled) {
         final requestNotificationsPermission =
             await _requestAndroidNotificationsPermission();
+        debugPrint(
+            'Requested notification permission: $requestNotificationsPermission');
         return requestNotificationsPermission && requestAlarmEnabled;
       }
       return notificationEnabled && requestAlarmEnabled;
@@ -127,16 +135,79 @@ class LocalNotificationService {
     tz.initializeTimeZones();
     final String timeZoneName = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(timeZoneName));
+    debugPrint('Configured timezone: $timeZoneName');
+    debugPrint('Current local time: ${tz.TZDateTime.now(tz.local)}');
   }
 
-  tz.TZDateTime _nextInstanceOfElevenAM() {
+  tz.TZDateTime _nextInstanceOfCustomTime(
+      {int hour = 11, int minute = 0, int? testMinutesFromNow}) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    if (testMinutesFromNow != null) {
+      final testTime = now.add(Duration(minutes: testMinutesFromNow));
+      debugPrint(
+          'TEST MODE: Scheduling notification for $testMinutesFromNow minutes from now: $testTime');
+      return testTime;
+    }
+
     tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+
+    // If it's already past the target time today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
+
+    debugPrint('Current time: $now');
+    debugPrint('Scheduled time: $scheduledDate');
+    debugPrint('Time until notification: ${scheduledDate.difference(now)}');
+
     return scheduledDate;
+  }
+
+  tz.TZDateTime _nextInstanceOfElevenAM() {
+    return _nextInstanceOfCustomTime(hour: 11, minute: 0);
+  }
+
+  Future<void> scheduleTestNotification({required int id}) async {
+    await configureLocalTimeZone();
+
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'test_notification',
+      'Test Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'Test Notification',
+      sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      sound: 'slow_spring_board.aiff',
+      presentSound: true,
+    );
+
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    final testTime = _nextInstanceOfCustomTime(testMinutesFromNow: 2);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      'Test Scheduled Notification',
+      'This is a test notification scheduled for 2 minutes from now',
+      testTime,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      payload: 'test:scheduled',
+    );
+
+    print('Test notification scheduled for: $testTime');
   }
 
   Future<void> scheduleDailyElevenAMNotification({

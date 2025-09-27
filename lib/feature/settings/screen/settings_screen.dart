@@ -19,6 +19,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     BuildContext context,
     SharedPreferencesProvider provider,
   ) {
+    final localNotificationProvider = context.read<LocalNotificationProvider>();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -44,9 +46,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               provider.saveSettingValue(updatedSetting);
 
               if (value) {
+                // Start WorkManager for daily API fetching + notification
                 await _scheduleDailyElevenAMNotificationWithWorkManager();
+                localNotificationProvider.scheduleDailyElevenAMNotification();
+                debugPrint(
+                    "✅ Daily notifications enabled - WorkManager will handle API + notifications at 11 AM");
               } else {
+                // Stop everything
                 _cancelAllTaskInBackground();
+
+                debugPrint("❌ Daily notifications disabled");
               }
             } catch (e) {
               if (!context.mounted) {
@@ -80,6 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<SharedPreferencesProvider>();
+    final localNotificationProvider = context.read<LocalNotificationProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -147,6 +157,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
               ),
+
+            ElevatedButton(
+              onPressed: () {
+                localNotificationProvider.showNotification();
+              },
+              child: Text('Test Notification'),
+            ),
+
+            // button to check pending notifications for debugging
+            ElevatedButton(
+              onPressed: () async {
+                await localNotificationProvider
+                    .checkPendingNotificationRequests();
+                final count = localNotificationProvider
+                    .pendingNotificationRequests.length;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Pending notifications: $count')),
+                );
+              },
+              child: Text('Check Pending Notifications'),
+            ),
           ],
         ),
       ),
