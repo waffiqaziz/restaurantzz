@@ -78,7 +78,6 @@ class DetailProvider extends ChangeNotifier {
     try {
       _isReviewSubmission = true;
       _reviewSubmissionError = null;
-      notifyListeners();
 
       final result = await _apiServices.postReview(id, name, review);
 

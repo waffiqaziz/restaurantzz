@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:restaurantzz/core/data/model/received_notification.dart';
+import 'package:restaurantzz/core/utils/logger.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -13,8 +14,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
-final StreamController<String?> selectNotificationStream =
-    StreamController<String?>.broadcast();
+final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 
 class LocalNotificationService {
   Future<void> init() async {
@@ -43,52 +43,46 @@ class LocalNotificationService {
 
   Future<bool> _isAndroidPermissionGranted() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.areNotificationsEnabled() ??
         false;
   }
 
   Future<bool> _requestAndroidNotificationsPermission() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.requestNotificationsPermission() ??
         false;
   }
 
   Future<bool> _requestExactAlarmsPermission() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.requestExactAlarmsPermission() ??
         false;
   }
 
   Future<bool?> requestPermissions() async {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final iOSImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>();
+      final iOSImplementation = flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
       final result = await iOSImplementation?.requestPermissions(
         alert: true,
         badge: true,
         sound: true,
       );
-      debugPrint('iOS notification permissions granted: $result');
+      logger.i('iOS notification permissions granted: $result');
       return result;
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final notificationEnabled = await _isAndroidPermissionGranted();
       final requestAlarmEnabled = await _requestExactAlarmsPermission();
 
-      debugPrint('Android notification enabled: $notificationEnabled');
-      debugPrint('Android exact alarm enabled: $requestAlarmEnabled');
+      logger.i('Android notification enabled: $notificationEnabled');
+      logger.i('Android exact alarm enabled: $requestAlarmEnabled');
 
       if (!notificationEnabled) {
-        final requestNotificationsPermission =
-            await _requestAndroidNotificationsPermission();
-        debugPrint(
-            'Requested notification permission: $requestNotificationsPermission');
+        final requestNotificationsPermission = await _requestAndroidNotificationsPermission();
+        logger.i('Requested notification permission: $requestNotificationsPermission');
         return requestNotificationsPermission && requestAlarmEnabled;
       }
       return notificationEnabled && requestAlarmEnabled;
@@ -133,10 +127,11 @@ class LocalNotificationService {
 
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
-    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
-    debugPrint('Configured timezone: $timeZoneName');
-    debugPrint('Current local time: ${tz.TZDateTime.now(tz.local)}');
+    final timeZoneName = await FlutterTimezone.getLocalTimezone();
+    final location = tz.getLocation(timeZoneName.identifier);
+    tz.setLocalLocation(location);
+    logger.i('Configured timezone: $location');
+    logger.i('Current local time: ${tz.TZDateTime.now(tz.local)}');
   }
 
   tz.TZDateTime _nextInstanceOfCustomTime(
@@ -145,7 +140,7 @@ class LocalNotificationService {
 
     if (testMinutesFromNow != null) {
       final testTime = now.add(Duration(minutes: testMinutesFromNow));
-      debugPrint(
+      logger.i(
           'TEST MODE: Scheduling notification for $testMinutesFromNow minutes from now: $testTime');
       return testTime;
     }
@@ -158,9 +153,9 @@ class LocalNotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
-    debugPrint('Current time: $now');
-    debugPrint('Scheduled time: $scheduledDate');
-    debugPrint('Time until notification: ${scheduledDate.difference(now)}');
+    logger.i('Current time: $now');
+    logger.i('Scheduled time: $scheduledDate');
+    logger.i('Time until notification: ${scheduledDate.difference(now)}');
 
     return scheduledDate;
   }
@@ -202,12 +197,10 @@ class LocalNotificationService {
       testTime,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
       payload: 'test:scheduled',
     );
 
-    print('Test notification scheduled for: $testTime');
+    logger.i('Test notification scheduled for: $testTime');
   }
 
   Future<void> scheduleDailyElevenAMNotification({
@@ -238,8 +231,6 @@ class LocalNotificationService {
       datetimeSchedule,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }

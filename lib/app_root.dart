@@ -17,6 +17,7 @@ import 'package:restaurantzz/core/provider/search/search_provider.dart';
 import 'package:restaurantzz/core/provider/setting/shared_preferences_provider.dart';
 import 'package:restaurantzz/my_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 class AppRoot extends StatelessWidget {
   final SharedPreferences prefs;
@@ -82,7 +83,7 @@ class AppRoot extends StatelessWidget {
           ),
         ),
         Provider(
-          create: (context) => WorkmanagerService()..init(),
+          create: (context) => WorkmanagerService(Workmanager())..init(),
         ),
       ],
       child: MyApp(

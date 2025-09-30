@@ -37,6 +37,13 @@ class LocalNotificationProvider extends ChangeNotifier {
     flutterNotificationService.scheduleDailyElevenAMNotification(
       id: _notificationId,
     );
+  } 
+  
+   void scheduleTestNotification() {
+    _notificationId += 1;
+    flutterNotificationService.scheduleTestNotification(
+      id: _notificationId,
+    );
   }
 
   Future<void> checkPendingNotificationRequests() async {

@@ -6,6 +6,7 @@ import 'package:restaurantzz/core/data/model/setting.dart';
 import 'package:restaurantzz/core/data/services/workmanager_service.dart';
 import 'package:restaurantzz/core/provider/notification/local_notification_provider.dart';
 import 'package:restaurantzz/core/provider/setting/shared_preferences_provider.dart';
+import 'package:restaurantzz/core/utils/logger.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -49,13 +50,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Start WorkManager for daily API fetching + notification
                 await _scheduleDailyElevenAMNotificationWithWorkManager();
                 localNotificationProvider.scheduleDailyElevenAMNotification();
-                debugPrint(
+                logger.i(
                     "✅ Daily notifications enabled - WorkManager will handle API + notifications at 11 AM");
               } else {
                 // Stop everything
                 _cancelAllTaskInBackground();
 
-                debugPrint("❌ Daily notifications disabled");
+                logger.i("❌ Daily notifications disabled");
               }
             } catch (e) {
               if (!context.mounted) {
@@ -162,7 +163,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () {
                 localNotificationProvider.showNotification();
               },
-              child: Text('Test Notification'),
+              child: Text('Test Notification Immediately'),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                localNotificationProvider.scheduleTestNotification();
+              },
+              child: Text('Test Notification Two Minues'),
             ),
 
             // button to check pending notifications for debugging
