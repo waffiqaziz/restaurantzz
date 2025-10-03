@@ -39,9 +39,7 @@ jobs:
         run: flutter build web --release
 
       - name: Run sqflite web
-        run: |
-          dart run sqflite_common_ffi_web:setup
-          dart run sqflite_common_ffi_web:setup --force
+        run: dart run sqflite_common_ffi_web:setup
         
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
