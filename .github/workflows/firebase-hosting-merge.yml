@@ -10,7 +10,7 @@ on:
       - "**/*.md"
 
 env:
-  FLUTTER_VERSION: 3.27.4
+  FLUTTER_VERSION: 3.35.3
 
 jobs:
   build_and_deploy:
@@ -37,6 +37,11 @@ jobs:
       # Build the Flutter web project
       - name: Build Flutter Web
         run: flutter build web --release
+
+      - name: Run sqflite web
+        run: |
+          dart run sqflite_common_ffi_web:setup
+          dart run sqflite_common_ffi_web:setup --force
         
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
