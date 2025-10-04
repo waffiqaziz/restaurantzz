@@ -37,12 +37,12 @@ jobs:
       - name: Install Flutter dependencies
         run: flutter pub get
 
+      - name: Run sqflite web
+        run: dart run sqflite_common_ffi_web:setup
+
       # Build the Flutter web project
       - name: Build Flutter Web
         run: flutter build web --release
-
-      - name: Run sqflite web
-        run: dart run sqflite_common_ffi_web:setup
         
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
