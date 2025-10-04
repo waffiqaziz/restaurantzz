@@ -19,8 +19,7 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
     final localDatabaseProvider = context.read<LocalDatabaseProvider>();
     final favoriteIconProvider = context.read<FavoriteIconProvider>();
 
-    favoriteIconProvider.loadFavoriteState(
-        localDatabaseProvider, widget.restaurant.id);
+    favoriteIconProvider.loadFavoriteState(localDatabaseProvider, widget.restaurant.id);
 
     super.initState();
   }
@@ -36,8 +35,7 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
         if (!isFavorite) {
           await localDatabaseProvider.saveRestaurant(widget.restaurant);
         } else {
-          await localDatabaseProvider
-              .removeRestaurantById(widget.restaurant.id);
+          await localDatabaseProvider.removeRestaurantById(widget.restaurant.id);
         }
         favoriteIconProvider.isFavorite = !isFavorite;
         localDatabaseProvider.loadAllRestaurant();

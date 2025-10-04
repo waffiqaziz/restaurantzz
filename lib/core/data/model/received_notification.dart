@@ -4,10 +4,5 @@ class ReceivedNotification {
   final String? body;
   final String? payload;
 
-  ReceivedNotification({
-    this.id,
-    this.title,
-    this.body,
-    this.payload,
-  });
+  ReceivedNotification({this.id, this.title, this.body, this.payload});
 }

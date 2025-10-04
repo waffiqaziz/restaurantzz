@@ -20,8 +20,7 @@ class SharedPreferencesProvider extends ChangeNotifier {
       final savedSetting = _service.getSettingValue();
 
       final isDarkSystem =
-          WidgetsBinding.instance.platformDispatcher.platformBrightness ==
-              Brightness.dark;
+          WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
       _setting = Setting(
         notificationEnable: savedSetting.notificationEnable,
         isDark: _service.isDarkModeSet() ? savedSetting.isDark : isDarkSystem,
@@ -47,10 +46,7 @@ class SharedPreferencesProvider extends ChangeNotifier {
   Future<void> setTheme(bool isDark) async {
     try {
       await _service.setTheme(isDark);
-      _setting = Setting(
-        notificationEnable: _setting!.notificationEnable,
-        isDark: isDark,
-      );
+      _setting = Setting(notificationEnable: _setting!.notificationEnable, isDark: isDark);
       _message = "Theme successfully updated.";
     } catch (e) {
       _message = "Failed to update theme. Please try again.";

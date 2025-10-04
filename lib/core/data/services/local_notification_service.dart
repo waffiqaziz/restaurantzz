@@ -18,9 +18,7 @@ final StreamController<String?> selectNotificationStream = StreamController<Stri
 
 class LocalNotificationService {
   Future<void> init() async {
-    const initializationSettingsAndroid = AndroidInitializationSettings(
-      'app_icon',
-    );
+    const initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
     const initializationSettingsDarwin = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -134,19 +132,29 @@ class LocalNotificationService {
     logger.i('Current local time: ${tz.TZDateTime.now(tz.local)}');
   }
 
-  tz.TZDateTime _nextInstanceOfCustomTime(
-      {int hour = 11, int minute = 0, int? testMinutesFromNow}) {
+  tz.TZDateTime _nextInstanceOfCustomTime({
+    int hour = 11,
+    int minute = 0,
+    int? testMinutesFromNow,
+  }) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
 
     if (testMinutesFromNow != null) {
       final testTime = now.add(Duration(minutes: testMinutesFromNow));
       logger.i(
-          'TEST MODE: Scheduling notification for $testMinutesFromNow minutes from now: $testTime');
+        'TEST MODE: Scheduling notification for $testMinutesFromNow minutes from now: $testTime',
+      );
       return testTime;
     }
 
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
 
     // If it's already past the target time today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {

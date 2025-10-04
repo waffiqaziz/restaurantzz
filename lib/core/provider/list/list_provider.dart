@@ -27,9 +27,7 @@ class ListProvider extends ChangeNotifier {
           _resultState = RestaurantListLoadedState(result.data!.restaurants);
         }
       } else {
-        _resultState = RestaurantListErrorState(
-          result.message ?? "Unknown error occurred",
-        );
+        _resultState = RestaurantListErrorState(result.message ?? "Unknown error occurred");
       }
 
       notifyListeners();
@@ -39,9 +37,7 @@ class ListProvider extends ChangeNotifier {
           "Unexpected response type from the server. Please contact support.",
         );
       } else {
-        _resultState = RestaurantListErrorState(
-          "An unexpected error occurred: ${e.toString()}",
-        );
+        _resultState = RestaurantListErrorState("An unexpected error occurred: ${e.toString()}");
       }
       notifyListeners();
     }

@@ -7,7 +7,9 @@ class FavoriteIconProvider extends ChangeNotifier {
   bool get isFavorite => _isFavorite;
 
   Future<void> loadFavoriteState(
-      LocalDatabaseProvider databaseProvider, String restaurantId) async {
+    LocalDatabaseProvider databaseProvider,
+    String restaurantId,
+  ) async {
     await databaseProvider.loadRestaurantById(restaurantId);
     _isFavorite = databaseProvider.checkItemBookmark(restaurantId);
     notifyListeners();

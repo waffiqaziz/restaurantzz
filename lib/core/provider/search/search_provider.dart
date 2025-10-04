@@ -47,19 +47,14 @@ class SearchProvider extends ChangeNotifier {
           } else if (result.data!.error) {
             _resultState = RestaurantSearchErrorState("Please try again later");
           } else {
-            _resultState =
-                RestaurantSearchLoadedState(result.data!.restaurants);
+            _resultState = RestaurantSearchLoadedState(result.data!.restaurants);
           }
         } else {
-          _resultState = RestaurantSearchErrorState(
-            result.message ?? "Unknown error occurred",
-          );
+          _resultState = RestaurantSearchErrorState(result.message ?? "Unknown error occurred");
         }
         notifyListeners();
       } catch (e) {
-        _resultState = RestaurantSearchErrorState(
-          "An unexpected error occurred: ${e.toString()}",
-        );
+        _resultState = RestaurantSearchErrorState("An unexpected error occurred: ${e.toString()}");
         notifyListeners();
       }
     }

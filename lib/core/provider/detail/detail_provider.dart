@@ -53,23 +53,23 @@ class DetailProvider extends ChangeNotifier {
       if (result.data != null) {
         if (result.data!.error) {
           _resultState = RestaurantDetailErrorState(
-              result.message ??
-                  result.data?.message ??
-                  "Unknown error occurred",
-              id);
+            result.message ?? result.data?.message ?? "Unknown error occurred",
+            id,
+          );
         } else {
           _cache[id] = result.data!.restaurant;
           _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
         }
       } else {
-        _resultState = RestaurantDetailErrorState(
-            result.message ?? "Unknown error occurred", id);
+        _resultState = RestaurantDetailErrorState(result.message ?? "Unknown error occurred", id);
       }
 
       notifyListeners();
     } catch (e) {
       _resultState = RestaurantDetailErrorState(
-          "An unexpected error occurred: ${e.toString()}", id);
+        "An unexpected error occurred: ${e.toString()}",
+        id,
+      );
       notifyListeners();
     }
   }
@@ -83,14 +83,11 @@ class DetailProvider extends ChangeNotifier {
 
       if (result.data != null && !result.data!.error) {
         if (_cache.containsKey(id)) {
-          _cache[id] = _cache[id]!.copyWith(
-            customerReviews: result.data!.customerReviews,
-          );
+          _cache[id] = _cache[id]!.copyWith(customerReviews: result.data!.customerReviews);
           _resultState = RestaurantDetailLoadedState(_cache[id]!);
         }
       } else {
-        _reviewSubmissionError =
-            "Failed to submit the review. Please try again.";
+        _reviewSubmissionError = "Failed to submit the review. Please try again.";
       }
       notifyListeners();
     } catch (e) {

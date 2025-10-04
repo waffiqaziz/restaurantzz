@@ -22,10 +22,7 @@ class ReviewsWidget extends StatelessWidget {
           children: [
             Text(
               Strings.reviews,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox.square(dimension: 8),
             ExpansionTile(
@@ -33,9 +30,7 @@ class ReviewsWidget extends StatelessWidget {
               children: [
                 SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxHeight: 300.0,
-                    ),
+                    constraints: const BoxConstraints(maxHeight: 300.0),
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: customerReviews.length,
@@ -43,9 +38,7 @@ class ReviewsWidget extends StatelessWidget {
                         final review = customerReviews[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 4,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -55,18 +48,14 @@ class ReviewsWidget extends StatelessWidget {
                                 // reviewer name
                                 Text(
                                   review.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
 
                                 // date review
-                                Text(
-                                  review.date,
-                                  style: Theme.of(context).textTheme.labelSmall,
-                                ),
+                                Text(review.date, style: Theme.of(context).textTheme.labelSmall),
                                 const SizedBox(height: 12),
 
                                 // review message

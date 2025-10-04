@@ -75,81 +75,65 @@ class _SearchScreenState extends State<SearchScreen> {
           builder: (context, value, child) {
             return switch (value.resultState) {
               RestaurantSearchNotFoundState() => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "images/not-found.png",
-                      width: 200,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      Strings.sorry,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      Strings.noResult,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-              RestaurantSearchLoadingState() => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              RestaurantSearchLoadedState(data: var restaurantList) =>
-                ListView.builder(
-                  itemCount: restaurantList.length,
-                  itemBuilder: (context, index) {
-                    final restaurant = restaurantList[index];
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("images/not-found.png", width: 200),
+                  const SizedBox(height: 8),
+                  Text(
+                    Strings.sorry,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    Strings.noResult,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+              RestaurantSearchLoadingState() => const Center(child: CircularProgressIndicator()),
+              RestaurantSearchLoadedState(data: var restaurantList) => ListView.builder(
+                itemCount: restaurantList.length,
+                itemBuilder: (context, index) {
+                  final restaurant = restaurantList[index];
 
-                    return RestaurantCard(
-                      restaurant: restaurant,
-                      heroTag: "search",
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          NavigationRoute.detailRoute.name,
-                          arguments: {
-                            'restaurantId': restaurant.id,
-                            'heroTag': 'search',
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-              RestaurantSearchErrorState(error: var message) =>
-                RefreshIndicator(
-                  onRefresh: () async {
-                    await context
-                        .read<SearchProvider>()
-                        .fetchRestaurantList(query);
-                  },
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "images/general_error.png",
-                              width: 200,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              message,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                  return RestaurantCard(
+                    restaurant: restaurant,
+                    heroTag: "search",
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        NavigationRoute.detailRoute.name,
+                        arguments: {'restaurantId': restaurant.id, 'heroTag': 'search'},
+                      );
+                    },
+                  );
+                },
+              ),
+              RestaurantSearchErrorState(error: var message) => RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<SearchProvider>().fetchRestaurantList(query);
+                },
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Image.asset("images/general_error.png", width: 200),
+                          const SizedBox(height: 8),
+                          Text(
+                            message,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
+              ),
               _ => const SizedBox(),
             };
           },

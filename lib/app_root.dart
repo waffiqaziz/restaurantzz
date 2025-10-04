@@ -29,43 +29,19 @@ class AppRoot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => IndexNavProvider(),
-        ),
-        Provider(
-          create: (context) => ApiServices(httpClient: http.Client()),
-        ),
+        ChangeNotifierProvider(create: (context) => IndexNavProvider()),
+        Provider(create: (context) => ApiServices(httpClient: http.Client())),
         ChangeNotifierProvider(create: (context) => FavoriteIconProvider()),
+        ChangeNotifierProvider(create: (context) => ListProvider(context.read<ApiServices>())),
+        ChangeNotifierProvider(create: (context) => DetailProvider(context.read<ApiServices>())),
+        ChangeNotifierProvider(create: (context) => SearchProvider(context.read<ApiServices>())),
+        Provider(create: (context) => LocalDatabaseService()),
         ChangeNotifierProvider(
-          create: (context) => ListProvider(
-            context.read<ApiServices>(),
-          ),
+          create: (context) => LocalDatabaseProvider(context.read<LocalDatabaseService>()),
         ),
+        Provider(create: (context) => SharedPreferencesService(prefs)),
         ChangeNotifierProvider(
-          create: (context) => DetailProvider(
-            context.read<ApiServices>(),
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SearchProvider(
-            context.read<ApiServices>(),
-          ),
-        ),
-        Provider(
-          create: (context) => LocalDatabaseService(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => LocalDatabaseProvider(
-            context.read<LocalDatabaseService>(),
-          ),
-        ),
-        Provider(
-          create: (context) => SharedPreferencesService(prefs),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SharedPreferencesProvider(
-            context.read<SharedPreferencesService>(),
-          ),
+          create: (context) => SharedPreferencesProvider(context.read<SharedPreferencesService>()),
         ),
         Provider(
           create: (context) => LocalNotificationService()
@@ -73,23 +49,14 @@ class AppRoot extends StatelessWidget {
             ..configureLocalTimeZone(),
         ),
         ChangeNotifierProvider(
-          create: (context) => LocalNotificationProvider(
-            context.read<LocalNotificationService>(),
-          )..requestPermissions(),
+          create: (context) =>
+              LocalNotificationProvider(context.read<LocalNotificationService>())
+                ..requestPermissions(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => PayloadProvider(
-            payload: initialPayload,
-          ),
-        ),
-        Provider(
-          create: (context) => WorkmanagerService(Workmanager())..init(),
-        ),
+        ChangeNotifierProvider(create: (context) => PayloadProvider(payload: initialPayload)),
+        Provider(create: (context) => WorkmanagerService(Workmanager())..init()),
       ],
-      child: MyApp(
-        prefs: prefs,
-        initialPayload: initialPayload,
-      ),
+      child: MyApp(prefs: prefs, initialPayload: initialPayload),
     );
   }
 }
