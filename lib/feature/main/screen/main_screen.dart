@@ -17,12 +17,7 @@ class MainScreen extends StatelessWidget {
         builder: (context, value, child) {
           return IndexedStack(
             index: value.indexBottomNavBar,
-            children: const [
-              ListScreen(),
-              SearchScreen(),
-              FavoriteScreen(),
-              SettingsScreen(),
-            ],
+            children: const [ListScreen(), SearchScreen(), FavoriteScreen(), SettingsScreen()],
           );
         },
       ),

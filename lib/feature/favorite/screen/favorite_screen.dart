@@ -27,10 +27,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       appBar: AppBar(
         title: Text(
           Strings.yourFavorite,
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall
-              ?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
       body: Consumer<LocalDatabaseProvider>(
@@ -39,53 +36,46 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
           return switch (favoriteList.isNotEmpty) {
             true => ListView.builder(
-                itemCount: favoriteList.length,
-                itemBuilder: (context, index) {
-                  final restaurant = favoriteList[index];
+              itemCount: favoriteList.length,
+              itemBuilder: (context, index) {
+                final restaurant = favoriteList[index];
 
-                  return RestaurantCard(
-                    restaurant: restaurant,
-                    heroTag: "favorite",
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        NavigationRoute.detailRoute.name,
-                        arguments: {
-                          'restaurantId': restaurant.id,
-                          'heroTag': 'favorite',
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
+                return RestaurantCard(
+                  restaurant: restaurant,
+                  heroTag: "favorite",
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      NavigationRoute.detailRoute.name,
+                      arguments: {'restaurantId': restaurant.id, 'heroTag': 'favorite'},
+                    );
+                  },
+                );
+              },
+            ),
             _ => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "images/empty.png",
-                        width: 200,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        Strings.sorry,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        Strings.noFavorite,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("images/empty.png", width: 200),
+                    const SizedBox(height: 8),
+                    Text(
+                      Strings.sorry,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      Strings.noFavorite,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
               ),
+            ),
           };
         },
       ),

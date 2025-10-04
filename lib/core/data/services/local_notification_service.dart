@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:restaurantzz/core/data/model/received_notification.dart';
+import 'package:restaurantzz/core/utils/logger.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -13,14 +14,11 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
-final StreamController<String?> selectNotificationStream =
-    StreamController<String?>.broadcast();
+final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 
 class LocalNotificationService {
   Future<void> init() async {
-    const initializationSettingsAndroid = AndroidInitializationSettings(
-      'app_icon',
-    );
+    const initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
     const initializationSettingsDarwin = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -43,44 +41,46 @@ class LocalNotificationService {
 
   Future<bool> _isAndroidPermissionGranted() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.areNotificationsEnabled() ??
         false;
   }
 
   Future<bool> _requestAndroidNotificationsPermission() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.requestNotificationsPermission() ??
         false;
   }
 
   Future<bool> _requestExactAlarmsPermission() async {
     return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
             ?.requestExactAlarmsPermission() ??
         false;
   }
 
   Future<bool?> requestPermissions() async {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final iOSImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>();
-      return await iOSImplementation?.requestPermissions(
+      final iOSImplementation = flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+      final result = await iOSImplementation?.requestPermissions(
         alert: true,
         badge: true,
         sound: true,
       );
+      logger.i('iOS notification permissions granted: $result');
+      return result;
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final notificationEnabled = await _isAndroidPermissionGranted();
       final requestAlarmEnabled = await _requestExactAlarmsPermission();
+
+      logger.i('Android notification enabled: $notificationEnabled');
+      logger.i('Android exact alarm enabled: $requestAlarmEnabled');
+
       if (!notificationEnabled) {
-        final requestNotificationsPermission =
-            await _requestAndroidNotificationsPermission();
+        final requestNotificationsPermission = await _requestAndroidNotificationsPermission();
+        logger.i('Requested notification permission: $requestNotificationsPermission');
         return requestNotificationsPermission && requestAlarmEnabled;
       }
       return notificationEnabled && requestAlarmEnabled;
@@ -125,18 +125,90 @@ class LocalNotificationService {
 
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
-    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    final timeZoneName = await FlutterTimezone.getLocalTimezone();
+    final location = tz.getLocation(timeZoneName.identifier);
+    tz.setLocalLocation(location);
+    logger.i('Configured timezone: $location');
+    logger.i('Current local time: ${tz.TZDateTime.now(tz.local)}');
   }
 
-  tz.TZDateTime _nextInstanceOfElevenAM() {
+  tz.TZDateTime _nextInstanceOfCustomTime({
+    int hour = 11,
+    int minute = 0,
+    int? testMinutesFromNow,
+  }) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
+
+    if (testMinutesFromNow != null) {
+      final testTime = now.add(Duration(minutes: testMinutesFromNow));
+      logger.i(
+        'TEST MODE: Scheduling notification for $testMinutesFromNow minutes from now: $testTime',
+      );
+      return testTime;
+    }
+
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+
+    // If it's already past the target time today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
+
+    logger.i('Current time: $now');
+    logger.i('Scheduled time: $scheduledDate');
+    logger.i('Time until notification: ${scheduledDate.difference(now)}');
+
     return scheduledDate;
+  }
+
+  tz.TZDateTime _nextInstanceOfElevenAM() {
+    return _nextInstanceOfCustomTime(hour: 11, minute: 0);
+  }
+
+  Future<void> scheduleTestNotification({required int id}) async {
+    await configureLocalTimeZone();
+
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'test_notification',
+      'Test Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'Test Notification',
+      sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      sound: 'slow_spring_board.aiff',
+      presentSound: true,
+    );
+
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    final testTime = _nextInstanceOfCustomTime(testMinutesFromNow: 2);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      'Test Scheduled Notification',
+      'This is a test notification scheduled for 2 minutes from now',
+      testTime,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: 'test:scheduled',
+    );
+
+    logger.i('Test notification scheduled for: $testTime');
   }
 
   Future<void> scheduleDailyElevenAMNotification({
@@ -167,8 +239,6 @@ class LocalNotificationService {
       datetimeSchedule,
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }

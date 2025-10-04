@@ -10,7 +10,7 @@ on:
       - "**/*.md"
 
 env:
-  FLUTTER_VERSION: 3.27.4
+  FLUTTER_VERSION: 3.35.3
 
 jobs:
   build_and_deploy:
@@ -33,6 +33,9 @@ jobs:
       # Flutter dependencies setup
       - name: Install Flutter dependencies
         run: flutter pub get
+
+      - name: Run sqflite web
+        run: dart run sqflite_common_ffi_web:setup
 
       # Build the Flutter web project
       - name: Build Flutter Web

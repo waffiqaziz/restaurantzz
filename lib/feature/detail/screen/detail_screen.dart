@@ -11,19 +11,14 @@ class DetailScreen extends StatefulWidget {
   final String restaurantId;
   final String heroTag;
 
-  const DetailScreen({
-    super.key,
-    required this.restaurantId,
-    required this.heroTag,
-  });
+  const DetailScreen({super.key, required this.restaurantId, required this.heroTag});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  void _showSnackBar(BuildContext context, String message,
-      {bool isError = false}) {
+  void _showSnackBar(BuildContext context, String message, {bool isError = false}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -49,21 +44,15 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        body: Consumer<DetailProvider>(builder: (context, provider, child) {
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      body: Consumer<DetailProvider>(
+        builder: (context, provider, child) {
           // error state
           if (provider.isReviewSubmissionComplete) {
             if (provider.reviewSubmissionError != null) {
-              _showSnackBar(
-                context,
-                provider.reviewSubmissionError!,
-                isError: true,
-              );
+              _showSnackBar(context, provider.reviewSubmissionError!, isError: true);
             } else {
-              _showSnackBar(
-                context,
-                Strings.submitReviewSuccess,
-              );
+              _showSnackBar(context, Strings.submitReviewSuccess);
             }
 
             // reset the submission state after showing feedback
@@ -72,23 +61,22 @@ class _DetailScreenState extends State<DetailScreen> {
 
           // loading state on initial load
           if (provider.resultState is RestaurantDetailLoadingState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Center(child: CircularProgressIndicator());
           }
 
           // loading state
           if (provider.resultState is RestaurantDetailErrorState) {
             return Center(
-              child: _errorDetail(context,
-                  (provider.resultState as RestaurantDetailErrorState).error),
+              child: _errorDetail(
+                context,
+                (provider.resultState as RestaurantDetailErrorState).error,
+              ),
             );
           }
 
           // show body
           if (provider.resultState is RestaurantDetailLoadedState) {
-            final restaurantDetailItem =
-                (provider.resultState as RestaurantDetailLoadedState).data;
+            final restaurantDetailItem = (provider.resultState as RestaurantDetailLoadedState).data;
             return Stack(
               children: [
                 _buildDetailScaffold(context, restaurantDetailItem),
@@ -97,19 +85,17 @@ class _DetailScreenState extends State<DetailScreen> {
                 if (provider.isReviewSubmission)
                   Container(
                     color: Colors.black.withValues(alpha: 0.3),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: const Center(child: CircularProgressIndicator()),
                   ),
               ],
             );
           }
 
           // should not reach here
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }));
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 
   Widget _errorDetail(BuildContext context, String errorMessage) {
@@ -119,8 +105,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-                width: 350, child: Image.asset("images/general_error.png")),
+            SizedBox(width: 350, child: Image.asset("images/general_error.png")),
             const SizedBox(height: 8),
             Text(
               errorMessage,
@@ -129,9 +114,8 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () => context
-                  .read<DetailProvider>()
-                  .fetchRestaurantDetail(widget.restaurantId),
+              onPressed: () =>
+                  context.read<DetailProvider>().fetchRestaurantDetail(widget.restaurantId),
               child: Text(Strings.retry),
             ),
           ],
@@ -140,14 +124,12 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _buildDetailScaffold(
-      BuildContext context, RestaurantDetailItem restaurantDetailItem) {
+  Widget _buildDetailScaffold(BuildContext context, RestaurantDetailItem restaurantDetailItem) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Calculate height based on aspect ratio
     final dynamicHeight = screenWidth / (16 / 9);
-    final expandedHeight =
-        dynamicHeight > 400 ? 400 : dynamicHeight; // Cap at 400
+    final expandedHeight = dynamicHeight > 400 ? 400 : dynamicHeight; // Cap at 400
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -184,40 +166,40 @@ class _DetailScreenState extends State<DetailScreen> {
                   fit: StackFit.expand,
                   children: [
                     Center(
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        // get the current screen width
-                        final screenWidth = constraints.maxWidth;
-                        final imageWidth =
-                            screenWidth > 900 ? 900 : screenWidth;
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          // get the current screen width
+                          final screenWidth = constraints.maxWidth;
+                          final imageWidth = screenWidth > 900 ? 900 : screenWidth;
 
-                        return Container(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          child: SizedBox(
-                            width: imageWidth.toDouble(), // max width for image
-                            child: Hero(
-                              tag:
-                                  "${restaurantDetailItem.pictureId}_${widget.heroTag}",
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                ),
-                                child: Image.network(
-                                  Constants.imageURLMediumResolution +
-                                      restaurantDetailItem.pictureId,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'images/images_error.png',
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                          return Container(
+                            color: Theme.of(context).colorScheme.primaryContainer,
+                            child: SizedBox(
+                              width: imageWidth.toDouble(), // max width for image
+                              child: Hero(
+                                tag: "${restaurantDetailItem.pictureId}_${widget.heroTag}",
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(16.0),
+                                    bottomRight: Radius.circular(16.0),
+                                  ),
+                                  child: Image.network(
+                                    Constants.imageURLMediumResolution +
+                                        restaurantDetailItem.pictureId,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'images/images_error.png',
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -227,16 +209,14 @@ class _DetailScreenState extends State<DetailScreen> {
         },
         body: RefreshIndicator(
           onRefresh: () async {
-            await context
-                .read<DetailProvider>()
-                .fetchRestaurantDetail(widget.restaurantId, refresh: true);
+            await context.read<DetailProvider>().fetchRestaurantDetail(
+              widget.restaurantId,
+              refresh: true,
+            );
           },
           child: ListView(
             children: [
-              BodyDetailScreen(
-                restaurantDetailItem: restaurantDetailItem,
-                heroTag: widget.heroTag,
-              ),
+              BodyDetailScreen(restaurantDetailItem: restaurantDetailItem, heroTag: widget.heroTag),
             ],
           ),
         ),

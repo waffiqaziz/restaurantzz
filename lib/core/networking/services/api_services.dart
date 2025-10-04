@@ -19,15 +19,11 @@ class ApiServices {
 
       return response.statusCode == 200
           ? RestaurantListResponse.fromJson(jsonDecode(response.body))
-          : throw Exception(
-              'Failed to load restaurant list. Status code: ${response.statusCode}',
-            );
+          : throw Exception('Failed to load restaurant list. Status code: ${response.statusCode}');
     });
   }
 
-  Future<ApiResult<RestaurantDetailResponse>> getRestaurantDetail(
-    String id,
-  ) async {
+  Future<ApiResult<RestaurantDetailResponse>> getRestaurantDetail(String id) async {
     return await safeApiCall(() async {
       final response = await httpClient.get(Uri.parse("$_baseUrl/detail/$id"));
 
@@ -39,12 +35,9 @@ class ApiServices {
     });
   }
 
-  Future<ApiResult<RestaurantSearchResponse>> searchRestaurant(
-    String query,
-  ) async {
+  Future<ApiResult<RestaurantSearchResponse>> searchRestaurant(String query) async {
     return await safeApiCall(() async {
-      final response =
-          await httpClient.get(Uri.parse("$_baseUrl/search?q=$query"));
+      final response = await httpClient.get(Uri.parse("$_baseUrl/search?q=$query"));
 
       return response.statusCode == 200
           ? RestaurantSearchResponse.fromJson(jsonDecode(response.body))
@@ -54,11 +47,7 @@ class ApiServices {
     });
   }
 
-  Future<ApiResult<PostReviewResponse>> postReview(
-    String id,
-    String name,
-    String review,
-  ) async {
+  Future<ApiResult<PostReviewResponse>> postReview(String id, String name, String review) async {
     return await safeApiCall(() async {
       final response = await httpClient.post(
         Uri.parse("$_baseUrl/review"),
@@ -68,9 +57,7 @@ class ApiServices {
 
       return (response.statusCode == 200 || response.statusCode == 201)
           ? PostReviewResponse.fromJson(jsonDecode(response.body))
-          : throw Exception(
-              'Review submit failed. Status code: ${response.statusCode}',
-            );
+          : throw Exception('Review submit failed. Status code: ${response.statusCode}');
     });
   }
 }

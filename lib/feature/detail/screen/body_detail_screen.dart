@@ -12,11 +12,7 @@ import 'package:restaurantzz/feature/detail/screen/review_form_widget.dart';
 import 'package:restaurantzz/feature/detail/screen/reviews_widget.dart';
 
 class BodyDetailScreen extends StatelessWidget {
-  const BodyDetailScreen({
-    super.key,
-    required this.restaurantDetailItem,
-    required this.heroTag,
-  });
+  const BodyDetailScreen({super.key, required this.restaurantDetailItem, required this.heroTag});
 
   final RestaurantDetailItem restaurantDetailItem;
   final String heroTag;
@@ -49,8 +45,7 @@ class BodyDetailScreen extends StatelessWidget {
                               children: [
                                 // restaurant name
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Flexible(
@@ -58,11 +53,9 @@ class BodyDetailScreen extends StatelessWidget {
                                       fit: FlexFit.tight,
                                       child: Text(
                                         restaurantDetailItem.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.bold),
+                                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     Flexible(
@@ -70,16 +63,14 @@ class BodyDetailScreen extends StatelessWidget {
                                       child: Align(
                                         alignment: Alignment.topRight,
                                         child: Consumer<FavoriteIconProvider>(
-                                          builder: (context,
-                                              favoriteIconProvider, child) {
+                                          builder: (context, favoriteIconProvider, child) {
                                             return FavoriteIconWidget(
-                                              restaurant: restaurantDetailItem
-                                                  .toRestaurant(),
+                                              restaurant: restaurantDetailItem.toRestaurant(),
                                             );
                                           },
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
 
@@ -90,11 +81,8 @@ class BodyDetailScreen extends StatelessWidget {
                                     Flexible(
                                       flex: 1,
                                       child: Text(
-                                        Helper.formatRating(
-                                            "${restaurantDetailItem.rating}"),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
+                                        Helper.formatRating("${restaurantDetailItem.rating}"),
+                                        style: Theme.of(context).textTheme.bodyLarge,
                                       ),
                                     ),
                                     const SizedBox.square(dimension: 4),
@@ -105,10 +93,8 @@ class BodyDetailScreen extends StatelessWidget {
                                         itemCount: 5,
                                         itemSize: 20.0,
                                         physics: const BouncingScrollPhysics(),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
+                                        itemBuilder: (context, _) =>
+                                            const Icon(Icons.star, color: Colors.amber),
                                       ),
                                     ),
                                     const SizedBox.square(dimension: 4),
@@ -116,9 +102,7 @@ class BodyDetailScreen extends StatelessWidget {
                                       flex: 1,
                                       child: Text(
                                         "(${restaurantDetailItem.customerReviews.length})",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
+                                        style: Theme.of(context).textTheme.bodyLarge,
                                       ),
                                     ),
                                   ],
@@ -136,13 +120,11 @@ class BodyDetailScreen extends StatelessWidget {
                                 Wrap(
                                   spacing: 8.0,
                                   runSpacing: 4.0,
-                                  children: restaurantDetailItem.categories
-                                      .map((category) {
+                                  children: restaurantDetailItem.categories.map((category) {
                                     return Chip(
                                       label: Text(category.name),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
+                                        borderRadius: BorderRadius.circular(12.0),
                                       ),
                                       elevation: 4.0,
                                     );
@@ -182,9 +164,7 @@ class BodyDetailScreen extends StatelessWidget {
 
                       // list reviews
                       const SizedBox.square(dimension: 16),
-                      ReviewsWidget(
-                        customerReviews: restaurantDetailItem.customerReviews,
-                      ),
+                      ReviewsWidget(customerReviews: restaurantDetailItem.customerReviews),
 
                       // review form
                       const SizedBox.square(dimension: 16),

@@ -7,14 +7,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 
-  final notificationAppLaunchDetails =
-      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  final notificationAppLaunchDetails = await flutterLocalNotificationsPlugin
+      .getNotificationAppLaunchDetails();
 
   runApp(
     AppRoot(
       prefs: prefs,
-      initialPayload:
-          notificationAppLaunchDetails?.notificationResponse?.payload,
+      initialPayload: notificationAppLaunchDetails?.notificationResponse?.payload,
     ),
   );
 }

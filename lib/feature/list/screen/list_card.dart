@@ -19,8 +19,7 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       hoverColor: Colors.grey.withValues(alpha: 0.1),
-      splashColor:
-          const Color.fromARGB(255, 46, 106, 71).withValues(alpha: 0.3),
+      splashColor: const Color.fromARGB(255, 46, 106, 71).withValues(alpha: 0.3),
       borderRadius: BorderRadius.circular(8.0),
       onTap: onTap,
       onHover: (isHovering) {},
@@ -50,16 +49,10 @@ class RestaurantCard extends StatelessWidget {
                         if (loadingProgress == null) {
                           return child;
                         }
-                        return Image.asset(
-                          'images/placeholder.webp',
-                          fit: BoxFit.cover,
-                        );
+                        return Image.asset('images/placeholder.webp', fit: BoxFit.cover);
                       },
                       errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'images/images_error.png',
-                          fit: BoxFit.cover,
-                        );
+                        return Image.asset('images/images_error.png', fit: BoxFit.cover);
                       },
                     ),
                   ),
@@ -77,10 +70,9 @@ class RestaurantCard extends StatelessWidget {
                     // restaurant name
                     Text(
                       restaurant.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                     ),
 
                     // rating bar
@@ -93,10 +85,8 @@ class RestaurantCard extends StatelessWidget {
                             itemCount: 5,
                             itemSize: 15.0,
                             physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
+                            itemBuilder: (context, _) =>
+                                const Icon(Icons.star, color: Colors.amber),
                           ),
                         ),
                         const SizedBox(width: 8),

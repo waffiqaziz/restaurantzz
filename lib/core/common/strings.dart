@@ -15,8 +15,7 @@ class Strings {
   static String githubUrl = 'https://github.com/waffiqaziz/restaurantzz';
 
   static String searchAnyRestaurant = "Search any restaurant...";
-  static String noResult =
-      "We can't found any restaurant.\nMaybe a little mistake?";
+  static String noResult = "We can't found any restaurant.\nMaybe a little mistake?";
 
   static String reviews = "Reviews";
   static String seeReviews = "See Reviews";

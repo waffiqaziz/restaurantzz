@@ -28,7 +28,8 @@ class LocalDatabaseService {
 
   Future<void> _ensureTableExists(Database db) async {
     // Use CREATE TABLE IF NOT EXISTS to ensure table creation
-    const query = """
+    const query =
+        """
       CREATE TABLE IF NOT EXISTS $_tableName(
         id TEXT PRIMARY KEY,
         name TEXT,
@@ -45,11 +46,7 @@ class LocalDatabaseService {
     final db = await _initializeDb();
 
     final data = restaurant.toJson();
-    final id = await db.insert(
-      _tableName,
-      data,
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    final id = await db.insert(_tableName, data, conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
 
@@ -62,8 +59,7 @@ class LocalDatabaseService {
 
   Future<Restaurant> getItemById(String id) async {
     final db = await _initializeDb();
-    final results =
-        await db.query(_tableName, where: "id = ?", whereArgs: [id], limit: 1);
+    final results = await db.query(_tableName, where: "id = ?", whereArgs: [id], limit: 1);
 
     if (results.isEmpty) {
       throw Exception("No restaurant found with id: $id");
@@ -74,8 +70,7 @@ class LocalDatabaseService {
   Future<int> removeItem(String id) async {
     final db = await _initializeDb();
 
-    final result =
-        await db.delete(_tableName, where: "id = ?", whereArgs: [id]);
+    final result = await db.delete(_tableName, where: "id = ?", whereArgs: [id]);
     return result;
   }
 

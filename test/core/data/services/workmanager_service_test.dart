@@ -50,13 +50,13 @@ void main() {
     });
 
     test('init_initializesWorkmanager', () async {
-      when(() => mockWorkmanager.initialize(any(),
-              isInDebugMode: any(named: "isInDebugMode")))
+      when(() => mockWorkmanager.initialize(any()
+             ))
           .thenAnswer((_) async => Future.value());
 
-      await workmanagerService.init();
+      workmanagerService.init();
 
-      verify(() => mockWorkmanager.initialize(any(), isInDebugMode: false))
+      verify(() => mockWorkmanager.initialize(any()))
           .called(1);
     });
 
@@ -84,7 +84,7 @@ void main() {
       when(() => mockWorkmanager.cancelAll())
           .thenAnswer((_) async => Future.value());
 
-      await workmanagerService.cancelAllTask();
+      workmanagerService.cancelAllTask();
 
       verify(() => mockWorkmanager.cancelAll()).called(1);
     });

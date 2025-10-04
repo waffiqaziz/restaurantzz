@@ -11,7 +11,7 @@ on:
       - "**/*.md"
 
 env:
-  FLUTTER_VERSION: 3.27.4
+  FLUTTER_VERSION: 3.35.3
 
 jobs:
   analyze:
@@ -90,8 +90,9 @@ jobs:
 
       - name: Generate test report .xml
         run: |
-          dart pub global activate junitreport
-          flutter test --coverage --reporter json | tojunit > TEST-report.xml
+          flutter test --coverage --reporter json > test.jsonl
+          dart pub global activate --source git https://github.com/waffiqaziz/flutter-junitreport.git
+          dart pub global run flutter_junitreport:tojunit --input test.jsonl --output TEST-report.xml
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}

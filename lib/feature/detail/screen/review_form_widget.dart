@@ -33,10 +33,7 @@ class _ReviewFormState extends State<ReviewForm> {
             children: [
               Text(
                 Strings.addAReview,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8.0),
 
@@ -44,8 +41,7 @@ class _ReviewFormState extends State<ReviewForm> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: Strings.yourName),
-                validator: (value) =>
-                    value?.isEmpty == true ? Strings.nameIsRequired : null,
+                validator: (value) => value?.isEmpty == true ? Strings.nameIsRequired : null,
               ),
               const SizedBox(height: 8.0),
 
@@ -54,8 +50,7 @@ class _ReviewFormState extends State<ReviewForm> {
                 controller: _reviewController,
                 decoration: InputDecoration(labelText: Strings.yourReview),
                 maxLines: 3,
-                validator: (value) =>
-                    value?.isEmpty == true ? Strings.reviewIsRequired : null,
+                validator: (value) => value?.isEmpty == true ? Strings.reviewIsRequired : null,
               ),
               const SizedBox(height: 16.0),
 
@@ -64,10 +59,10 @@ class _ReviewFormState extends State<ReviewForm> {
                 onPressed: () {
                   if (_formKey.currentState?.validate() == true) {
                     context.read<DetailProvider>().addReview(
-                          widget.restaurantId,
-                          _nameController.text,
-                          _reviewController.text,
-                        );
+                      widget.restaurantId,
+                      _nameController.text,
+                      _reviewController.text,
+                    );
 
                     // clear the form
                     _nameController.clear();

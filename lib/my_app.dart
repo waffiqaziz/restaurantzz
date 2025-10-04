@@ -44,10 +44,7 @@ class _MyAppState extends State<MyApp> {
       // navigate to the [DetailScreen]
       _navigatorKey.currentState?.pushNamed(
         '/detail',
-        arguments: {
-          'restaurantId': parts[0],
-          'heroTag': parts[1],
-        },
+        arguments: {'restaurantId': parts[0], 'heroTag': parts[1]},
       );
     }
   }
@@ -76,10 +73,8 @@ class _MyAppState extends State<MyApp> {
               case '/detail':
                 final args = settings.arguments as Map<String, String>;
                 return MaterialPageRoute(
-                  builder: (_) => DetailScreen(
-                    restaurantId: args['restaurantId']!,
-                    heroTag: args['heroTag']!,
-                  ),
+                  builder: (_) =>
+                      DetailScreen(restaurantId: args['restaurantId']!, heroTag: args['heroTag']!),
                 );
               default:
                 return null;

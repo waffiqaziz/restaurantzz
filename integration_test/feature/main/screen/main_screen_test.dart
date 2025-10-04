@@ -21,6 +21,7 @@ import 'package:restaurantzz/feature/main/screen/main_screen.dart';
 import 'package:restaurantzz/feature/search/screen/search_screen.dart';
 import 'package:restaurantzz/feature/settings/screen/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -86,7 +87,7 @@ void main() {
               ),
             ),
             Provider(
-              create: (context) => WorkmanagerService()..init(),
+              create: (context) => WorkmanagerService(Workmanager())..init(),
             ),
           ],
           child: const MaterialApp(
