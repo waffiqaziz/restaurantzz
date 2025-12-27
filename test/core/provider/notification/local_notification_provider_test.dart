@@ -60,6 +60,18 @@ void main() {
             channelId: any<String>(named: 'channelId'),
             channelName: any<String>(named: 'channelName'),
           )).called(1);
+    });    
+    
+    test('scheduleTestNotification_shouldScheduleNotification', () {
+      when(() => mockService.scheduleTestNotification(
+            id: any<int>(named: 'id'),
+          )).thenAnswer((_) => Future.value());
+
+      localNotificationProvider.scheduleTestNotification();
+
+      verify(() => mockService.scheduleTestNotification(
+            id: any<int>(named: 'id'),
+          )).called(1);
     });
 
     test('checkPendingNotificationRequests_shouldUpdatePendingList', () async {

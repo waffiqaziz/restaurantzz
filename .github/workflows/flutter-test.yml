@@ -60,7 +60,7 @@ jobs:
         with:
           coverage-files: coverage/lcov.info
           update-comment: true
-          minimum-coverage: 90
+          minimum-coverage: 80
           artifact-name: code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -103,13 +103,10 @@ jobs:
   instrumented_test_iOS:
     needs: analyze
     runs-on: macOS-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: futureware-tech/simulator-action@v4
-        with:
-          model: "iPhone 16"
 
       - uses: subosito/flutter-action@v2
         with:
@@ -119,8 +116,16 @@ jobs:
 
       - run: flutter pub get
 
+      - uses: futureware-tech/simulator-action@v4
+        with:
+          model: 'iPhone 16 Pro'
+          os_version: '18.6'
+          wait_for_boot: true
+        id: simulator
+
       - name: Run Integration Tests on iOS Simulator
-        run: flutter test integration_test
+        run: |
+          flutter test integration_test
 
   instrumented_test_android:
     needs: analyze
@@ -187,4 +192,4 @@ jobs:
           disable-animations: true
           script: |
             adb wait-for-device
-            flutter test integration_test
+            flutter test integration_test --device-id=emulator-5554

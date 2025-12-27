@@ -104,4 +104,12 @@ class DetailProvider extends ChangeNotifier {
     _reviewSubmissionError = null;
     notifyListeners();
   }
+
+  void resetState() {
+    _resultState = RestaurantDetailNoneState();
+    _isReviewSubmission = false;
+    _isReviewSubmissionComplete = false;
+    _reviewSubmissionError = null;
+    notifyListeners();
+  }
 }
