@@ -43,66 +43,49 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          context.read<DetailProvider>().resetState();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        body: Consumer<DetailProvider>(
-          builder: (context, provider, child) {
-            // error state
-            if (provider.isReviewSubmissionComplete) {
-              if (provider.reviewSubmissionError != null) {
-                _showSnackBar(context, provider.reviewSubmissionError!, isError: true);
-              } else {
-                _showSnackBar(context, Strings.submitReviewSuccess);
-              }
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      body: Consumer<DetailProvider>(
+        builder: (context, provider, _) {
+          final state = provider.viewStateOf(widget.restaurantId);
 
-              // reset the submission state after showing feedback
-              provider.resetReviewSubmissionState();
+          if (state.reviewCompleted) {
+            if (state.reviewError != null) {
+              _showSnackBar(context, state.reviewError!, isError: true);
+            } else {
+              _showSnackBar(context, Strings.submitReviewSuccess);
             }
 
-            // loading state on initial load
-            if (provider.resultState is RestaurantDetailLoadingState) {
-              return Center(child: CircularProgressIndicator());
-            }
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              provider.resetReviewSubmissionState(widget.restaurantId);
+            });
+          }
 
-            // loading state
-            if (provider.resultState is RestaurantDetailErrorState) {
-              return Center(
-                child: _errorDetail(
-                  context,
-                  (provider.resultState as RestaurantDetailErrorState).error,
-                ),
-              );
-            }
+          if (state.resultState is RestaurantDetailLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            // show body
-            if (provider.resultState is RestaurantDetailLoadedState) {
-              final restaurantDetailItem =
-                  (provider.resultState as RestaurantDetailLoadedState).data;
-              return Stack(
-                children: [
-                  _buildDetailScaffold(context, restaurantDetailItem),
+          if (state.resultState is RestaurantDetailErrorState) {
+            return _errorDetail(context, (state.resultState as RestaurantDetailErrorState).error);
+          }
 
-                  // show loading and alpha background when submitting a review
-                  if (provider.isReviewSubmission)
-                    Container(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                ],
-              );
-            }
+          if (state.resultState is RestaurantDetailLoadedState) {
+            final data = (state.resultState as RestaurantDetailLoadedState).data;
 
-            // should not reach here
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
+            return Stack(
+              children: [
+                _buildDetailScaffold(context, data),
+                if (state.isSubmittingReview)
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+              ],
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
@@ -158,9 +141,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: IconButton(
                     key: Key('back_button'),
                     icon: const Icon(Icons.arrow_back_rounded),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () => Navigator.of(context).pop(),
                     tooltip: Strings.close,
                   ),
                 ),
