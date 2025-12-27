@@ -34,8 +34,7 @@ void main() {
       );
     });
 
-    testWidgets("textRestaurantName_shouldDisplayed",
-        (WidgetTester tester) async {
+    testWidgets("textRestaurantName_shouldDisplayed", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.text('Test Restaurant'), findsOneWidget);
     });
@@ -50,14 +49,12 @@ void main() {
       expect(find.text('Test City'), findsOneWidget);
     });
 
-    testWidgets("imagePlaceholder_shouldShownWhenOnInitial",
-        (WidgetTester tester) async {
+    testWidgets("imagePlaceholder_shouldShownWhenOnInitial", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets("hover_shouldTriggerOnHoverCallback",
-        (WidgetTester tester) async {
+    testWidgets("hover_shouldTriggerOnHoverCallback", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
 
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
@@ -85,21 +82,34 @@ void main() {
       expect(imageNetworkFinder, findsOneWidget);
     });
 
-    // TODO: Not yet fixed to test image placeholder
-    // testWidgets("imagePlaceholder_shouldBeDisplayedWhenLoading",
-    //     (WidgetTester tester) async {
-    //   await mockNetworkImagesFor(() => tester.pumpWidget(widget));
-    //   await tester.pump();
+    testWidgets("imagePlaceholder_shouldBeDisplayedWhenLoading", (WidgetTester tester) async {
+      await mockNetworkImagesFor(() => tester.pumpWidget(widget));
+      await tester.pump();
 
-    //   final placeholderFinder = find.byWidgetPredicate(
-    //     (widget) =>
-    //         widget is Image &&
-    //         widget.image is AssetImage &&
-    //         (widget.image as AssetImage).assetName == 'images/placeholder.webp',
-    //   );
+      // image widget
+      final imageFinder = find.byType(Image).first;
+      expect(imageFinder, findsOneWidget);
 
-    //   expect(placeholderFinder, findsOneWidget);
-    // });
+      final Image image = tester.widget(imageFinder);
+      final BuildContext context = tester.element(imageFinder);
+
+      // simulate loading
+      final loadingWidget = image.loadingBuilder!(
+        context,
+        Container(),
+        ImageChunkEvent(cumulativeBytesLoaded: 50, expectedTotalBytes: 100),
+      );
+
+      await tester.pumpWidget(MaterialApp(home: loadingWidget));
+      final placeholderFinder = find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName == 'images/placeholder.webp',
+      );
+
+      expect(placeholderFinder, findsOneWidget);
+    });
 
     testWidgets("tap_shouldTriggerOnTapFunction", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
@@ -107,12 +117,12 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets("heroTag_shouldExistsWithCorrectTag",
-        (WidgetTester tester) async {
+    testWidgets("heroTag_shouldExistsWithCorrectTag", (WidgetTester tester) async {
       await tester.pumpWidget(widget);
       expect(
-        find.byWidgetPredicate((widget) =>
-            widget is Hero && widget.tag == "${restaurant.pictureId}_test_tag"),
+        find.byWidgetPredicate(
+          (widget) => widget is Hero && widget.tag == "${restaurant.pictureId}_test_tag",
+        ),
         findsOneWidget,
       );
     });

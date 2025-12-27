@@ -31,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
         ),
         Switch(
+          key: const Key('notification_switch'),
           value: provider.setting?.notificationEnable ?? true,
           onChanged: (bool value) async {
             try {
@@ -165,9 +166,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onPressed: () async {
                   await localNotificationProvider.checkPendingNotificationRequests();
                   final count = localNotificationProvider.pendingNotificationRequests.length;
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Pending notifications: $count')));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Pending notifications: $count')));
+                  }
                 },
                 child: Text('Check Pending Notifications'),
               ),

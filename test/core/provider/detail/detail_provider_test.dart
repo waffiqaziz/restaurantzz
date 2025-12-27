@@ -389,6 +389,44 @@ void main() {
       expect(detailProvider.isReviewSubmissionComplete, false);
       expect(detailProvider.reviewSubmissionError, null);
     });
+
+    test('resetState_shouldResetAll', () async {
+      when(() => mockHttpClient.get(Uri.parse(
+              "https://restaurant-api.dicoding.dev/detail/zvf11c0sukfw1e867")))
+          .thenAnswer((_) async {
+        return http.Response(jsonEncode(mockDetailRestaurantResponseData), 200);
+      });
+
+      // trigger fetch detail
+      await detailProvider.fetchRestaurantDetail("zvf11c0sukfw1e867");
+      expect(detailProvider.resultState, isA<RestaurantDetailLoadedState>());
+
+      when(() => mockHttpClient.post(
+            Uri.parse("https://restaurant-api.dicoding.dev/review"),
+            headers: {'Content-Type': 'application/json'},
+            body: any(named: 'body'),
+          )).thenAnswer((_) async {
+        return http.Response(jsonEncode(mockReviewResponseData), 201);
+      });
+
+      // initial value
+      expect(detailProvider.isReviewSubmissionComplete, false);
+      expect(detailProvider.reviewSubmissionError, null);
+
+      // trigger add review success
+      await detailProvider.addReview("zvf11c0sukfw1e867", "name", "review");
+      expect(detailProvider.resultState, isA<RestaurantDetailLoadedState>());
+      expect(detailProvider.isReviewSubmissionComplete, true);
+      expect(detailProvider.reviewSubmissionError, null);
+
+      // reset all
+      detailProvider.resetState();
+      expect(detailProvider.isReviewSubmissionComplete, false);
+      expect(detailProvider.isReviewSubmission, false);
+      expect(detailProvider.reviewSubmissionError, null);
+      expect(detailProvider.resultState, isA<RestaurantDetailNoneState>());
+
+    });
   });
 
   group('DetailProvider Catch', () {
