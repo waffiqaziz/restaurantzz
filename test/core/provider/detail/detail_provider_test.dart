@@ -9,18 +9,17 @@ import 'package:restaurantzz/core/provider/detail/detail_provider.dart';
 
 import '../../../testutils/mock.dart';
 
-class UriFake extends Fake implements Uri {}
-
 void main() {
   const id = "zvf11c0sukfw1e867";
 
   setUpAll(() {
-    registerFallbackValue(UriFake());
+    registerFallbackValue(FakeUri());
   });
 
   group('DetailProvider', () {
     late DetailProvider detailProvider;
     late MockHttpClient mockHttpClient;
+    late MockApiServices mockApiServices;
     late ApiServices apiServices;
     final mockDetailRestaurantResponseData = {
       "error": false,
@@ -126,6 +125,27 @@ void main() {
       expect(detailProvider.cachedData(id)?.id, id);
     });
 
+    test('fetchRestaurantDetail_shouldUseCacheWhenAvailable', () async {
+      when(
+        () => mockHttpClient.get(any()),
+      ).thenAnswer((_) async => http.Response(jsonEncode(mockDetailRestaurantResponseData), 200));
+
+      // fetch to populate cache
+      await detailProvider.fetchRestaurantDetail(id);
+
+      // reset mock to ensure it's not called again
+      reset(mockHttpClient);
+
+      // fetch again should use cache
+      await detailProvider.fetchRestaurantDetail(id);
+
+      // verify no HTTP call was made
+      verifyNever(() => mockHttpClient.get(any()));
+
+      final state = detailProvider.viewStateOf(id);
+      expect(state.resultState, isA<RestaurantDetailLoadedState>());
+    });
+
     test('fetchRestaurantDetail_shouldReturnErrorOnFailure', () async {
       when(() => mockHttpClient.get(any())).thenAnswer((_) async => http.Response("{}", 500));
 
@@ -133,6 +153,30 @@ void main() {
 
       final state = detailProvider.viewStateOf(id);
       expect(state.resultState, isA<RestaurantDetailErrorState>());
+    });
+
+    test('fetchRestaurantDetail_shouldHandleExceptions', () async {
+      // Due to `safeApiCall()` catches all exceptions,
+      // the catch blocks in DetailProvider will never execute.
+      // We use MockApiServices to return throw exception
+
+      // Create a separate provider with mocked ApiServices
+      mockApiServices = MockApiServices();
+      final exceptionProvider = DetailProvider(mockApiServices);
+
+      // mock ApiServices to throw exception directly
+      when(() => mockApiServices.getRestaurantDetail(any())).thenThrow(Exception("Network error"));
+
+      await exceptionProvider.fetchRestaurantDetail(id);
+
+      final state = exceptionProvider.viewStateOf(id);
+      expect(state.resultState, isA<RestaurantDetailErrorState>());
+
+      final error = state.resultState as RestaurantDetailErrorState;
+      expect(error.error, contains("Unexpected error"));
+      expect(error.error, contains("Network error"));
+
+      exceptionProvider.dispose();
     });
 
     test('addReview_shouldUpdateCustomerReviews', () async {
@@ -162,7 +206,11 @@ void main() {
 
     test('addReview_shouldSetErrorWhenApiFails', () async {
       when(
-        () => mockHttpClient.post(any(), body: any(named: 'body')),
+        () => mockHttpClient.post(
+          any(),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
       ).thenAnswer((_) async => http.Response('{"error": true}', 400));
 
       await detailProvider.addReview(id, "name", "review");
@@ -172,9 +220,37 @@ void main() {
       expect(state.reviewError, "Failed to submit review");
     });
 
+    test('addReview_shouldHandleExceptions', () async {
+      // Due to `safeApiCall()` catches all exceptions,
+      // the catch blocks in DetailProvider will never execute.
+      // We use MockApiServices to return throw exception
+
+      // Create a separate provider with mocked ApiServices
+      mockApiServices = MockApiServices();
+      final exceptionProvider = DetailProvider(mockApiServices);
+
+      // mockApiServices to throw exception directly
+      when(
+        () => mockApiServices.postReview(any(), any(), any()),
+      ).thenThrow(Exception("Network error"));
+
+      await exceptionProvider.addReview(id, "name", "review");
+
+      final state = exceptionProvider.viewStateOf(id);
+      expect(state.reviewCompleted, true);
+      expect(state.reviewError, "Failed to submit review");
+      expect(state.isSubmittingReview, false);
+
+      exceptionProvider.dispose();
+    });
+
     test('resetReviewSubmissionState_shouldResetFlags', () async {
       when(
-        () => mockHttpClient.post(any(), body: any(named: 'body')),
+        () => mockHttpClient.post(
+          any(),
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        ),
       ).thenAnswer((_) async => http.Response('{"error": true}', 400));
 
       await detailProvider.addReview(id, "name", "review");

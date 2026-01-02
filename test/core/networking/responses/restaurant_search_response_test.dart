@@ -64,10 +64,7 @@ void main() {
 
       final parsedData = jsonDecode(jsonData);
 
-      expect(
-        () => RestaurantSearchResponse.fromJson(parsedData),
-        throwsA(isA<TypeError>()),
-      );
+      expect(() => RestaurantSearchResponse.fromJson(parsedData), throwsA(isA<TypeError>()));
     });
 
     test('parseJsonWithValidRestaurantList_PopulatesRestaurants', () {
@@ -115,7 +112,7 @@ void main() {
             pictureId: '15',
             city: 'Test City',
             rating: 4.5,
-          )
+          ),
         ],
       );
 

@@ -26,9 +26,9 @@ void main() {
                       "Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,",
                   "pictureId": "05",
                   "city": "Balikpapan",
-                  "rating": 4.5
-                }
-              ]
+                  "rating": 4.5,
+                },
+              ],
             }),
             200,
           );
@@ -51,10 +51,7 @@ void main() {
       final result = await apiServices.getRestaurantList();
 
       expect(result.data, isNull);
-      expect(
-        result.message,
-        contains('Failed to load restaurant list. Status code: 404.'),
-      );
+      expect(result.message, contains('Failed to load restaurant list. Status code: 404.'));
     });
 
     test('returnError_ForHttpException', () async {
@@ -88,7 +85,7 @@ void main() {
                 "address": "Jln. Pandeglang no 19",
                 "pictureId": "22",
                 "categories": [
-                  {"name": "Jawa"}
+                  {"name": "Jawa"},
                 ],
                 "menus": {
                   "foods": [
@@ -98,7 +95,7 @@ void main() {
                     {"name": "Napolitana"},
                     {"name": "Salad yuzu"},
                     {"name": "Sosis squash dan mint"},
-                    {"name": "Daging Sapi"}
+                    {"name": "Daging Sapi"},
                   ],
                   "drinks": [
                     {"name": "Minuman soda"},
@@ -108,46 +105,25 @@ void main() {
                     {"name": "Es krim"},
                     {"name": "Es teh"},
                     {"name": "Jus tomat"},
-                    {"name": "Coklat panas"}
-                  ]
+                    {"name": "Coklat panas"},
+                  ],
                 },
                 "rating": 3.7,
                 "customerReviews": [
-                  {
-                    "name": "Gilang",
-                    "review": "Harganya murah sekali!",
-                    "date": "14 Agustus 2018"
-                  },
-                  {
-                    "name": "string",
-                    "review": "string",
-                    "date": "4 Februari 2025"
-                  },
-                  {
-                    "name": "Rizal",
-                    "review": "Mantap",
-                    "date": "4 Februari 2025"
-                  },
-                  {
-                    "name": "Yasmin",
-                    "review": "Enak Sekali!",
-                    "date": "4 Februari 2025"
-                  },
-                  {
-                    "name": "Jessica",
-                    "review": "Good",
-                    "date": "4 Februari 2025"
-                  }
-                ]
-              }
+                  {"name": "Gilang", "review": "Harganya murah sekali!", "date": "14 Agustus 2018"},
+                  {"name": "string", "review": "string", "date": "4 Februari 2025"},
+                  {"name": "Rizal", "review": "Mantap", "date": "4 Februari 2025"},
+                  {"name": "Yasmin", "review": "Enak Sekali!", "date": "4 Februari 2025"},
+                  {"name": "Jessica", "review": "Good", "date": "4 Februari 2025"},
+                ],
+              },
             }),
             200,
           );
         }),
       );
 
-      final result =
-          await apiServices.getRestaurantDetail("fnfn8mytkpmkfw1e867");
+      final result = await apiServices.getRestaurantDetail("fnfn8mytkpmkfw1e867");
 
       expect(result.data, isNotNull);
       expect(result.data!.restaurant.name, "Makan mudah");
@@ -164,10 +140,7 @@ void main() {
       final result = await apiServices.getRestaurantDetail("testId");
 
       expect(result.data, isNull);
-      expect(
-        result.message,
-        contains('Failed to load restaurant detail. Status code: 404'),
-      );
+      expect(result.message, contains('Failed to load restaurant detail. Status code: 404'));
     });
   });
 
@@ -186,9 +159,9 @@ void main() {
                   "description": "A search test description",
                   "city": "Search City",
                   "pictureId": "2",
-                  "rating": 4.2
-                }
-              ]
+                  "rating": 4.2,
+                },
+              ],
             }),
             200,
           );
@@ -212,10 +185,7 @@ void main() {
       final result = await apiServices.searchRestaurant("test");
 
       expect(result.data, isNull);
-      expect(
-        result.message,
-        contains('Failed to load restaurant search. Status code: 400'),
-      );
+      expect(result.message, contains('Failed to load restaurant search. Status code: 400'));
     });
   });
 
@@ -228,23 +198,15 @@ void main() {
               "error": false,
               "message": "success",
               "customerReviews": [
-                {
-                  "name": "Test User",
-                  "review": "Great place!",
-                  "date": "4 February 2025"
-                }
-              ]
+                {"name": "Test User", "review": "Great place!", "date": "4 February 2025"},
+              ],
             }),
             201,
           );
         }),
       );
 
-      final result = await apiServices.postReview(
-        "testId",
-        "Test User",
-        "Great place!",
-      );
+      final result = await apiServices.postReview("testId", "Test User", "Great place!");
 
       expect(result.data, isNotNull);
       expect(result.data!.customerReviews.first.review, "Great place!");
@@ -258,17 +220,10 @@ void main() {
         }),
       );
 
-      final result = await apiServices.postReview(
-        "testId",
-        "Test User",
-        "Great place!",
-      );
+      final result = await apiServices.postReview("testId", "Test User", "Great place!");
 
       expect(result.data, isNull);
-      expect(
-        result.message,
-        contains('Review submit failed. Status code: 500'),
-      );
+      expect(result.message, contains('Review submit failed. Status code: 500'));
     });
   });
 }

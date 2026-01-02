@@ -49,10 +49,7 @@ void main() {
       );
 
       bool areEqual(ReceivedNotification a, ReceivedNotification b) {
-        return a.id == b.id &&
-            a.title == b.title &&
-            a.body == b.body &&
-            a.payload == b.payload;
+        return a.id == b.id && a.title == b.title && a.body == b.body && a.payload == b.payload;
       }
 
       expect(areEqual(notification1, notification2), isTrue);

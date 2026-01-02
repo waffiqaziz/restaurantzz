@@ -19,9 +19,7 @@ void main() {
       return ChangeNotifierProvider<DetailProvider>.value(
         value: mockProvider,
         child: MaterialApp(
-          home: Scaffold(
-            body: ReviewForm(restaurantId: '123'),
-          ),
+          home: Scaffold(body: ReviewForm(restaurantId: '123')),
         ),
       );
     }
@@ -48,8 +46,7 @@ void main() {
     testWidgets('emptyReview_showsError', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.enterText(
-          find.byType(TextFormField).first, 'Aziz'); // get name field
+      await tester.enterText(find.byType(TextFormField).first, 'Aziz'); // get name field
       await tester.tap(find.text('Submit Review'));
       await tester.pump();
 
@@ -59,8 +56,7 @@ void main() {
     testWidgets('emptyName_showsError', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.enterText(
-          find.byType(TextFormField).last, 'Good food'); // get review field
+      await tester.enterText(find.byType(TextFormField).last, 'Good food'); // get review field
       await tester.tap(find.text('Submit Review'));
       await tester.pump();
 
@@ -68,26 +64,27 @@ void main() {
     });
 
     testWidgets('submitsValidForm_callsAddReview', (WidgetTester tester) async {
-      when(() => mockProvider.addReview(any(), any(), any()))
-          .thenAnswer((_) async {});
+      when(() => mockProvider.addReview(any(), any(), any())).thenAnswer((_) async {});
 
       await tester.pumpWidget(createWidgetUnderTest());
 
       await tester.enterText(find.byType(TextFormField).first, 'Waffiq');
-      await tester.enterText(find.byType(TextFormField).last,
-          'Great food, not pricey, but very taste');
+      await tester.enterText(
+        find.byType(TextFormField).last,
+        'Great food, not pricey, but very taste',
+      );
 
       await tester.tap(find.text('Submit Review'));
       await tester.pump();
 
-      verify(() => mockProvider.addReview(
-          '123', 'Waffiq', 'Great food, not pricey, but very taste')).called(1);
+      verify(
+        () => mockProvider.addReview('123', 'Waffiq', 'Great food, not pricey, but very taste'),
+      ).called(1);
     });
 
     testWidgets('submitReview_clearTheTextForm', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
-      when(() => mockProvider.addReview(any(), any(), any()))
-          .thenAnswer((_) async {});
+      when(() => mockProvider.addReview(any(), any(), any())).thenAnswer((_) async {});
 
       await tester.enterText(find.byType(TextFormField).first, 'Badrul');
       await tester.enterText(find.byType(TextFormField).last, 'GG, nice');

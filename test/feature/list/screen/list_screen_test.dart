@@ -81,8 +81,7 @@ void main() {
               final arguments = settings.arguments as Map<String, String>;
               return MaterialPageRoute(
                 builder: (_) => ChangeNotifierProvider(
-                  create: (_) =>
-                      DetailProvider(ApiServices(httpClient: http.Client())),
+                  create: (_) => DetailProvider(ApiServices(httpClient: http.Client())),
                   child: DetailScreen(
                     restaurantId: arguments['restaurantId']!,
                     heroTag: arguments['heroTag']!,
@@ -96,8 +95,7 @@ void main() {
       );
     }
 
-    testWidgets('loadingIndicator_shouldShowsWhenInitialScreen',
-        (WidgetTester tester) async {
+    testWidgets('loadingIndicator_shouldShowsWhenInitialScreen', (WidgetTester tester) async {
       when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async {
         await Future.delayed(const Duration(seconds: 2));
         return mockResponse;
@@ -115,10 +113,8 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('scrollingUntilLastItem_shouldShowsTheLastItem',
-        (WidgetTester tester) async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => mockResponseMany);
+    testWidgets('scrollingUntilLastItem_shouldShowsTheLastItem', (WidgetTester tester) async {
+      when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async => mockResponseMany);
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       await tester.pumpAndSettle();
@@ -137,10 +133,10 @@ void main() {
       expect(find.text('Test Restaurant 99'), findsOneWidget);
     });
 
-    testWidgets('dataSuccessfullyVetched_shouldDisplaysRestaurantList',
-        (WidgetTester tester) async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => mockResponse);
+    testWidgets('dataSuccessfullyVetched_shouldDisplaysRestaurantList', (
+      WidgetTester tester,
+    ) async {
+      when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async => mockResponse);
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       listProvider.fetchRestaurantList();
@@ -150,10 +146,10 @@ void main() {
       expect(find.text('(4.5/5.0)'), findsOneWidget);
     });
 
-    testWidgets('fetchingDataFails_shuoldDisplaysErrorMessage',
-        (WidgetTester tester) async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
+    testWidgets('fetchingDataFails_shuoldDisplaysErrorMessage', (WidgetTester tester) async {
+      when(
+        () => mockApiServices.getRestaurantList(),
+      ).thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       listProvider.fetchRestaurantList();
@@ -163,10 +159,8 @@ void main() {
       expect(find.text('Failed to fetch data'), findsOneWidget);
     });
 
-    testWidgets('pullToRefresh_shouldTriggersFetchRestaurantList()',
-        (WidgetTester tester) async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => mockResponse);
+    testWidgets('pullToRefresh_shouldTriggersFetchRestaurantList()', (WidgetTester tester) async {
+      when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async => mockResponse);
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       await tester.pumpAndSettle(); // wait untill initial load complete
@@ -179,11 +173,9 @@ void main() {
       verify(() => mockApiServices.getRestaurantList()).called(2);
     });
 
-    testWidgets('tappingOnItem_shouldNavigateToDetailScreen',
-        (WidgetTester tester) async {
+    testWidgets('tappingOnItem_shouldNavigateToDetailScreen', (WidgetTester tester) async {
       ignoreNetworkImageErrors(); // disable unrelated error because this test case to test navigation
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => mockResponse);
+      when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async => mockResponse);
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       await tester.pumpAndSettle();
@@ -195,14 +187,11 @@ void main() {
       expect(find.byType(DetailScreen), findsOneWidget);
     });
 
-    testWidgets('clickingGitHubButton_shouldLaunchUrl',
-        (WidgetTester tester) async {
-      const MethodChannel channel =
-          MethodChannel('plugins.flutter.io/url_launcher');
+    testWidgets('clickingGitHubButton_shouldLaunchUrl', (WidgetTester tester) async {
+      const MethodChannel channel = MethodChannel('plugins.flutter.io/url_launcher');
 
       // mock the platform channel response for `launchUrl`
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         channel,
         (MethodCall methodCall) async {
           if (methodCall.method == 'launch') {
@@ -221,13 +210,12 @@ void main() {
       // cannot directly verify it was called unless wrap it with dependency.
     });
 
-    testWidgets('clickingGitHubButton_shouldThrowException_whenLaunchFails',
-        (WidgetTester tester) async {
-      const MethodChannel channel =
-          MethodChannel('plugins.flutter.io/url_launcher');
+    testWidgets('clickingGitHubButton_shouldThrowException_whenLaunchFails', (
+      WidgetTester tester,
+    ) async {
+      const MethodChannel channel = MethodChannel('plugins.flutter.io/url_launcher');
 
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
         channel,
         (MethodCall methodCall) async {
           if (methodCall.method == 'launch') {
@@ -242,12 +230,15 @@ void main() {
       Object? caughtException;
 
       // asynchronous method need to run on different approach
-      await runZonedGuarded(() async {
-        await tester.tap(find.byType(IconButton));
-        await tester.pumpAndSettle();
-      }, (error, stackTrace) {
-        caughtException = error;
-      });
+      await runZonedGuarded(
+        () async {
+          await tester.tap(find.byType(IconButton));
+          await tester.pumpAndSettle();
+        },
+        (error, stackTrace) {
+          caughtException = error;
+        },
+      );
 
       expect(caughtException, isA<Exception>());
     });

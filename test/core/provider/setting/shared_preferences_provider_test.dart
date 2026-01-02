@@ -29,9 +29,7 @@ void main() {
       reset(mockService);
     });
 
-    test(
-        'initializeSettings_validSavedSetting_shouldLoadSettingAndNotifyListeners',
-        () {
+    test('initializeSettings_validSavedSetting_shouldLoadSettingAndNotifyListeners', () {
       final savedSetting = Setting(notificationEnable: true, isDark: false);
       when(mockService.getSettingValue).thenReturn(savedSetting);
       when(() => mockService.isDarkModeSet()).thenReturn(true);
@@ -49,13 +47,13 @@ void main() {
     test('initializeSettings_noSavedSetting_shouldUseSystemTheme', () {
       TestWidgetsFlutterBinding.ensureInitialized();
 
-      when(() => mockService.getSettingValue()).thenReturn(
-        Setting(notificationEnable: false, isDark: true),
-      );
+      when(
+        () => mockService.getSettingValue(),
+      ).thenReturn(Setting(notificationEnable: false, isDark: true));
       when(() => mockService.isDarkModeSet()).thenReturn(false);
 
-      TestWidgetsFlutterBinding.instance.platformDispatcher
-          .platformBrightnessTestValue = Brightness.light;
+      TestWidgetsFlutterBinding.instance.platformDispatcher.platformBrightnessTestValue =
+          Brightness.light;
 
       // create provider after set the brightness
       sharedPreferencesProvider = SharedPreferencesProvider(mockService);
@@ -63,11 +61,9 @@ void main() {
       expect(sharedPreferencesProvider.setting?.isDark, isFalse);
     });
 
-    test('saveSettingValue_validData_shouldSaveSettingAndUpdateMessage',
-        () async {
+    test('saveSettingValue_validData_shouldSaveSettingAndUpdateMessage', () async {
       final setting = Setting(notificationEnable: true, isDark: false);
-      when(() => mockService.saveSettingValue(any()))
-          .thenAnswer((_) async => true);
+      when(() => mockService.saveSettingValue(any())).thenAnswer((_) async => true);
 
       await sharedPreferencesProvider.saveSettingValue(setting);
 
@@ -87,10 +83,10 @@ void main() {
     test('setTheme_validDarkMode_shouldSaveThemeAndUpdateMessage', () async {
       final setting = Setting(notificationEnable: true, isDark: false);
       when(() => mockService.setTheme(true)).thenAnswer((_) async => true);
-      when(() => mockService.saveSettingValue(any()))
-          .thenAnswer((_) async => true);
-      when(() => mockService.getSettingValue())
-          .thenReturn(Setting(notificationEnable: false, isDark: false));
+      when(() => mockService.saveSettingValue(any())).thenAnswer((_) async => true);
+      when(
+        () => mockService.getSettingValue(),
+      ).thenReturn(Setting(notificationEnable: false, isDark: false));
 
       // init save setting
       await sharedPreferencesProvider.saveSettingValue(setting);
@@ -106,8 +102,7 @@ void main() {
 
       await sharedPreferencesProvider.setTheme(false);
 
-      expect(sharedPreferencesProvider.message,
-          "Failed to update theme. Please try again.");
+      expect(sharedPreferencesProvider.message, "Failed to update theme. Please try again.");
     });
 
     test('getSettingValue_validData_shouldRetrieveSettingAndUpdateMessage', () {

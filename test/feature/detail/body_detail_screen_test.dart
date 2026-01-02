@@ -18,34 +18,35 @@ void main() {
       city: 'Sample City',
       address: '123 Sample Street',
       pictureId: 'sample_picture',
-      categories: [Category(name: 'Italian'), Category(name: 'Fancy')],
+      categories: [
+        Category(name: 'Italian'),
+        Category(name: 'Fancy'),
+      ],
       menus: Menu(
-        foods: [Category(name: 'Pasta'), Category(name: 'Pizza')],
-        drinks: [Category(name: 'Coffee'), Category(name: 'Wine')],
+        foods: [
+          Category(name: 'Pasta'),
+          Category(name: 'Pizza'),
+        ],
+        drinks: [
+          Category(name: 'Coffee'),
+          Category(name: 'Wine'),
+        ],
       ),
       rating: 4.5,
       customerReviews: [
-        CustomerReview(
-            name: 'Gilang',
-            review: 'Harganya murah sekali!',
-            date: '13 Juli 2019'),
-        CustomerReview(
-            name: 'Rafli', review: 'reviewnya bagus!', date: '9 Februari 2025'),
+        CustomerReview(name: 'Gilang', review: 'Harganya murah sekali!', date: '13 Juli 2019'),
+        CustomerReview(name: 'Rafli', review: 'reviewnya bagus!', date: '9 Februari 2025'),
       ],
     );
 
     Widget createWidgetUnderTest() {
       return MultiProvider(
         providers: [
-          Provider(
-            create: (context) => LocalDatabaseService(),
-          ),
+          Provider(create: (context) => LocalDatabaseService()),
           ChangeNotifierProvider(
-            create: (context) => LocalDatabaseProvider(
-              context.read<LocalDatabaseService>(),
-            ),
+            create: (context) => LocalDatabaseProvider(context.read<LocalDatabaseService>()),
           ),
-          ChangeNotifierProvider(create: (_) => FavoriteIconProvider())
+          ChangeNotifierProvider(create: (_) => FavoriteIconProvider()),
         ],
         child: MaterialApp(
           home: Scaffold(
@@ -58,8 +59,9 @@ void main() {
       );
     }
 
-    testWidgets('displayRestaurantInformation_correctlyShowsNameRatingAddress',
-        (WidgetTester tester) async {
+    testWidgets('displayRestaurantInformation_correctlyShowsNameRatingAddress', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.text('Sample Restaurant'), findsOneWidget);
@@ -67,8 +69,7 @@ void main() {
       expect(find.text('123 Sample Street, Sample City'), findsOneWidget);
     });
 
-    testWidgets('renderRestaurantCategories_displaysChips',
-        (WidgetTester tester) async {
+    testWidgets('renderRestaurantCategories_displaysChips', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.byType(Chip), findsNWidgets(2));
@@ -104,8 +105,7 @@ void main() {
     //       findsOneWidget);
     // });
 
-    testWidgets('displayMenus_showsFoodsAndDrinks',
-        (WidgetTester tester) async {
+    testWidgets('displayMenus_showsFoodsAndDrinks', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.text('Foods'), findsOneWidget);
@@ -114,16 +114,14 @@ void main() {
       expect(find.text('Coffee'), findsOneWidget);
     });
 
-    testWidgets('renderReviewsWidget_displaysCustomerReviews',
-        (WidgetTester tester) async {
+    testWidgets('renderReviewsWidget_displaysCustomerReviews', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
       await tester.ensureVisible(find.text('See Reviews'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('See Reviews'));
 
-      await tester.drag(
-          find.byType(SingleChildScrollView).first, const Offset(0, -700));
+      await tester.drag(find.byType(SingleChildScrollView).first, const Offset(0, -700));
       await tester.pumpAndSettle();
 
       expect(find.text('Gilang'), findsOneWidget);
@@ -131,8 +129,7 @@ void main() {
       expect(find.text('Rafli'), findsOneWidget);
     });
 
-    testWidgets('showReviewForm_displaysReviewForm',
-        (WidgetTester tester) async {
+    testWidgets('showReviewForm_displaysReviewForm', (WidgetTester tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.byType(ReviewForm), findsOneWidget);

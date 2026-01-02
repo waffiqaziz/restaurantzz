@@ -205,6 +205,7 @@ class _DetailScreenState extends State<DetailScreen> {
             );
           },
           child: ListView(
+            key: const Key('detail_refresh_list'),
             children: [
               BodyDetailScreen(restaurantDetailItem: restaurantDetailItem, heroTag: widget.heroTag),
             ],

@@ -71,8 +71,7 @@ void main() {
       ''';
       final jsonData = jsonDecode(jsonWithoutRestaurant);
 
-      expect(
-          () => RestaurantDetailResponse.fromJson(jsonData), returnsNormally);
+      expect(() => RestaurantDetailResponse.fromJson(jsonData), returnsNormally);
     });
 
     test('parseJsonWithInvalidTypes_ThrowsTypeError', () {
@@ -97,10 +96,7 @@ void main() {
 
       final jsonData = jsonDecode(invalidTypeJson);
 
-      expect(
-        () => RestaurantDetailResponse.fromJson(jsonData),
-        throwsA(isA<TypeError>()),
-      );
+      expect(() => RestaurantDetailResponse.fromJson(jsonData), throwsA(isA<TypeError>()));
     });
 
     test('toJson_ReturnsValidJsonRepresentation', () {
@@ -135,8 +131,8 @@ void main() {
           "categories": [],
           "menus": {"foods": [], "drinks": []},
           "rating": 4.0,
-          "customerReviews": []
-        }
+          "customerReviews": [],
+        },
       });
     });
 
@@ -151,9 +147,7 @@ void main() {
         categories: [],
         menus: Menu(foods: [], drinks: []),
         rating: 4.0,
-        customerReviews: [
-          CustomerReview(name: "John", review: "Great!", date: "2025-02-10")
-        ],
+        customerReviews: [CustomerReview(name: "John", review: "Great!", date: "2025-02-10")],
       );
 
       final updatedResponse = initialResponse.copyWith(customerReviews: null);
