@@ -3,113 +3,100 @@ import 'package:flutter/widgets.dart';
 import 'package:restaurantzz/core/networking/responses/restaurant_detail_response.dart';
 import 'package:restaurantzz/core/networking/services/api_services.dart';
 import 'package:restaurantzz/core/networking/states/detail_result_state.dart';
+import 'package:restaurantzz/core/provider/detail/detail_view_state.dart';
 
 class DetailProvider extends ChangeNotifier {
   final ApiServices _apiServices;
 
-  // simple cache to store fetched restaurant details
+  // cache
   final Map<String, RestaurantDetailItem> _cache = {};
+
+  // view states (per restaurant)
+  final Map<String, DetailViewState> _viewStates = {};
 
   DetailProvider(this._apiServices);
 
-  RestaurantDetailResultState _resultState = RestaurantDetailNoneState();
-  RestaurantDetailResultState get resultState => _resultState;
-
-  bool _isReviewSubmission = false;
-  bool get isReviewSubmission => _isReviewSubmission;
-
-  bool _isReviewSubmissionComplete = false;
-  bool get isReviewSubmissionComplete => _isReviewSubmissionComplete;
-
-  String? _reviewSubmissionError;
-  String? get reviewSubmissionError => _reviewSubmissionError;
-
-  // for testing purposes
-  RestaurantDetailItem? get cachedData {
-    if (_resultState is RestaurantDetailLoadedState) {
-      return (_resultState as RestaurantDetailLoadedState).data;
-    } else {
-      return null;
-    }
+  DetailViewState viewStateOf(String id) {
+    return _viewStates[id] ?? DetailViewState(resultState: RestaurantDetailNoneState());
   }
 
+  RestaurantDetailItem? cachedData(String id) => _cache[id];
+
   Future<void> fetchRestaurantDetail(String id, {bool refresh = false}) async {
-    try {
-      if (refresh) {
-        notifyListeners(); // notify for refresh without clearing content
-      } else {
-        if (_cache.containsKey(id) && refresh == false) {
-          _resultState = RestaurantDetailLoadedState(_cache[id]!);
-          notifyListeners();
-          return;
-        }
-        // show circular loading state only for non-refresh operations
-        _resultState = RestaurantDetailLoadingState();
-        notifyListeners();
-      }
+    final currentState = viewStateOf(id);
 
-      final result = await _apiServices.getRestaurantDetail(id);
-
-      if (result.data != null) {
-        if (result.data!.error) {
-          _resultState = RestaurantDetailErrorState(
-            result.message ?? result.data?.message ?? "Unknown error occurred",
-            id,
-          );
-        } else {
-          _cache[id] = result.data!.restaurant;
-          _resultState = RestaurantDetailLoadedState(result.data!.restaurant);
-        }
-      } else {
-        _resultState = RestaurantDetailErrorState(result.message ?? "Unknown error occurred", id);
-      }
-
-      notifyListeners();
-    } catch (e) {
-      _resultState = RestaurantDetailErrorState(
-        "An unexpected error occurred: ${e.toString()}",
-        id,
+    // Use cache if available and not refreshing
+    if (!refresh && _cache.containsKey(id)) {
+      _viewStates[id] = currentState.copyWith(
+        resultState: RestaurantDetailLoadedState(_cache[id]!),
       );
       notifyListeners();
+      return;
     }
+
+    _viewStates[id] = currentState.copyWith(resultState: RestaurantDetailLoadingState());
+    notifyListeners();
+
+    try {
+      final result = await _apiServices.getRestaurantDetail(id);
+
+      if (result.data != null && !result.data!.error) {
+        final restaurant = result.data!.restaurant;
+        _cache[id] = restaurant;
+
+        _viewStates[id] = currentState.copyWith(
+          resultState: RestaurantDetailLoadedState(restaurant),
+        );
+      } else {
+        _viewStates[id] = currentState.copyWith(
+          resultState: RestaurantDetailErrorState(result.message ?? "Failed to load detail", id),
+        );
+      }
+    } catch (e) {
+      _viewStates[id] = currentState.copyWith(
+        resultState: RestaurantDetailErrorState("Unexpected error: ${e.toString()}", id),
+      );
+    }
+
+    notifyListeners();
   }
 
   Future<void> addReview(String id, String name, String review) async {
-    try {
-      _isReviewSubmission = true;
-      _reviewSubmissionError = null;
+    _viewStates[id] = viewStateOf(
+      id,
+    ).copyWith(isSubmittingReview: true, reviewCompleted: false, reviewError: null);
+    notifyListeners();
 
+    try {
       final result = await _apiServices.postReview(id, name, review);
 
       if (result.data != null && !result.data!.error) {
         if (_cache.containsKey(id)) {
           _cache[id] = _cache[id]!.copyWith(customerReviews: result.data!.customerReviews);
-          _resultState = RestaurantDetailLoadedState(_cache[id]!);
+
+          _viewStates[id] = viewStateOf(
+            id,
+          ).copyWith(resultState: RestaurantDetailLoadedState(_cache[id]!), reviewCompleted: true);
         }
       } else {
-        _reviewSubmissionError = "Failed to submit the review. Please try again.";
+        _viewStates[id] = viewStateOf(
+          id,
+        ).copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
       }
-      notifyListeners();
-    } catch (e) {
-      _reviewSubmissionError = "Failed to submit the review. Please try again.";
+    } catch (_) {
+      _viewStates[id] = viewStateOf(
+        id,
+      ).copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
     } finally {
-      _isReviewSubmission = false;
-      _isReviewSubmissionComplete = true;
+      _viewStates[id] = viewStateOf(id).copyWith(isSubmittingReview: false);
       notifyListeners();
     }
   }
 
-  void resetReviewSubmissionState() {
-    _isReviewSubmissionComplete = false;
-    _reviewSubmissionError = null;
-    notifyListeners();
-  }
+  void resetReviewSubmissionState(String id) {
+    final currentState = viewStateOf(id);
 
-  void resetState() {
-    _resultState = RestaurantDetailNoneState();
-    _isReviewSubmission = false;
-    _isReviewSubmissionComplete = false;
-    _reviewSubmissionError = null;
+    _viewStates[id] = currentState.copyWith(reviewCompleted: false, reviewError: null);
     notifyListeners();
   }
 }
