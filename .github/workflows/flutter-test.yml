@@ -98,7 +98,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
         with:
-          report-type: test_results
+          report_type: test_results
           token: ${{ secrets.CODECOV_TOKEN }}
       
   instrumented_test_iOS:
