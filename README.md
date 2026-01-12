@@ -1,7 +1,7 @@
 # Restaurantzz
 
 ![Header](/docs/images/header.png)
-[![Flutter Version](https://img.shields.io/badge/flutter-v3.38.5-blue?logo=flutter&logoColor=white)](https://github.com/flutter/flutter/blob/main/CHANGELOG.md#3385)
+[![Flutter Version](https://img.shields.io/badge/flutter-v3.38.6-blue?logo=flutter&logoColor=white)](https://github.com/flutter/flutter/blob/main/CHANGELOG.md#3386)
 [![Flutter Testing](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml/badge.svg)](https://github.com/waffiqaziz/restaurantzz/actions/workflows/flutter-test.yml)
 [![codecov](https://codecov.io/gh/waffiqaziz/restaurantzz/graph/badge.svg?token=W2M08GY7CJ)](https://codecov.io/gh/waffiqaziz/restaurantzz)
 
