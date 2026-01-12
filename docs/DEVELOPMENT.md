@@ -24,11 +24,11 @@ cd restaurantzz
 This project uses FVM (Flutter Version Management) to ensure consistency across
 development environments.
 
-Install and use the required Flutter version `3.27.4` via FVM:
+Install and use the required Flutter version `3.38.6` via FVM:
 
 ```bash
-fvm install 3.27.4
-fvm use 3.27.4
+fvm install 3.38.6
+fvm use 3.38.6
 ```
 
 ### 3. Install dependencies
