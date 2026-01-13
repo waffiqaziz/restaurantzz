@@ -10,12 +10,13 @@ void main() {
     late LocalDatabaseProvider provider;
     late MockLocalDatabaseService mockService;
     final testRestaurant = Restaurant(
-        id: '1',
-        name: 'Test Restaurant',
-        description: 'Test Description',
-        pictureId: 'Test Picture ID',
-        city: 'Test City',
-        rating: 9);
+      id: '1',
+      name: 'Test Restaurant',
+      description: 'Test Description',
+      pictureId: 'Test Picture ID',
+      city: 'Test City',
+      rating: 9,
+    );
 
     setUp(() {
       mockService = MockLocalDatabaseService();
@@ -23,8 +24,7 @@ void main() {
     });
 
     test('saveRestaurant_successUpdatesMessageAndNotifiesListeners', () async {
-      when(() => mockService.insertItem(testRestaurant))
-          .thenAnswer((_) async => 1);
+      when(() => mockService.insertItem(testRestaurant)).thenAnswer((_) async => 1);
 
       await provider.saveRestaurant(testRestaurant);
 
@@ -41,8 +41,7 @@ void main() {
     });
 
     test('saveRestaurant_errorUpdatesMessageAndNotifiesListeners', () async {
-      when(() => mockService.insertItem(testRestaurant))
-          .thenAnswer((_) async => 0);
+      when(() => mockService.insertItem(testRestaurant)).thenAnswer((_) async => 0);
 
       await provider.saveRestaurant(testRestaurant);
 
@@ -52,8 +51,7 @@ void main() {
     test('loadAllRestaurant_successLoadsDataAndNotifiesListeners', () async {
       final restaurants = [testRestaurant];
 
-      when(() => mockService.getAllItems())
-          .thenAnswer((_) async => restaurants);
+      when(() => mockService.getAllItems()).thenAnswer((_) async => restaurants);
 
       await provider.loadAllRestaurant();
 
@@ -61,8 +59,7 @@ void main() {
       expect(provider.message, "All of your data is loaded");
     });
 
-    test('loadAllRestaurant_failureUpdatesMessageAndNotifiesListeners',
-        () async {
+    test('loadAllRestaurant_failureUpdatesMessageAndNotifiesListeners', () async {
       when(() => mockService.getAllItems()).thenThrow(Exception());
 
       await provider.loadAllRestaurant();
@@ -70,10 +67,8 @@ void main() {
       expect(provider.message, "Failed to load your all data");
     });
 
-    test('loadRestaurantById_successLoadsRestaurantAndNotifiesListeners',
-        () async {
-      when(() => mockService.getItemById('1'))
-          .thenAnswer((_) async => testRestaurant);
+    test('loadRestaurantById_successLoadsRestaurantAndNotifiesListeners', () async {
+      when(() => mockService.getItemById('1')).thenAnswer((_) async => testRestaurant);
 
       await provider.loadRestaurantById('1');
 
@@ -81,8 +76,7 @@ void main() {
       expect(provider.message, "Your data is loaded");
     });
 
-    test('loadRestaurantById_failureUpdatesMessageAndNotifiesListeners',
-        () async {
+    test('loadRestaurantById_failureUpdatesMessageAndNotifiesListeners', () async {
       when(() => mockService.getItemById('1')).thenThrow(Exception());
 
       await provider.loadRestaurantById('1');
@@ -90,8 +84,7 @@ void main() {
       expect(provider.message, "Failed to load your data");
     });
 
-    test('removeRestaurantById_successUpdatesMessageAndNotifiesListeners',
-        () async {
+    test('removeRestaurantById_successUpdatesMessageAndNotifiesListeners', () async {
       when(() => mockService.removeItem('1')).thenAnswer((_) async => 1);
 
       await provider.removeRestaurantById('1');
@@ -100,8 +93,7 @@ void main() {
       verify(() => mockService.removeItem('1')).called(1);
     });
 
-    test('removeRestaurantById_failureUpdatesMessageAndNotifiesListeners',
-        () async {
+    test('removeRestaurantById_failureUpdatesMessageAndNotifiesListeners', () async {
       when(() => mockService.removeItem('1')).thenThrow(Exception());
 
       await provider.removeRestaurantById('1');
@@ -110,8 +102,7 @@ void main() {
     });
 
     test('checkItemBookmark_withMatchingIdReturnsTrue', () async {
-      when(() => mockService.getItemById('1'))
-          .thenAnswer((_) async => testRestaurant);
+      when(() => mockService.getItemById('1')).thenAnswer((_) async => testRestaurant);
 
       await provider.loadRestaurantById('1');
 

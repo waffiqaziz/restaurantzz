@@ -69,10 +69,7 @@ void main() {
       ''';
 
       final jsonData = jsonDecode(jsonString);
-      expect(
-        () => RestaurantListResponse.fromJson(jsonData),
-        throwsA(isA<NoSuchMethodError>()),
-      );
+      expect(() => RestaurantListResponse.fromJson(jsonData), throwsA(isA<NoSuchMethodError>()));
     });
 
     test('serializeObjectToJson_ReturnsExpectedJson', () {
@@ -84,7 +81,7 @@ void main() {
           pictureId: "14",
           city: "Medan",
           rating: 4.2,
-        )
+        ),
       ];
 
       final response = RestaurantListResponse(

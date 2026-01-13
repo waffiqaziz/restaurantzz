@@ -51,8 +51,7 @@ void main() {
       ''';
       final jsonData = jsonDecode(jsonResponse);
 
-      expect(() => PostReviewResponse.fromJson(jsonData),
-          throwsA(isA<TypeError>()));
+      expect(() => PostReviewResponse.fromJson(jsonData), throwsA(isA<TypeError>()));
     });
 
     test('parseJsonWithValidCustomerReviews_PopulatesList', () {
@@ -85,8 +84,7 @@ void main() {
     test('toJson_ReturnsEquivalentJsonStructure', () {
       final reviewList = [
         CustomerReview(name: "Guest", review: "Nice", date: "4 February 2025"),
-        CustomerReview(
-            name: "Kevin", review: "Delicious", date: "4 February 2025"),
+        CustomerReview(name: "Kevin", review: "Delicious", date: "4 February 2025"),
       ];
       final response = PostReviewResponse(
         error: false,

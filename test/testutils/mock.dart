@@ -23,26 +23,21 @@ class MockLocalDatabaseProvider extends Mock implements LocalDatabaseProvider {}
 
 class MockDetailProvider extends Mock implements DetailProvider {}
 
-class MockSharedPreferencesProvider extends Mock
-    implements SharedPreferencesProvider {}
+class MockSharedPreferencesProvider extends Mock implements SharedPreferencesProvider {}
 
-class MockLocalNotificationProvider extends Mock
-    implements LocalNotificationProvider {}
+class MockLocalNotificationProvider extends Mock implements LocalNotificationProvider {}
 
 class MockLocalDatabaseService extends Mock implements LocalDatabaseService {}
 
-class MockLocalNotificationService extends Mock
-    implements LocalNotificationService {}
+class MockLocalNotificationService extends Mock implements LocalNotificationService {}
 
 class MockWorkmanager extends Mock implements Workmanager {}
 
 class MockDatabaseFactory extends Mock implements DatabaseFactory {}
 
-class MockSharedPreferencesService extends Mock
-    implements SharedPreferencesService {}
+class MockSharedPreferencesService extends Mock implements SharedPreferencesService {}
 
-class MockFlutterLocalNotificationsPlugin extends Mock
-    implements FlutterLocalNotificationsPlugin {}
+class MockFlutterLocalNotificationsPlugin extends Mock implements FlutterLocalNotificationsPlugin {}
 
 class MockWorkmanagerService extends Mock implements WorkmanagerService {}
 

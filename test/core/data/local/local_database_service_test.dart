@@ -64,8 +64,7 @@ void main() {
 
     test('initializeDb_CreatesTableWhenMissing', () async {
       final db = await databaseService.database;
-      final tables = await db
-          .rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
+      final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
 
       expect(tables.any((table) => table["name"] == "restaurant"), true);
     });
@@ -78,19 +77,21 @@ void main() {
 
     test('getAllItems_ReturnsListOfRestaurantsWhenDataExists', () async {
       final restaurant1 = Restaurant(
-          id: '1',
-          name: 'Restaurant One',
-          description: 'Desc 1',
-          pictureId: '1',
-          city: 'City 1',
-          rating: 4.2);
+        id: '1',
+        name: 'Restaurant One',
+        description: 'Desc 1',
+        pictureId: '1',
+        city: 'City 1',
+        rating: 4.2,
+      );
       final restaurant2 = Restaurant(
-          id: '2',
-          name: 'Restaurant Two',
-          description: 'Desc 2',
-          pictureId: '2',
-          city: 'City 2',
-          rating: 3.8);
+        id: '2',
+        name: 'Restaurant Two',
+        description: 'Desc 2',
+        pictureId: '2',
+        city: 'City 2',
+        rating: 3.8,
+      );
 
       await databaseService.insertItem(restaurant1);
       await databaseService.insertItem(restaurant2);
@@ -98,8 +99,7 @@ void main() {
       final allRestaurants = await databaseService.getAllItems();
 
       expect(allRestaurants.length, 2);
-      expect(allRestaurants.map((e) => e.name),
-          containsAll(['Restaurant One', 'Restaurant Two']));
+      expect(allRestaurants.map((e) => e.name), containsAll(['Restaurant One', 'Restaurant Two']));
     });
 
     test('getItemById_ReturnsCorrectItemWhenExists', () async {
@@ -130,19 +130,21 @@ void main() {
 
     test('insertItem_ReplacesDuplicateItemWithSameId', () async {
       final restaurant1 = Restaurant(
-          id: '1',
-          name: 'Initial Name',
-          description: 'Desc 1',
-          pictureId: '1',
-          city: 'City 1',
-          rating: 4.2);
+        id: '1',
+        name: 'Initial Name',
+        description: 'Desc 1',
+        pictureId: '1',
+        city: 'City 1',
+        rating: 4.2,
+      );
       final restaurant2 = Restaurant(
-          id: '1',
-          name: 'Updated Name',
-          description: 'Desc 2',
-          pictureId: '2',
-          city: 'City 2',
-          rating: 5.0);
+        id: '1',
+        name: 'Updated Name',
+        description: 'Desc 2',
+        pictureId: '2',
+        city: 'City 2',
+        rating: 5.0,
+      );
 
       await databaseService.insertItem(restaurant1);
       await databaseService.insertItem(restaurant2);

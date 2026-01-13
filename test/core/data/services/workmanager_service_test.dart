@@ -50,39 +50,41 @@ void main() {
     });
 
     test('init_initializesWorkmanager', () async {
-      when(() => mockWorkmanager.initialize(any()
-             ))
-          .thenAnswer((_) async => Future.value());
+      when(() => mockWorkmanager.initialize(any())).thenAnswer((_) async => Future.value());
 
       workmanagerService.init();
 
-      verify(() => mockWorkmanager.initialize(any()))
-          .called(1);
+      verify(() => mockWorkmanager.initialize(any())).called(1);
     });
 
     test('runPeriodicTask_registersPeriodicTaskCorrectly', () async {
-      when(() => mockWorkmanager.registerPeriodicTask(any(), any(),
-              constraints: any(named: "constraints"),
-              frequency: any(named: "frequency"),
-              initialDelay: any(named: "initialDelay"),
-              inputData: any(named: "inputData")))
-          .thenAnswer((_) async => Future.value());
+      when(
+        () => mockWorkmanager.registerPeriodicTask(
+          any(),
+          any(),
+          constraints: any(named: "constraints"),
+          frequency: any(named: "frequency"),
+          initialDelay: any(named: "initialDelay"),
+          inputData: any(named: "inputData"),
+        ),
+      ).thenAnswer((_) async => Future.value());
 
       await workmanagerService.runPeriodicTask();
 
-      verify(() => mockWorkmanager.registerPeriodicTask(
-            any(),
-            any(),
-            constraints: any(named: "constraints"),
-            frequency: any(named: "frequency"),
-            initialDelay: any(named: "initialDelay"),
-            inputData: any(named: "inputData"),
-          )).called(1);
+      verify(
+        () => mockWorkmanager.registerPeriodicTask(
+          any(),
+          any(),
+          constraints: any(named: "constraints"),
+          frequency: any(named: "frequency"),
+          initialDelay: any(named: "initialDelay"),
+          inputData: any(named: "inputData"),
+        ),
+      ).called(1);
     });
 
     test('cancelAllTask_cancelsTasksCorrectly', () async {
-      when(() => mockWorkmanager.cancelAll())
-          .thenAnswer((_) async => Future.value());
+      when(() => mockWorkmanager.cancelAll()).thenAnswer((_) async => Future.value());
 
       workmanagerService.cancelAllTask();
 
@@ -90,16 +92,16 @@ void main() {
     });
 
     test('callbackDispatcher_handlesSuccessNotification', () async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenAnswer((_) async => mockResponseSuccess);
-      when(() => mockNotificationService.init())
-          .thenAnswer((_) async => Future.value());
-      when(() => mockNotificationService.showNotification(
-            id: 1,
-            title: any(named: "title"),
-            body: any(named: "body"),
-            payload: any(named: "payload"),
-          )).thenAnswer((_) async => Future.value());
+      when(() => mockApiServices.getRestaurantList()).thenAnswer((_) async => mockResponseSuccess);
+      when(() => mockNotificationService.init()).thenAnswer((_) async => Future.value());
+      when(
+        () => mockNotificationService.showNotification(
+          id: 1,
+          title: any(named: "title"),
+          body: any(named: "body"),
+          payload: any(named: "payload"),
+        ),
+      ).thenAnswer((_) async => Future.value());
 
       await mockNotificationService.init();
       await mockNotificationService.showNotification(
@@ -110,25 +112,27 @@ void main() {
       );
 
       verify(() => mockNotificationService.init()).called(1);
-      verify(() => mockNotificationService.showNotification(
-            id: 1,
-            title: 'Test Restaurant',
-            body: 'description',
-            payload: '1:list',
-          )).called(1);
+      verify(
+        () => mockNotificationService.showNotification(
+          id: 1,
+          title: 'Test Restaurant',
+          body: 'description',
+          payload: '1:list',
+        ),
+      ).called(1);
     });
 
     test('callbackDispatcher_handlesFailureNotification', () async {
-      when(() => mockApiServices.getRestaurantList())
-          .thenThrow(Exception("API error"));
-      when(() => mockNotificationService.init())
-          .thenAnswer((_) async => Future.value());
-      when(() => mockNotificationService.showNotification(
-            id: 1,
-            title: any(named: "title"),
-            body: any(named: "body"),
-            payload: any(named: "payload"),
-          )).thenAnswer((_) async => Future.value());
+      when(() => mockApiServices.getRestaurantList()).thenThrow(Exception("API error"));
+      when(() => mockNotificationService.init()).thenAnswer((_) async => Future.value());
+      when(
+        () => mockNotificationService.showNotification(
+          id: 1,
+          title: any(named: "title"),
+          body: any(named: "body"),
+          payload: any(named: "payload"),
+        ),
+      ).thenAnswer((_) async => Future.value());
 
       await mockNotificationService.init();
       await mockNotificationService.showNotification(
@@ -139,12 +143,14 @@ void main() {
       );
 
       verify(() => mockNotificationService.init()).called(1);
-      verify(() => mockNotificationService.showNotification(
-            id: 1,
-            title: Strings.dailyNotification,
-            body: "Unexpected error fetching restaurant data.",
-            payload: Strings.error,
-          )).called(1);
+      verify(
+        () => mockNotificationService.showNotification(
+          id: 1,
+          title: Strings.dailyNotification,
+          body: "Unexpected error fetching restaurant data.",
+          payload: Strings.error,
+        ),
+      ).called(1);
     });
   });
 

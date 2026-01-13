@@ -91,6 +91,10 @@ void main() {
     await tester.pump();
 
     expect(find.byType(Hero), findsOneWidget);
+
+    // simulate tap
+    final backButton = find.byKey(const Key('back_button'));
+    await tester.tap(backButton);
   });
 
   testWidgets('loadingIndicator_showWhenStateIsLoading', (WidgetTester tester) async {
@@ -133,6 +137,34 @@ void main() {
 
     expect(find.text('Test Restaurant'), findsOneWidget);
     expect(find.text('Test Description'), findsOneWidget);
+  });
+
+  testWidgets('pullToRefresh_callsRefreshFunction', (WidgetTester tester) async {
+    when(
+      () => mockDetailProvider.fetchRestaurantDetail(any(), refresh: any(named: 'refresh')),
+    ).thenAnswer((_) async {});
+    when(() => mockLocalDatabaseProvider.loadRestaurantById(any())).thenAnswer((_) async {});
+    when(() => mockLocalDatabaseProvider.checkItemBookmark(any())).thenReturn(false);
+    when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
+    when(
+      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockDetailProvider.viewStateOf('123'),
+    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    final refreshListFinder = find.byKey(const Key('detail_refresh_list'));
+    expect(refreshListFinder, findsOneWidget);
+
+    expect(refreshListFinder, findsOneWidget);
+
+    await tester.drag(refreshListFinder, const Offset(0, 300));
+    await tester.pumpAndSettle();
+
+    verify(() => mockDetailProvider.fetchRestaurantDetail(any())).called(1);
   });
 
   testWidgets('showSnackbarWithErrorMessage_whenReviewSubmissionFails', (
