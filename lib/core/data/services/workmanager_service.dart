@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:http/http.dart' as http;
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
 import 'package:restaurantzz/core/networking/services/api_services.dart';
@@ -10,32 +12,33 @@ void callbackDispatcher() {
     logger.i("🔄 WorkManager task started: $task");
 
     try {
-      // 1. Initialize necessary services
+      // get resto data
       final apiService = ApiServices(httpClient: http.Client());
-
-      // 2. Fetch fresh data from API
       final restaurants = await apiService.getRestaurantList();
+      final restaurantList = restaurants.data?.restaurants;
 
-      // 3. Pick a restaurant (random, featured, etc.)
-      final restaurant = restaurants.data?.restaurants.first; // or random selection
+      // show notification only if data is ready
+      if (restaurantList != null && restaurantList.isNotEmpty) {
+        final randomRestaurant = restaurantList[Random().nextInt(restaurantList.length)];
 
-      // 4. Initialize notification service
-      final notificationService = LocalNotificationService();
-      await notificationService.init();
+        final notificationService = LocalNotificationService();
+        await notificationService.init();
+        await notificationService.showNotification(
+          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          title: "Daily Restaurant Recommendation",
+          body:
+              "Try ${randomRestaurant.name} - ${randomRestaurant.description}",
+          payload: "${randomRestaurant.id}:list",
+        );
 
-      // 5. Show notification with fresh API data
-      await notificationService.showNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: "🍽️ Daily Restaurant Recommendation",
-        body: "Try ${restaurant?.name} - ${restaurant?.description ?? 'A great place to dine!'}",
-        payload: "${restaurant?.id}:list",
-      );
+        logger.i("Notification shown with fresh data: ${randomRestaurant.name}");
 
-      logger.i("✅ Notification shown with fresh data: ${restaurant?.name}");
-
-      return Future.value(true);
+        return Future.value(true);
+      } else {
+        return Future.value(false);
+      }
     } catch (e) {
-      logger.e("❌ WorkManager task failed: $e");
+      logger.e("WorkManager task failed: $e");
       return Future.value(false);
     }
   });

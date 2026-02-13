@@ -79,7 +79,7 @@ void main() {
             ChangeNotifierProvider(
               create: (context) => LocalNotificationProvider(
                 context.read<LocalNotificationService>(),
-              )..requestPermissions(),
+              ),
             ),
             ChangeNotifierProvider(
               create: (context) => PayloadProvider(
