@@ -29,7 +29,7 @@ class LocalNotificationService {
       iOS: initializationSettingsDarwin,
     );
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) {
         final payload = notificationResponse.payload;
         if (payload != null && payload.isNotEmpty) {
@@ -115,10 +115,10 @@ class LocalNotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      body,
-      notificationDetails,
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: notificationDetails,
       payload: payload,
     );
   }
@@ -199,11 +199,11 @@ class LocalNotificationService {
     final testTime = _nextInstanceOfCustomTime(testMinutesFromNow: 2);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      'Test Scheduled Notification',
-      'This is a test notification scheduled for 2 minutes from now',
-      testTime,
-      notificationDetails,
+      id: id,
+      title: 'Test Scheduled Notification',
+      body: 'This is a test notification scheduled for 2 minutes from now',
+      scheduledDate: testTime,
+      notificationDetails: notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       payload: 'test:scheduled',
     );
@@ -233,11 +233,11 @@ class LocalNotificationService {
     final datetimeSchedule = _nextInstanceOfElevenAM();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      'Daily scheduled notification title',
-      'This is a body of daily scheduled notification',
-      datetimeSchedule,
-      notificationDetails,
+      id: id,
+      title: 'Daily scheduled notification title',
+      body: 'This is a body of daily scheduled notification',
+      scheduledDate: datetimeSchedule,
+      notificationDetails: notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
@@ -250,6 +250,6 @@ class LocalNotificationService {
   }
 
   Future<void> cancelNotification(int id) async {
-    await flutterLocalNotificationsPlugin.cancel(id);
+    await flutterLocalNotificationsPlugin.cancel(id: id);
   }
 }
