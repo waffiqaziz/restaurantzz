@@ -117,7 +117,7 @@ jobs:
 
       - run: flutter pub get
 
-      - uses: futureware-tech/simulator-action@v4
+      - uses: futureware-tech/simulator-action@v5
         with:
           model: 'iPhone 16 Pro'
           os_version: '18.6'
