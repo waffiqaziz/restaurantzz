@@ -8,7 +8,7 @@ on:
       - "**/*.md"
 
 env:
-  FLUTTER_VERSION: 3.38.6
+  FLUTTER_VERSION: 3.44.4
 
 permissions:
   checks: write
@@ -44,7 +44,7 @@ jobs:
       - name: Build Flutter Web
         run: flutter build web --release
         
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - uses: FirebaseExtended/action-hosting-deploy@500ac625ca2dd40cbd15f7659af953801858032a
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESTAURANTZZ }}
