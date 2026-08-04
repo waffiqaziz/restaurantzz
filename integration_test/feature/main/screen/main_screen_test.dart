@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:integration_test/integration_test.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurantzz/core/data/local/local_database_service.dart';
-import 'package:restaurantzz/core/data/services/local_notification_service.dart';
-import 'package:restaurantzz/core/data/services/shared_preferences.dart';
-import 'package:restaurantzz/core/data/services/workmanager_service.dart';
-import 'package:restaurantzz/core/networking/services/api_services.dart';
-import 'package:restaurantzz/core/provider/favorite/local_database_provider.dart';
-import 'package:restaurantzz/core/provider/list/list_provider.dart';
-import 'package:restaurantzz/core/provider/main/index_nav_provider.dart';
-import 'package:restaurantzz/core/provider/notification/local_notification_provider.dart';
-import 'package:restaurantzz/core/provider/payload/payload_provider.dart';
-import 'package:restaurantzz/core/provider/search/search_provider.dart';
-import 'package:restaurantzz/core/provider/setting/shared_preferences_provider.dart';
+import 'package:restaurantzz/app_root.dart';
 import 'package:restaurantzz/feature/favorite/screen/favorite_screen.dart';
 import 'package:restaurantzz/feature/list/screen/list_screen.dart';
-import 'package:restaurantzz/feature/main/screen/main_screen.dart';
 import 'package:restaurantzz/feature/search/screen/search_screen.dart';
 import 'package:restaurantzz/feature/settings/screen/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,15 +13,9 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('MainScreen Navigation', () {
-    late IndexNavProvider indexNavProvider;
-
-    setUp(() {
-      indexNavProvider = IndexNavProvider();
-    });
-
-    testWidgets('Navigates and displays correct screens',
+    testWidgets('bottomNavigation_shouldNavigatesAndDisplaysCorrectScreens',
         (WidgetTester tester) async {
-      final prefs = await SharedPreferences.getInstance();
+      final preference = await SharedPreferences.getInstance();
 
       await tester.pumpWidget(
         MultiProvider(
@@ -95,6 +75,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpWidget(AppRoot(prefs: preference, initialPayload: ""));
 
       await tester.pumpAndSettle();
 
