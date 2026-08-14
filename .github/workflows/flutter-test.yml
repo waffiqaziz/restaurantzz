@@ -124,6 +124,10 @@ jobs:
           wait_for_boot: true
         id: simulator
 
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: pod install --repo-update
+
       - name: Run Integration Tests on iOS Simulator
         run: |
           flutter test integration_test
