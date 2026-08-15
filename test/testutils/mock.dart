@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
+import 'package:restaurantzz/core/common/app_config.dart';
 import 'package:restaurantzz/core/data/local/local_database_service.dart';
 import 'package:restaurantzz/core/data/model/setting.dart';
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
@@ -46,3 +48,7 @@ class FakeSetting extends Fake implements Setting {}
 class MockFavoriteIconProvider extends Mock implements FavoriteIconProvider {}
 
 class FakeUri extends Fake implements Uri {}
+
+class MockAppConfig extends Mock implements AppConfig {}
+
+class MockBuildContext extends Mock implements BuildContext {}

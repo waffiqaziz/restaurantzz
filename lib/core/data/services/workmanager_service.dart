@@ -5,11 +5,12 @@ import 'package:restaurantzz/core/data/services/local_notification_service.dart'
 import 'package:restaurantzz/core/networking/services/api_services.dart';
 import 'package:restaurantzz/core/utils/logger.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    logger.i("🔄 WorkManager task started: $task");
+    logger.i("WorkManager task started: $task");
 
     try {
       // get resto data
@@ -26,8 +27,7 @@ void callbackDispatcher() {
         await notificationService.showNotification(
           id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
           title: "Daily Restaurant Recommendation",
-          body:
-              "Try ${randomRestaurant.name} - ${randomRestaurant.description}",
+          body: "Try ${randomRestaurant.name} - ${randomRestaurant.description}",
           payload: "${randomRestaurant.id}:list",
         );
 
@@ -53,18 +53,32 @@ class WorkmanagerService {
   }
 
   Future<void> runPeriodicTask() async {
+    final scheduledDate = LocalNotificationService().nextInstanceOfElevenAM();
+    final now = tz.TZDateTime.now(tz.local);
+    final initialDelay = scheduledDate.difference(now);
+
     await _workmanager.registerPeriodicTask(
       "daily-restaurant-notification",
       "fetchAndShowNotification",
-      frequency: Duration(days: 1), // Run daily
-      initialDelay: Duration(minutes: 1), // Start in 1 minute for testing
+      frequency: Duration(hours: 24), // Run daily
+      initialDelay: initialDelay,
     );
 
-    logger.i("🔄 WorkManager periodic task registered");
+    logger.i('WorkManager periodic task registered');
+  }
+
+  Future<void> runOneTask() async {
+    await _workmanager.registerOneOffTask(
+      "daily-restaurant-notification",
+      "fetchAndShowNotification",
+      initialDelay: Duration(seconds: 5), // Start in 5 second for testing
+    );
+
+    logger.i("WorkManager one task registered");
   }
 
   void cancelAllTask() {
     _workmanager.cancelAll();
-    logger.i("❌ All WorkManager tasks cancelled");
+    logger.i("All WorkManager tasks cancelled");
   }
 }

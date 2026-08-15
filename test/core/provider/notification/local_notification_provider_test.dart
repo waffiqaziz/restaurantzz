@@ -103,5 +103,13 @@ void main() {
 
       verify(() => mockService.cancelNotification(notificationId)).called(1);
     });
+
+    test('cancelAllNotification_called_cancelAllNotification', () async {
+      when(() => mockService.cancelAllNotification()).thenAnswer((_) async => {});
+
+      await localNotificationProvider.cancelAllNotification();
+
+      verify(() => mockService.cancelAllNotification()).called(1);
+    });
   });
 }
