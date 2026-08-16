@@ -47,6 +47,7 @@ void main() {
       mockLocalNotificationService = MockLocalNotificationService();
       mockLocalNotificationProvider = MockLocalNotificationProvider();
 
+      when(() => mockWorkmanagerService.runOneTask()).thenAnswer((_) async {});
       when(() => mockLocalNotificationService.init()).thenAnswer((_) async {});
       when(() => mockLocalNotificationService.requestPermissions()).thenAnswer((_) async {
         return true;
