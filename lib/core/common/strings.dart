@@ -42,6 +42,15 @@ class Strings {
   static String ok = "Ok";
 
   static String dailyNotification = "Daily Notification";
+  static String debugOption = "Debug Option";
+  static String withWorkmanager = "With Workmanager";
+  static String noWorkmanager = "No Workmanager";
+  static String testNotificationNow = 'Test Notification Immediately';
+  static String testNotificationTwoMinutes = 'Test Notification Two Minutes';
+  static String testNotificationAtEleven = 'Test Notification at 11 a.m.';
+  static String testFiveSecondsWorkmanager = 'Test 5 Seconds';
+  static String cancelAllNotification = 'Cancel All Test Notification';
+  static String checkPendingNotifications = 'Check Pending Notifications';
   static String retry = "Retry";
   static String close = "Close";
 }

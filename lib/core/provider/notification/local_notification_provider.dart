@@ -50,4 +50,8 @@ class LocalNotificationProvider extends ChangeNotifier {
   Future<void> cancelNotification(int id) async {
     await flutterNotificationService.cancelNotification(id);
   }
+
+  Future<void> cancelAllNotification() async {
+    await flutterNotificationService.cancelAllNotification();
+  }
 }

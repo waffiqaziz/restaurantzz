@@ -62,18 +62,6 @@ void main() {
       when(() => mockLocalNotificationProvider.requestPermissions()).thenAnswer((_) async {});
     });
 
-    // TODO: Not yet tested for web platform
-    // testWidgets('uiElement_shouldDisplayedCorrecltyOnWebPlatform',
-    //     (WidgetTester tester) async {
-    //   await tester.pumpWidget(createWidgetUnderTest());
-
-    //   // assume this was switch for toggle dark mode
-    //   expect(find.byType(Switch), findsOneWidget);
-    //   expect(find.text(Strings.settings), findsOneWidget);
-    //   expect(find.text(Strings.darkMode), findsOneWidget);
-    //   expect(find.byIcon(Icons.dark_mode_rounded), findsOneWidget);
-    // });
-
     testWidgets(
       'uiElement_shouldDisplayedOnAndroidPlatform',
       (WidgetTester tester) async {
@@ -195,7 +183,6 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
     });
 
-    // TODO: Not yet tested for schedule notification
     testWidgets('pressTestShowNotification_shouldCallsCorrectFunction', (
       WidgetTester tester,
     ) async {
@@ -217,56 +204,26 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
-      final buttonFinder = find.text('Test Notification Immediately');
+      final buttonFinder = find.text(Strings.testNotificationNow);
       await tester.tap(buttonFinder);
       await tester.pump();
 
       verify(() => mockLocalNotificationProvider.showNotification()).called(1);
       debugDefaultTargetPlatformOverride = null;
 
-      final buttonFinder2 = find.text('Test Notification Two Minues');
+      final buttonFinder2 = find.text(Strings.testNotificationTwoMinutes);
       await tester.tap(buttonFinder2);
       await tester.pump();
 
       verify(() => mockLocalNotificationProvider.scheduleTestNotification()).called(1);
       debugDefaultTargetPlatformOverride = null;
 
-      final pendingButton = find.text('Check Pending Notifications');
+      final pendingButton = find.text(Strings.checkPendingNotifications);
       await tester.tap(pendingButton);
       await tester.pump();
 
       verify(() => mockLocalNotificationProvider.checkPendingNotificationRequests()).called(1);
       debugDefaultTargetPlatformOverride = null;
     });
-
-    // TODO: failed test
-    // testWidgets('turnOffNotificationSwitch_shouldCancelAllTasks', (WidgetTester tester) async {
-    //   when(() => mockWorkmanagerService.cancelAllTask()).thenAnswer((_) async {});
-    //   when(
-    //     () => mockLocalNotificationProvider.scheduleDailyElevenAMNotification(),
-    //   ).thenAnswer((_) async {});
-
-    //   tester.view.physicalSize = const Size(2000, 1920);
-    //   tester.view.devicePixelRatio = 1.0;
-
-    //   addTearDown(() {
-    //     tester.view.resetPhysicalSize();
-    //     tester.view.resetDevicePixelRatio();
-    //   });
-
-    //   await tester.pumpWidget(createWidgetUnderTest());
-    //   await tester.pumpAndSettle();
-
-    //   if (defaultTargetPlatform == TargetPlatform.android) {
-    //     final switchWidget = find.byKey(const Key('notification_switch'));
-    //     await tester.tap(switchWidget);
-    //     await tester.pumpAndSettle();
-
-    //     await tester.tap(switchWidget);
-    //     await tester.pumpAndSettle();
-
-    //     verify(() => mockLocalNotificationProvider.scheduleDailyElevenAMNotification()).called(1);
-    //   }
-    // });
   });
 }

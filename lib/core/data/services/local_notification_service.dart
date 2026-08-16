@@ -75,8 +75,10 @@ class LocalNotificationService {
       final notificationEnabled = await _isAndroidPermissionGranted();
       final requestAlarmEnabled = await _requestExactAlarmsPermission();
 
-      logger.i('Android notification enabled: $notificationEnabled');
-      logger.i('Android exact alarm enabled: $requestAlarmEnabled');
+      logger.i(
+        'Android notification enabled : $notificationEnabled\n'
+        'Android exact alarm enabled  : $requestAlarmEnabled',
+      );
 
       if (!notificationEnabled) {
         final requestNotificationsPermission = await _requestAndroidNotificationsPermission();
@@ -128,8 +130,10 @@ class LocalNotificationService {
     final timeZoneName = await FlutterTimezone.getLocalTimezone();
     final location = tz.getLocation(timeZoneName.identifier);
     tz.setLocalLocation(location);
-    logger.i('Configured timezone: $location');
-    logger.i('Current local time: ${tz.TZDateTime.now(tz.local)}');
+    logger.i(
+      'Configured timezone  : $location\n'
+      'Current local time   : ${tz.TZDateTime.now(tz.local)}',
+    );
   }
 
   tz.TZDateTime _nextInstanceOfCustomTime({
@@ -161,14 +165,16 @@ class LocalNotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
-    logger.i('Current time: $now');
-    logger.i('Scheduled time: $scheduledDate');
-    logger.i('Time until notification: ${scheduledDate.difference(now)}');
+    logger.i(
+      'Current time             : $now\n'
+      'Scheduled time           : $scheduledDate\n'
+      'Time until notification  : ${scheduledDate.difference(now)}',
+    );
 
     return scheduledDate;
   }
 
-  tz.TZDateTime _nextInstanceOfElevenAM() {
+  tz.TZDateTime nextInstanceOfElevenAM() {
     return _nextInstanceOfCustomTime(hour: 11, minute: 0);
   }
 
@@ -230,7 +236,7 @@ class LocalNotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    final datetimeSchedule = _nextInstanceOfElevenAM();
+    final datetimeSchedule = nextInstanceOfElevenAM();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id: id,
@@ -251,5 +257,10 @@ class LocalNotificationService {
 
   Future<void> cancelNotification(int id) async {
     await flutterLocalNotificationsPlugin.cancel(id: id);
+  }
+
+  Future<void> cancelAllNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+    logger.i('All notification is canceled');
   }
 }
