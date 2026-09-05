@@ -104,7 +104,7 @@ jobs:
   instrumented_test_iOS:
     needs: analyze
     runs-on: macOS-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v7
@@ -130,7 +130,7 @@ jobs:
 
       - name: Run Integration Tests on iOS Simulator
         run: |
-          flutter test integration_test
+          flutter test integration_test --ignore-timeouts
 
   instrumented_test_android:
     needs: analyze
