@@ -33,9 +33,9 @@ void callbackDispatcher() {
 
         logger.i("Notification shown with fresh data: ${randomRestaurant.name}");
 
-        return Future.value(true);
+        return await Future.value(true);
       } else {
-        return Future.value(false);
+        return await Future.value(false);
       }
     } catch (e) {
       logger.e("WorkManager task failed: $e");
