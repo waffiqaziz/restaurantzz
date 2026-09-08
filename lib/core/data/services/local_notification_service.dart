@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:restaurantzz/core/common/timezone/flutter_timezone_provider.dart';
+import 'package:restaurantzz/core/common/timezone/timezone_proider.dart';
 import 'package:restaurantzz/core/data/model/received_notification.dart';
 import 'package:restaurantzz/core/utils/logger.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -17,6 +18,29 @@ final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
 final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 
 class LocalNotificationService {
+  LocalNotificationService({
+    FlutterLocalNotificationsPlugin? plugin,
+    AndroidFlutterLocalNotificationsPlugin? androidImplementation,
+    IOSFlutterLocalNotificationsPlugin? iosImplementation,
+    TimezoneProvider? timezoneProvider,
+  }) : _plugin = plugin ?? flutterLocalNotificationsPlugin,
+       _androidImplementationOverride = androidImplementation,
+       _iosImplementationOverride = iosImplementation,
+       _timezoneProvider = timezoneProvider ?? FlutterTimezoneProvider();
+
+  final FlutterLocalNotificationsPlugin _plugin;
+  final AndroidFlutterLocalNotificationsPlugin? _androidImplementationOverride;
+  final IOSFlutterLocalNotificationsPlugin? _iosImplementationOverride;
+  final TimezoneProvider _timezoneProvider;
+
+  AndroidFlutterLocalNotificationsPlugin? get _androidImplementation =>
+      _androidImplementationOverride ??
+      _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  IOSFlutterLocalNotificationsPlugin? get _iosImplementation =>
+      _iosImplementationOverride ??
+      _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
   Future<void> init() async {
     const initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
     const initializationSettingsDarwin = DarwinInitializationSettings(
@@ -28,7 +52,7 @@ class LocalNotificationService {
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );
-    await flutterLocalNotificationsPlugin.initialize(
+    await _plugin.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (notificationResponse) {
         final payload = notificationResponse.payload;
@@ -40,31 +64,20 @@ class LocalNotificationService {
   }
 
   Future<bool> _isAndroidPermissionGranted() async {
-    return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-            ?.areNotificationsEnabled() ??
-        false;
+    return await _androidImplementation?.areNotificationsEnabled() ?? false;
   }
 
   Future<bool> _requestAndroidNotificationsPermission() async {
-    return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-            ?.requestNotificationsPermission() ??
-        false;
+    return await _androidImplementation?.requestNotificationsPermission() ?? false;
   }
 
   Future<bool> _requestExactAlarmsPermission() async {
-    return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-            ?.requestExactAlarmsPermission() ??
-        false;
+    return await _androidImplementation?.requestExactAlarmsPermission() ?? false;
   }
 
   Future<bool?> requestPermissions() async {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      final iOSImplementation = flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-      final result = await iOSImplementation?.requestPermissions(
+      final result = await _iosImplementation?.requestPermissions(
         alert: true,
         badge: true,
         sound: true,
@@ -116,7 +129,7 @@ class LocalNotificationService {
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    await flutterLocalNotificationsPlugin.show(
+    await _plugin.show(
       id: id,
       title: title,
       body: body,
@@ -127,8 +140,8 @@ class LocalNotificationService {
 
   Future<void> configureLocalTimeZone() async {
     tz.initializeTimeZones();
-    final timeZoneName = await FlutterTimezone.getLocalTimezone();
-    final location = tz.getLocation(timeZoneName.identifier);
+    final timeZoneName = await _timezoneProvider.getLocalTimezone();
+    final location = tz.getLocation(timeZoneName);
     tz.setLocalLocation(location);
     logger.i(
       'Configured timezone  : $location\n'
@@ -160,7 +173,6 @@ class LocalNotificationService {
       minute,
     );
 
-    // If it's already past the target time today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
@@ -204,7 +216,7 @@ class LocalNotificationService {
 
     final testTime = _nextInstanceOfCustomTime(testMinutesFromNow: 2);
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    await _plugin.zonedSchedule(
       id: id,
       title: 'Test Scheduled Notification',
       body: 'This is a test notification scheduled for 2 minutes from now',
@@ -238,7 +250,7 @@ class LocalNotificationService {
 
     final datetimeSchedule = nextInstanceOfElevenAM();
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    await _plugin.zonedSchedule(
       id: id,
       title: 'Daily scheduled notification title',
       body: 'This is a body of daily scheduled notification',
@@ -250,17 +262,17 @@ class LocalNotificationService {
   }
 
   Future<List<PendingNotificationRequest>> pendingNotificationRequests() async {
-    final List<PendingNotificationRequest> pendingNotificationRequests =
-        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    final List<PendingNotificationRequest> pendingNotificationRequests = await _plugin
+        .pendingNotificationRequests();
     return pendingNotificationRequests;
   }
 
   Future<void> cancelNotification(int id) async {
-    await flutterLocalNotificationsPlugin.cancel(id: id);
+    await _plugin.cancel(id: id);
   }
 
   Future<void> cancelAllNotification() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
+    await _plugin.cancelAll();
     logger.i('All notification is canceled');
   }
 }
