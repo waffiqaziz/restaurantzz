@@ -81,9 +81,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   const SizedBox(height: 8),
                   Text(
                     Strings.sorry,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text(
                     Strings.noResult,

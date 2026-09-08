@@ -73,9 +73,8 @@ class DebugNotification extends StatelessWidget {
               await localNotificationProvider.checkPendingNotificationRequests();
               final count = localNotificationProvider.pendingNotificationRequests.length;
               if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text('Pending notifications: $count')));
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Pending notifications: $count')));
               }
             },
             child: Text(Strings.checkPendingNotifications),

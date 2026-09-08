@@ -230,9 +230,8 @@ void main() {
       final exceptionProvider = DetailProvider(mockApiServices);
 
       // mockApiServices to throw exception directly
-      when(
-        () => mockApiServices.postReview(any(), any(), any()),
-      ).thenThrow(Exception("Network error"));
+      when(() => mockApiServices.postReview(any(), any(), any()))
+          .thenThrow(Exception("Network error"));
 
       await exceptionProvider.addReview(id, "name", "review");
 

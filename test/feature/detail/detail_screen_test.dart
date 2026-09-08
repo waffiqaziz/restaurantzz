@@ -43,9 +43,8 @@ void main() {
     mockFavoriteIconProvider = MockFavoriteIconProvider();
 
     // ensure all not null
-    when(
-      () => mockDetailProvider.viewStateOf('123'),
-    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadingState()));
+    when(() => mockDetailProvider.viewStateOf('123'))
+        .thenReturn(DetailViewState(resultState: RestaurantDetailLoadingState()));
   });
 
   Widget createWidgetUnderTest() {
@@ -80,12 +79,10 @@ void main() {
     when(() => mockLocalDatabaseProvider.loadRestaurantById(any())).thenAnswer((_) async {});
     when(() => mockLocalDatabaseProvider.checkItemBookmark(any())).thenReturn(false);
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
-    when(
-      () => mockDetailProvider.viewStateOf('123'),
-    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
+    when(() => mockDetailProvider.viewStateOf('123'))
+        .thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pump();
@@ -99,9 +96,8 @@ void main() {
 
   testWidgets('loadingIndicator_showWhenStateIsLoading', (WidgetTester tester) async {
     when(() => mockDetailProvider.fetchRestaurantDetail(any())).thenAnswer((_) async {});
-    when(
-      () => mockDetailProvider.viewStateOf('123'),
-    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadingState()));
+    when(() => mockDetailProvider.viewStateOf('123'))
+        .thenReturn(DetailViewState(resultState: RestaurantDetailLoadingState()));
 
     await tester.pumpWidget(createWidgetUnderTest());
 
@@ -125,13 +121,11 @@ void main() {
     when(() => mockLocalDatabaseProvider.loadRestaurantById(any())).thenAnswer((_) async {});
     when(() => mockLocalDatabaseProvider.checkItemBookmark(any())).thenReturn(false);
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
 
-    when(
-      () => mockDetailProvider.viewStateOf('123'),
-    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
+    when(() => mockDetailProvider.viewStateOf('123'))
+        .thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
 
     await tester.pumpWidget(createWidgetUnderTest());
 
@@ -140,19 +134,16 @@ void main() {
   });
 
   testWidgets('pullToRefresh_callsRefreshFunction', (WidgetTester tester) async {
-    when(
-      () => mockDetailProvider.fetchRestaurantDetail(any(), refresh: any(named: 'refresh')),
-    ).thenAnswer((_) async {});
+    when(() => mockDetailProvider.fetchRestaurantDetail(any(), refresh: any(named: 'refresh')))
+        .thenAnswer((_) async {});
     when(() => mockLocalDatabaseProvider.loadRestaurantById(any())).thenAnswer((_) async {});
     when(() => mockLocalDatabaseProvider.checkItemBookmark(any())).thenReturn(false);
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
 
-    when(
-      () => mockDetailProvider.viewStateOf('123'),
-    ).thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
+    when(() => mockDetailProvider.viewStateOf('123'))
+        .thenReturn(DetailViewState(resultState: RestaurantDetailLoadedState(mockData)));
 
     await tester.pumpWidget(createWidgetUnderTest());
 
@@ -170,9 +161,8 @@ void main() {
   testWidgets('showSnackbarWithErrorMessage_whenReviewSubmissionFails', (
     WidgetTester tester,
   ) async {
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
     when(() => mockDetailProvider.fetchRestaurantDetail(any())).thenAnswer((_) async {});
     when(() => mockDetailProvider.viewStateOf('123')).thenReturn(
@@ -193,9 +183,8 @@ void main() {
   testWidgets('showSnackbarWithSuccessMessage_whenReviewSubmissionSucceeds', (
     WidgetTester tester,
   ) async {
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
     when(() => mockDetailProvider.fetchRestaurantDetail(any())).thenAnswer((_) async {});
     when(() => mockDetailProvider.viewStateOf('123')).thenReturn(
@@ -221,9 +210,8 @@ void main() {
       DetailViewState(resultState: RestaurantDetailLoadedState(mockData), isSubmittingReview: true),
     );
     when(() => mockFavoriteIconProvider.isFavorite).thenReturn(false);
-    when(
-      () => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()),
-    ).thenAnswer((_) async {});
+    when(() => mockFavoriteIconProvider.loadFavoriteState(mockLocalDatabaseProvider, any()))
+        .thenAnswer((_) async {});
 
     await tester.pumpWidget(createWidgetUnderTest());
 

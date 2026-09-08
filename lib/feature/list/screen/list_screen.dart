@@ -46,9 +46,8 @@ class _ListScreenState extends State<ListScreen> {
               centerTitle: true,
               title: Text(
                 Strings.ourRecommendation,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
               leading: IconButton(
                 icon: Padding(
