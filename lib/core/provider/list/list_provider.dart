@@ -31,7 +31,7 @@ class ListProvider extends ChangeNotifier {
       }
 
       notifyListeners();
-    } catch (e, _) {
+    } catch (e) {
       if (e is TypeError) {
         _resultState = RestaurantListErrorState(
           "Unexpected response type from the server. Please contact support.",
