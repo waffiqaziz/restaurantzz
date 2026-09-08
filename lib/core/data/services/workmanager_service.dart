@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
 import 'package:restaurantzz/core/networking/services/api_services.dart';
@@ -10,38 +11,44 @@ import 'package:timezone/timezone.dart' as tz;
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    logger.i("WorkManager task started: $task");
-
-    try {
-      // get resto data
-      final apiService = ApiServices(httpClient: http.Client());
-      final restaurants = await apiService.getRestaurantList();
-      final restaurantList = restaurants.data?.restaurants;
-
-      // show notification only if data is ready
-      if (restaurantList != null && restaurantList.isNotEmpty) {
-        final randomRestaurant = restaurantList[Random().nextInt(restaurantList.length)];
-
-        final notificationService = LocalNotificationService();
-        await notificationService.init();
-        await notificationService.showNotification(
-          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          title: "Daily Restaurant Recommendation",
-          body: "Try ${randomRestaurant.name} - ${randomRestaurant.description}",
-          payload: "${randomRestaurant.id}:list",
-        );
-
-        logger.i("Notification shown with fresh data: ${randomRestaurant.name}");
-
-        return await Future.value(true);
-      } else {
-        return await Future.value(false);
-      }
-    } catch (e) {
-      logger.e("WorkManager task failed: $e");
-      return Future.value(false);
-    }
+    return runDailyRestaurantTask(
+      apiService: ApiServices(httpClient: http.Client()),
+      notificationService: LocalNotificationService(),
+    );
   });
+}
+
+@visibleForTesting
+Future<bool> runDailyRestaurantTask({
+  required ApiServices apiService,
+  required LocalNotificationService notificationService,
+}) async {
+  logger.i("WorkManager task started");
+
+  try {
+    final restaurants = await apiService.getRestaurantList();
+    final restaurantList = restaurants.data?.restaurants;
+
+    if (restaurantList != null && restaurantList.isNotEmpty) {
+      final randomRestaurant = restaurantList[Random().nextInt(restaurantList.length)];
+
+      await notificationService.init();
+      await notificationService.showNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: "Daily Restaurant Recommendation",
+        body: "Try ${randomRestaurant.name} - ${randomRestaurant.description}",
+        payload: "${randomRestaurant.id}:list",
+      );
+
+      logger.i("Notification shown: ${randomRestaurant.name}");
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    logger.e("WorkManager task failed: $e");
+    return false;
+  }
 }
 
 class WorkmanagerService {
