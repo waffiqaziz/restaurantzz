@@ -147,9 +147,8 @@ void main() {
     });
 
     testWidgets('fetchingDataFails_shuoldDisplaysErrorMessage', (WidgetTester tester) async {
-      when(
-        () => mockApiServices.getRestaurantList(),
-      ).thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
+      when(() => mockApiServices.getRestaurantList())
+          .thenAnswer((_) async => ApiResult.error('Failed to fetch data'));
 
       await tester.pumpWidget(createTestWidget(const ListScreen()));
       listProvider.fetchRestaurantList();

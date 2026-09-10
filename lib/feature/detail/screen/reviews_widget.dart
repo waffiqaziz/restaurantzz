@@ -46,9 +46,8 @@ class ReviewsWidget extends StatelessWidget {
                                 // reviewer name
                                 Text(
                                   review.name,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                                  style: Theme.of(context).textTheme.labelMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
 

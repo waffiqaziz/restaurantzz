@@ -62,9 +62,8 @@ class DetailProvider extends ChangeNotifier {
   }
 
   Future<void> addReview(String id, String name, String review) async {
-    _viewStates[id] = viewStateOf(
-      id,
-    ).copyWith(isSubmittingReview: true, reviewCompleted: false, reviewError: null);
+    _viewStates[id] = viewStateOf(id)
+        .copyWith(isSubmittingReview: true, reviewCompleted: false, reviewError: null);
     notifyListeners();
 
     try {
@@ -79,14 +78,12 @@ class DetailProvider extends ChangeNotifier {
           ).copyWith(resultState: RestaurantDetailLoadedState(_cache[id]!), reviewCompleted: true);
         }
       } else {
-        _viewStates[id] = viewStateOf(
-          id,
-        ).copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
+        _viewStates[id] = viewStateOf(id)
+            .copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
       }
     } catch (_) {
-      _viewStates[id] = viewStateOf(
-        id,
-      ).copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
+      _viewStates[id] = viewStateOf(id)
+          .copyWith(reviewCompleted: true, reviewError: "Failed to submit review");
     } finally {
       _viewStates[id] = viewStateOf(id).copyWith(isSubmittingReview: false);
       notifyListeners();

@@ -50,54 +50,43 @@ void main() {
       mockLocalNotificationService = MockLocalNotificationService();
       mockLocalNotificationProvider = MockLocalNotificationProvider();
 
-      when(
-        () => mockSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(notificationEnable: true, isDark: false));
-      when(
-        () => mockSharedPreferencesProvider.message,
-      ).thenReturn("Settings initialized successfully");
+      when(() => mockSharedPreferencesProvider.setting)
+          .thenReturn(Setting(notificationEnable: true, isDark: false));
+      when(() => mockSharedPreferencesProvider.message)
+          .thenReturn("Settings initialized successfully");
 
       when(() => mockLocalNotificationService.init()).thenAnswer((_) async {});
       when(() => mockLocalNotificationService.configureLocalTimeZone()).thenAnswer((_) async {});
       when(() => mockLocalNotificationProvider.requestPermissions()).thenAnswer((_) async {});
     });
 
-    testWidgets(
-      'uiElement_shouldDisplayedOnAndroidPlatform',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(createWidgetUnderTest());
+    testWidgets('uiElement_shouldDisplayedOnAndroidPlatform', (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
 
-        // check if there two switch (dark mode and notification switch)
-        expect(find.byType(Switch), findsAtLeastNWidgets(2));
-        expect(find.text(Strings.settings), findsOneWidget);
-        expect(find.text(Strings.darkMode), findsOneWidget);
-        expect(find.byIcon(Icons.dark_mode_rounded), findsOneWidget);
-        expect(find.text(Strings.enableNotification), findsOneWidget);
-        expect(find.byIcon(Icons.notifications_active_rounded), findsOneWidget);
-      },
-      variant: TargetPlatformVariant.only(TargetPlatform.android),
-    );
+      // check if there two switch (dark mode and notification switch)
+      expect(find.byType(Switch), findsAtLeastNWidgets(2));
+      expect(find.text(Strings.settings), findsOneWidget);
+      expect(find.text(Strings.darkMode), findsOneWidget);
+      expect(find.byIcon(Icons.dark_mode_rounded), findsOneWidget);
+      expect(find.text(Strings.enableNotification), findsOneWidget);
+      expect(find.byIcon(Icons.notifications_active_rounded), findsOneWidget);
+    }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
-    testWidgets(
-      'uiElement_shouldDisplayedOnIosPlatform',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(createWidgetUnderTest());
+    testWidgets('uiElement_shouldDisplayedOnIosPlatform', (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
 
-        // check if there two switches (dark mode and notification switch)
-        expect(find.byType(Switch), findsAtLeastNWidgets(2));
-        expect(find.text(Strings.settings), findsOneWidget);
-        expect(find.text(Strings.darkMode), findsOneWidget);
-        expect(find.byIcon(Icons.dark_mode_rounded), findsOneWidget);
-        expect(find.text(Strings.enableNotification), findsOneWidget);
-        expect(find.byIcon(Icons.notifications_active_rounded), findsOneWidget);
-      },
-      variant: TargetPlatformVariant.only(TargetPlatform.iOS),
-    );
+      // check if there two switches (dark mode and notification switch)
+      expect(find.byType(Switch), findsAtLeastNWidgets(2));
+      expect(find.text(Strings.settings), findsOneWidget);
+      expect(find.text(Strings.darkMode), findsOneWidget);
+      expect(find.byIcon(Icons.dark_mode_rounded), findsOneWidget);
+      expect(find.text(Strings.enableNotification), findsOneWidget);
+      expect(find.byIcon(Icons.notifications_active_rounded), findsOneWidget);
+    }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
     testWidgets('notificationSwitch_shouldToggleValue', (WidgetTester tester) async {
-      when(
-        () => mockSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(notificationEnable: false, isDark: false));
+      when(() => mockSharedPreferencesProvider.setting)
+          .thenReturn(Setting(notificationEnable: false, isDark: false));
 
       await tester.pumpWidget(createWidgetUnderTest());
 
@@ -119,9 +108,8 @@ void main() {
     });
 
     testWidgets('pressDarkModeSwitch_shouldCallsSetThemeFunction', (WidgetTester tester) async {
-      when(
-        () => mockSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(notificationEnable: true, isDark: false));
+      when(() => mockSharedPreferencesProvider.setting)
+          .thenReturn(Setting(notificationEnable: true, isDark: false));
       when(() => mockSharedPreferencesProvider.setTheme(any())).thenAnswer((_) async {});
 
       await tester.pumpWidget(createWidgetUnderTest());
@@ -155,9 +143,8 @@ void main() {
     testWidgets('turnOnNotificationSwitch_shouldShowErrorDialog_onException', (
       WidgetTester tester,
     ) async {
-      when(
-        () => mockSharedPreferencesProvider.saveSettingValue(any()),
-      ).thenThrow(Exception("Simulated error"));
+      when(() => mockSharedPreferencesProvider.saveSettingValue(any()))
+          .thenThrow(Exception("Simulated error"));
 
       await tester.pumpWidget(createWidgetUnderTest());
 
@@ -191,15 +178,13 @@ void main() {
         PendingNotificationRequest(1, 'Test', 'Test Body', null),
       ];
 
-      when(
-        () => mockSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(notificationEnable: false, isDark: false));
+      when(() => mockSharedPreferencesProvider.setting)
+          .thenReturn(Setting(notificationEnable: false, isDark: false));
       when(() => mockLocalNotificationProvider.showNotification()).thenAnswer((_) async {});
       when(() => mockLocalNotificationProvider.scheduleTestNotification()).thenAnswer((_) async {});
       when(() => mockLocalNotificationProvider.pendingNotificationRequests).thenReturn(fakePending);
-      when(
-        () => mockLocalNotificationProvider.checkPendingNotificationRequests(),
-      ).thenAnswer((_) async {});
+      when(() => mockLocalNotificationProvider.checkPendingNotificationRequests())
+          .thenAnswer((_) async {});
 
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();

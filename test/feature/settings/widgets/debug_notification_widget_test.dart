@@ -53,17 +53,14 @@ void main() {
         return true;
       });
       when(() => mockLocalNotificationService.configureLocalTimeZone()).thenAnswer((_) async {});
-      when(
-        () => mockLocalNotificationProvider.checkPendingNotificationRequests(),
-      ).thenAnswer((_) async {});
-      when(
-        () => mockLocalNotificationProvider.pendingNotificationRequests,
-      ).thenReturn(<PendingNotificationRequest>[]);
+      when(() => mockLocalNotificationProvider.checkPendingNotificationRequests())
+          .thenAnswer((_) async {});
+      when(() => mockLocalNotificationProvider.pendingNotificationRequests)
+          .thenReturn(<PendingNotificationRequest>[]);
       when(() => mockLocalNotificationProvider.requestPermissions()).thenAnswer((_) async {});
       when(() => mockLocalNotificationProvider.cancelAllNotification()).thenAnswer((_) async {});
-      when(
-        () => mockLocalNotificationProvider.checkPendingNotificationRequests(),
-      ).thenAnswer((_) async {});
+      when(() => mockLocalNotificationProvider.checkPendingNotificationRequests())
+          .thenAnswer((_) async {});
       when(() => mockAppConfig.showNotificationView(any())).thenReturn(true);
     });
 

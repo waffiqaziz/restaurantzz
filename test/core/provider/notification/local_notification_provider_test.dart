@@ -68,9 +68,8 @@ void main() {
     });
 
     test('scheduleTestNotification_shouldScheduleNotification', () {
-      when(
-        () => mockService.scheduleTestNotification(id: any<int>(named: 'id')),
-      ).thenAnswer((_) => Future.value());
+      when(() => mockService.scheduleTestNotification(id: any<int>(named: 'id')))
+          .thenAnswer((_) => Future.value());
 
       localNotificationProvider.scheduleTestNotification();
 

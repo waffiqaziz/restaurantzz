@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:restaurantzz/core/common/app_config.dart';
+import 'package:restaurantzz/core/common/timezone/timezone_proider.dart';
 import 'package:restaurantzz/core/data/local/local_database_service.dart';
 import 'package:restaurantzz/core/data/model/setting.dart';
 import 'package:restaurantzz/core/data/services/local_notification_service.dart';
@@ -40,6 +41,14 @@ class MockDatabaseFactory extends Mock implements DatabaseFactory {}
 class MockSharedPreferencesService extends Mock implements SharedPreferencesService {}
 
 class MockFlutterLocalNotificationsPlugin extends Mock implements FlutterLocalNotificationsPlugin {}
+
+class MockAndroidFlutterLocalNotificationsPlugin extends Mock
+    implements AndroidFlutterLocalNotificationsPlugin {}
+
+class MockIOSFlutterLocalNotificationsPlugin extends Mock
+    implements IOSFlutterLocalNotificationsPlugin {}
+
+class MockTimezoneProvider extends Mock implements TimezoneProvider {}
 
 class MockWorkmanagerService extends Mock implements WorkmanagerService {}
 

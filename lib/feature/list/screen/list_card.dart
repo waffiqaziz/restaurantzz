@@ -70,9 +70,8 @@ class RestaurantCard extends StatelessWidget {
                     // restaurant name
                     Text(
                       restaurant.name,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
 
                     // rating bar

@@ -47,9 +47,8 @@ void main() {
       when(() => mockWorkmanagerService.runPeriodicTask()).thenAnswer((_) async {});
       when(() => mockWorkmanagerService.cancelAllTask()).thenAnswer((_) async {});
       when(() => mocSharedPreferencesProvider.saveSettingValue(any())).thenAnswer((_) async {});
-      when(
-        () => mocSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(isDark: true, notificationEnable: false));
+      when(() => mocSharedPreferencesProvider.setting)
+          .thenReturn(Setting(isDark: true, notificationEnable: false));
 
       when(() => mockAppConfig.showNotificationView(any())).thenReturn(true);
     });
@@ -66,9 +65,8 @@ void main() {
     });
 
     testWidgets('disabling notification cancels task', (WidgetTester tester) async {
-      when(
-        () => mocSharedPreferencesProvider.setting,
-      ).thenReturn(Setting(isDark: true, notificationEnable: true));
+      when(() => mocSharedPreferencesProvider.setting)
+          .thenReturn(Setting(isDark: true, notificationEnable: true));
 
       await tester.pumpWidget(createWidgetUnderTest());
 
@@ -81,9 +79,8 @@ void main() {
     });
 
     testWidgets('shows error dialog when enabling notification fails', (WidgetTester tester) async {
-      when(
-        () => mockWorkmanagerService.runPeriodicTask(),
-      ).thenThrow(Exception('Failed to start WorkManager'));
+      when(() => mockWorkmanagerService.runPeriodicTask())
+          .thenThrow(Exception('Failed to start WorkManager'));
 
       await tester.pumpWidget(createWidgetUnderTest());
 

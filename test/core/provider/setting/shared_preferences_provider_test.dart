@@ -47,9 +47,8 @@ void main() {
     test('initializeSettings_noSavedSetting_shouldUseSystemTheme', () {
       TestWidgetsFlutterBinding.ensureInitialized();
 
-      when(
-        () => mockService.getSettingValue(),
-      ).thenReturn(Setting(notificationEnable: false, isDark: true));
+      when(() => mockService.getSettingValue())
+          .thenReturn(Setting(notificationEnable: false, isDark: true));
       when(() => mockService.isDarkModeSet()).thenReturn(false);
 
       TestWidgetsFlutterBinding.instance.platformDispatcher.platformBrightnessTestValue =
@@ -84,9 +83,8 @@ void main() {
       final setting = Setting(notificationEnable: true, isDark: false);
       when(() => mockService.setTheme(true)).thenAnswer((_) async => true);
       when(() => mockService.saveSettingValue(any())).thenAnswer((_) async => true);
-      when(
-        () => mockService.getSettingValue(),
-      ).thenReturn(Setting(notificationEnable: false, isDark: false));
+      when(() => mockService.getSettingValue())
+          .thenReturn(Setting(notificationEnable: false, isDark: false));
 
       // init save setting
       await sharedPreferencesProvider.saveSettingValue(setting);

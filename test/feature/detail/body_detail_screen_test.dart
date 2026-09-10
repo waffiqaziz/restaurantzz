@@ -13,8 +13,7 @@ void main() {
     final sampleRestaurantDetailItem = RestaurantDetailItem(
       id: '1',
       name: 'Sample Restaurant',
-      description:
-          "Lorem ipsum odor amet, consectetuer adipiscing elit. Pellentesque class iaculis sociosqu volutpat conubia. Luctus lacus consequat litora sociosqu curabitur. Ullamcorper at mollis vulputate ullamcorper ultricies quam. Gravida blandit ex viverra dis, lobortis congue odio aliquam lectus. Vehicula potenti luctus lobortis eleifend sit nisi. Risus natoque vehicula dictumst rhoncus inceptos augue vel. Congue fames semper tempus felis fringilla ante quis curae. Ex eu interdum parturient massa facilisi fames magna. Elementum ultricies finibus neque mollis porttitor natoque in suspendisse nunc.",
+      description: "Lorem ipsum odor amet, consectetuer adipiscing elit. Pellentesque class iaculis sociosqu volutpat conubia. Luctus lacus consequat litora sociosqu curabitur. Ullamcorper at mollis vulputate ullamcorper ultricies quam. Gravida blandit ex viverra dis, lobortis congue odio aliquam lectus. Vehicula potenti luctus lobortis eleifend sit nisi. Risus natoque vehicula dictumst rhoncus inceptos augue vel. Congue fames semper tempus felis fringilla ante quis curae. Ex eu interdum parturient massa facilisi fames magna. Elementum ultricies finibus neque mollis porttitor natoque in suspendisse nunc.",
       city: 'Sample City',
       address: '123 Sample Street',
       pictureId: 'sample_picture',

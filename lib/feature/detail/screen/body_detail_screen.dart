@@ -53,9 +53,8 @@ class BodyDetailScreen extends StatelessWidget {
                                       fit: FlexFit.tight,
                                       child: Text(
                                         restaurantDetailItem.name,
-                                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: Theme.of(context).textTheme.headlineLarge
+                                            ?.copyWith(fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                     Flexible(
