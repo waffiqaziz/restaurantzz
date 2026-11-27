@@ -8,7 +8,7 @@ on:
       - "**/*.md"
 
 env:
-  FLUTTER_VERSION: 3.47.7
+  FLUTTER_VERSION: 3.50.0
 
 permissions:
   checks: write
