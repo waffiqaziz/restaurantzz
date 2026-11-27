@@ -24,7 +24,7 @@ cd restaurantzz
 flutter pub get
 ```
 
-### 4. Run the application
+### 3. Run the application
 
 ```bash
 flutter run
